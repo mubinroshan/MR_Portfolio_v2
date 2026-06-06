@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Google Sans", "Product Sans", "Outfit", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Google Sans", "Product Sans", "Outfit", "Playfair Display", Georgia, serif;
+  --font-mono: "Google Sans", "Product Sans", "Outfit", "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-brand-green: #005639;
+  --color-brand-green-light: #00a36c;
+  --color-dark-bg: #0a0a0a;
+  --color-card-bg: #121212;
+}
+
+/* 1. GLOBAL FONT OVERRIDE: Google Sans across the webpage everywhere for all headers, subtext, and contents */
+html, body, #root, div, span, h1, h2, h3, h4, h5, h6, p, a, button, input, select, textarea, li, nav, section, header, footer, table, td, th {
+  font-family: "Google Sans", "Product Sans", "Outfit", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif !important;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1c1c1c;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00a36c;
+}
+
+/* Base body styles */
+body {
+  background-color: #0a0a0a;
+  color: #fafafa;
+  overflow-x: hidden;
+}
+
+/* Ambient glows */
+.ambient-glow-left {
+  background: radial-gradient(circle at 30% 20%, rgba(0, 86, 57, 0.15) 0%, rgba(0, 0, 0, 0) 65%);
+}
+
+.ambient-glow-right {
+  background: radial-gradient(circle at 80% 30%, rgba(99, 102, 241, 0.08) 0%, rgba(0, 0, 0, 0) 60%);
+}
+
+.ambient-glow-card {
+  transition: all 0.4s ease;
+}
+
+.ambient-glow-card:hover {
+  box-shadow: 0 10px 30px -10px rgba(0, 86, 57, 0.2);
+  border-color: rgba(0, 86, 57, 0.25) !important;
+}
+
+/* Grid overlay background effect similar to vjy.me */
+.grid-overlay {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+}
+
+
+/* ==========================================================================
+   2. LIGHT THEME (CREAM MODE) OVERRIDES
+   Cream background (#FAF6EB), Teal colors text, Black and Gold elements
+   ========================================================================== */
+
+.theme-cream {
+  background-color: #FAF6EB !important;
+  color: #0d5c56 !important;
+}
+
+/* Scrollbar in cream mode */
+.theme-cream ::-webkit-scrollbar-track {
+  background: #FAF6EB !important;
+}
+.theme-cream ::-webkit-scrollbar-thumb {
+  background: #E8DFCA !important;
+}
+.theme-cream ::-webkit-scrollbar-thumb:hover {
+  background: #0d5c56 !important;
+}
+
+/* Base styling overrides inside cream mode wrapper */
+.theme-cream {
+  /* Force global cream bg on main layouts */
+  &, body, .min-h-screen, main, section {
+    background-color: #FAF6EB !important;
+    color: #0d5c56 !important;
+  }
+
+  /* Header floating bar */
+  header {
+    background-color: rgba(250, 246, 235, 0.85) !important;
+    border-bottom: 1px solid rgba(13, 92, 86, 0.1) !important;
+    backdrop-filter: blur(12px) !important;
+  }
+
+  /* Footer bar */
+  footer {
+    border-top: 1px solid rgba(13, 92, 86, 0.1) !important;
+    color: #0d5c56 !important;
+  }
+
+  /* Cards (Work details, showcases, lists, logs, simulator) should have warm soft gold-touched cream background and teal borders */
+  .bg-white\/\[0\.03\],
+  .bg-white\/\[0\.05\],
+  .bg-\[\#121212\],
+  .bg-\[\#111111\],
+  .bg-card-bg,
+  .bg-\[\#1c1c1c\],
+  .bg-\[\#121115\],
+  .bg-black\/20,
+  .bg-black\/40,
+  .bg-black\/50,
+  .bg-black\/60,
+  .bg-black,
+  .bg-\[\#0a0a0a\]\/95,
+  .bg-\[\#121212\] {
+    background-color: #F5EFE1 !important;
+    border-color: rgba(13, 92, 86, 0.2) !important;
+    color: #0d5c56 !important;
+  }
+
+  /* Accent lines and borders */
+  .border-white\/10,
+  .border-white\/5,
+  .border-white\/\[0\.04\] {
+    border-color: rgba(13, 92, 86, 0.15) !important;
+  }
+
+  .border-brand-green {
+    border-color: #0d5c56 !important;
+  }
+
+  /* Text color rules: Headers & Text should map to rich teal */
+  h1, h2, h3, h4, h5, h6,
+  .text-white,
+  .text-gray-100,
+  .text-white\/70,
+  .text-white\/65,
+  .text-white\/60,
+  .text-white\/50,
+  .text-white\/40,
+  .text-white\/30,
+  .text-white\/20,
+  .text-gray-300,
+  .text-gray-400,
+  .text-gray-500 {
+    color: #0d5c56 !important;
+  }
+
+  /* Paragraph and content text can use medium dark teal */
+  p, span, .text-white\/50, .text-white\/65 {
+    color: #1a6f68 !important;
+  }
+
+  /* Specialized green text and indicators map to vibrant clean teal */
+  .text-\[\#00a36c\],
+  .text-emerald-400,
+  .text-teal-400,
+  .text-[#00a36c],
+  .text-emerald-300,
+  .text-brand-green-light {
+    color: #008080 !important;
+  }
+
+  /* ACCENT: GOLD (Tags, ping circles, highlight states) */
+  .text-amber-300,
+  .text-amber-400,
+  .text-pink-500 {
+    color: #B8860B !important; /* Gold text */
+  }
+
+  /* Highlighting pings, badges and metrics in Gold */
+  .bg-emerald-500,
+  .bg-emerald-600,
+  .bg-emerald-950\/40,
+  .bg-emerald-900,
+  .bg-amber-900\/80,
+  .bg-emerald-900\/80,
+  .bg-[#005639]/30,
+  .bg-[#005639]/15,
+  .bg-brand-green {
+    background-color: #D4AF37 !important; /* Gold background */
+    color: #000000 !important;
+  }
+
+  /* ACCENT: TEAL AND WHITE for selected tabs and filters (Curved teal box with white text) */
+  /* Any tab/filter button when active should turn curved teal with white text */
+  button[id^="tab-"][class*="keep-teal-active"],
+  button[id^="filter-"][class*="keep-teal-active"],
+  button[id^="story-filter-"][class*="keep-teal-active"],
+  button[id^="work-filter-"][class*="keep-teal-active"],
+  button[class*="keep-teal-active"] {
+    background-color: #00a36c !important; /* Curved teal background */
+    color: #ffffff !important;           /* Selected text should be in white color */
+    border-color: #00a36c !important;
+    border-radius: 9999px !important;    /* Fully curved */
+    box-shadow: 0 4px 12px rgba(0, 163, 108, 0.15) !important;
+  }
+
+  /* Inactive tab button hover */
+  button[id^="tab-"]:hover,
+  button[id^="filter-"]:hover,
+  button[id^="story-filter-"]:hover,
+  button[id^="work-filter-"]:hover {
+    background-color: rgba(13, 92, 86, 0.08) !important;
+    color: #0d5c56 !important;
+  }
+
+  /* Grid overlay color shift in cream mode (to a soft warm gray) */
+  .grid-overlay {
+    background-image: linear-gradient(to right, rgba(13, 92, 86, 0.03) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(13, 92, 86, 0.03) 1px, transparent 1px) !important;
+  }
+
+  /* Modal Dialog background wrapper */
+  .fixed .absolute.bg-black\/80 {
+    background-color: rgba(0, 0, 0, 0.45) !important; /* slightly softer backdrop */
+  }
+}
+
+/* Ensure white text is retained in light mode for elements with .keep-text-white */
+.keep-text-white, 
+.theme-cream .keep-text-white,
+.theme-cream button.keep-text-white,
+.theme-cream button.keep-text-white span,
+.theme-cream button.keep-text-white svg {
+  color: #ffffff !important;
+  fill: none !important;
+}
+
+/* Complete removal of the browser's default black focused box outlines on buttons, dropdowns & tabs */
+button, button:focus, button:active, button:focus-visible, 
+[role="button"], [role="button"]:focus, [role="button"]:focus-visible,
+a, a:focus, a:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Custom Marquee CSS Animation for auto-scrolling ticker */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  gap: 2rem; /* matches gap-8 (2rem) */
+  animation: marquee 30s linear infinite;
+  width: max-content;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Gradient fades that adapt to Light/Cream Theme */
+.marquee-fade-left {
+  background: linear-gradient(to right, #0a0a0a, transparent);
+}
+.marquee-fade-right {
+  background: linear-gradient(to left, #0a0a0a, transparent);
+}
+
+.theme-cream .marquee-fade-left {
+  background: linear-gradient(to right, #FAF6EB, transparent) !important;
+}
+.theme-cream .marquee-fade-right {
+  background: linear-gradient(to left, #FAF6EB, transparent) !important;
+}
+
