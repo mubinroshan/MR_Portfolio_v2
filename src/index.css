@@ -17,6 +17,15 @@ html, body, #root, div, span, h1, h2, h3, h4, h5, h6, p, a, button, input, selec
   font-family: "Google Sans", "Product Sans", "Outfit", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif !important;
 }
 
+::selection {
+  background-color: #0b504a !important;
+  color: #ffffff !important;
+}
+::-moz-selection {
+  background-color: #0b504a !important;
+  color: #ffffff !important;
+}
+
 /* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
@@ -319,8 +328,10 @@ body {
 .theme-cream .keep-text-white,
 .theme-cream button.keep-text-white,
 .theme-cream button.keep-text-white span,
-.theme-cream button.keep-text-white svg {
+.theme-cream button.keep-text-white svg,
+.theme-cream button.keep-text-white svg * {
   color: #ffffff !important;
+  stroke: #ffffff !important;
   fill: none !important;
 }
 

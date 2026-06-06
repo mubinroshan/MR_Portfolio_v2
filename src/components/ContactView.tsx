@@ -1,7 +1,251 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { User, Mail, MapPin, MessageSquare, Send, ShieldCheck, RefreshCw, CheckCircle2 } from 'lucide-react';
 import NotificationToast from './NotificationToast';
+
+const countries = [
+  "Palestine",
+  "Saudi Arabia",
+  "Afghanistan",
+  "Albania",
+  "Algeria",
+  "Andorra",
+  "Angola",
+  "Antigua and Barbuda",
+  "Argentina",
+  "Armenia",
+  "Australia",
+  "Austria",
+  "Azerbaijan",
+  "Bahamas",
+  "Bahrain",
+  "Bangladesh",
+  "Barbados",
+  "Belarus",
+  "Belgium",
+  "Belize",
+  "Benin",
+  "Bhutan",
+  "Bolivia",
+  "Bosnia and Herzegovina",
+  "Botswana",
+  "Brazil",
+  "Brunei",
+  "Bulgaria",
+  "Burkina Faso",
+  "Burundi",
+  "Cabo Verde",
+  "Cambodia",
+  "Cameroon",
+  "Canada",
+  "Central African Republic",
+  "Chad",
+  "Chile",
+  "China",
+  "Colombia",
+  "Comoros",
+  "Congo",
+  "Costa Rica",
+  "Croatia",
+  "Cuba",
+  "Cyprus",
+  "Czechia",
+  "Denmark",
+  "Djibouti",
+  "Dominica",
+  "Dominican Republic",
+  "Ecuador",
+  "Egypt",
+  "El Salvador",
+  "Equatorial Guinea",
+  "Eritrea",
+  "Estonia",
+  "Eswatini",
+  "Ethiopia",
+  "Fiji",
+  "Finland",
+  "France",
+  "Gabon",
+  "Gambia",
+  "Georgia",
+  "Germany",
+  "Ghana",
+  "Greece",
+  "Grenada",
+  "Guatemala",
+  "Guinea",
+  "Guinea-Bissau",
+  "Guyana",
+  "Haiti",
+  "Honduras",
+  "Hungary",
+  "Iceland",
+  "India",
+  "Indonesia",
+  "Iran",
+  "Iraq",
+  "Ireland",
+  "Italy",
+  "Jamaica",
+  "Japan",
+  "Jordan",
+  "Kazakhstan",
+  "Kenya",
+  "Kiribati",
+  "Korea, North",
+  "Korea, South",
+  "Kosovo",
+  "Kuwait",
+  "Kyrgyzstan",
+  "Laos",
+  "Latvia",
+  "Lebanon",
+  "Lesotho",
+  "Liberia",
+  "Libya",
+  "Liechtenstein",
+  "Lithuania",
+  "Luxembourg",
+  "Madagascar",
+  "Malawi",
+  "Malaysia",
+  "Maldives",
+  "Mali",
+  "Malta",
+  "Marshall Islands",
+  "Mauritania",
+  "Mauritius",
+  "Mexico",
+  "Micronesia",
+  "Moldova",
+  "Monaco",
+  "Mongolia",
+  "Montenegro",
+  "Morocco",
+  "Mozambique",
+  "Myanmar",
+  "Namibia",
+  "Nauru",
+  "Nepal",
+  "Netherlands",
+  "New Zealand",
+  "Nicaragua",
+  "Niger",
+  "Nigeria",
+  "North Macedonia",
+  "Norway",
+  "Oman",
+  "Pakistan",
+  "Palau",
+  "Panama",
+  "Papua New Guinea",
+  "Paraguay",
+  "Peru",
+  "Philippines",
+  "Poland",
+  "Portugal",
+  "Qatar",
+  "Romania",
+  "Russia",
+  "Rwanda",
+  "Saint Kitts and Nevis",
+  "Saint Lucia",
+  "Saint Vincent",
+  "Samoa",
+  "San Marino",
+  "Sao Tome and Principe",
+  "Senegal",
+  "Serbia",
+  "Seychelles",
+  "Sierra Leone",
+  "Singapore",
+  "Slovakia",
+  "Slovenia",
+  "Solomon Islands",
+  "Somalia",
+  "South Africa",
+  "South Sudan",
+  "Spain",
+  "Sri Lanka",
+  "Sudan",
+  "Suriname",
+  "Sweden",
+  "Switzerland",
+  "Syria",
+  "Taiwan",
+  "Tajikistan",
+  "Tanzania",
+  "Thailand",
+  "Timor-Leste",
+  "Togo",
+  "Tonga",
+  "Trinidad and Tobago",
+  "Tunisia",
+  "Turkey",
+  "Turkmenistan",
+  "Tuvalu",
+  "Uganda",
+  "Ukraine",
+  "United Arab Emirates",
+  "United Kingdom",
+  "United States",
+  "Uruguay",
+  "Uzbekistan",
+  "Vanuatu",
+  "Vatican City",
+  "Venezuela",
+  "Vietnam",
+  "Yemen",
+  "Zambia",
+  "Zimbabwe"
+];
+
+const saudiRegions = [
+  "Ar Riyadh",
+  "Mecca",
+  "Al Madinah",
+  "Eastern Province",
+  "Al-Qassim",
+  "Asir",
+  "Tabuk",
+  "Hail",
+  "Northern Borders",
+  "Jazan",
+  "Najran",
+  "Al-Bahah",
+  "Al-Jawf"
+];
+
+const indiaStates = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal"
+];
 
 interface ContactViewProps {
   isSaudiGreenMode?: boolean;
@@ -10,23 +254,140 @@ interface ContactViewProps {
 export default function ContactView({ isSaudiGreenMode = true }: ContactViewProps) {
   const [name, setName] = useState('');
   const [place, setPlace] = useState('');
+  const [subDivision, setSubDivision] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [hasSubmittedSuccessfully, setHasSubmittedSuccessfully] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showSubDropdown, setShowSubDropdown] = useState(false);
+
+  const [activeDropdownIndex, setActiveDropdownIndex] = useState(-1);
+  const [activeSubDropdownIndex, setActiveSubDropdownIndex] = useState(-1);
+
+  const filteredCountries = countries.filter(c => c.toLowerCase().includes(place.toLowerCase()));
+  const filteredSubdivisions = (place.toLowerCase().trim() === 'saudi arabia' ? saudiRegions : indiaStates)
+    .filter(sub => sub.toLowerCase().includes(subDivision.toLowerCase()));
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const subDropdownRef = useRef<HTMLDivElement>(null);
   
   // Ref to track if submitting flow was initiated to prevent triggering onLoad on initial page render
   const submitInitiatedRef = useRef(false);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+        setActiveDropdownIndex(-1);
+      }
+      if (subDropdownRef.current && !subDropdownRef.current.contains(event.target as Node)) {
+        setShowSubDropdown(false);
+        setActiveSubDropdownIndex(-1);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (activeDropdownIndex >= 0) {
+      const el = document.getElementById(`country-item-${activeDropdownIndex}`);
+      if (el) {
+        el.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  }, [activeDropdownIndex]);
+
+  useEffect(() => {
+    if (activeSubDropdownIndex >= 0) {
+      const el = document.getElementById(`subdivision-item-${activeSubDropdownIndex}`);
+      if (el) {
+        el.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  }, [activeSubDropdownIndex]);
+
+  const handlePlaceKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showDropdown) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        setShowDropdown(true);
+        setActiveDropdownIndex(0);
+        e.preventDefault();
+      }
+      return;
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveDropdownIndex((prev) => 
+        prev < filteredCountries.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveDropdownIndex((prev) => 
+        prev > 0 ? prev - 1 : filteredCountries.length - 1
+      );
+    } else if (e.key === 'Enter') {
+      if (activeDropdownIndex >= 0 && activeDropdownIndex < filteredCountries.length) {
+        e.preventDefault();
+        setPlace(filteredCountries[activeDropdownIndex]);
+        setSubDivision('');
+        setShowDropdown(false);
+        setActiveDropdownIndex(-1);
+      }
+    } else if (e.key === 'Escape') {
+      setShowDropdown(false);
+      setActiveDropdownIndex(-1);
+    }
+  };
+
+  const handleSubDivisionKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showSubDropdown) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        setShowSubDropdown(true);
+        setActiveSubDropdownIndex(0);
+        e.preventDefault();
+      }
+      return;
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveSubDropdownIndex((prev) => 
+        prev < filteredSubdivisions.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveSubDropdownIndex((prev) => 
+        prev > 0 ? prev - 1 : filteredSubdivisions.length - 1
+      );
+    } else if (e.key === 'Enter') {
+      if (activeSubDropdownIndex >= 0 && activeSubDropdownIndex < filteredSubdivisions.length) {
+        e.preventDefault();
+        setSubDivision(filteredSubdivisions[activeSubDropdownIndex]);
+        setShowSubDropdown(false);
+        setActiveSubDropdownIndex(-1);
+      }
+    } else if (e.key === 'Escape') {
+      setShowSubDropdown(false);
+      setActiveSubDropdownIndex(-1);
+    }
+  };
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
     if (!name.trim()) newErrors.name = 'Name identifier required';
     if (!place.trim()) newErrors.place = 'Place location details required';
+    if ((place.toLowerCase() === 'saudi arabia' || place.toLowerCase() === 'india') && !subDivision.trim()) {
+      newErrors.subDivision = place.toLowerCase() === 'saudi arabia' ? 'Saudi Region selection required' : 'State selection required';
+    }
     if (!email.trim()) {
       newErrors.email = 'Secure response email required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
@@ -57,6 +418,7 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
       setHasSubmittedSuccessfully(true);
       setName('');
       setPlace('');
+      setSubDivision('');
       setEmail('');
       setMessage('');
       submitInitiatedRef.current = false;
@@ -180,7 +542,6 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
           >
             <div className="flex items-center justify-between border-b border-white/5 pb-4">
               <span className="text-xs font-mono uppercase tracking-wider text-[#00a36c] font-bold">Send me a message</span>
-              <span className="text-[10px] font-mono text-white/30 bg-black/40 px-2 py-0.5 rounded-md border border-white/5">YNH Link 0.1</span>
             </div>
 
             {/* Name Field */}
@@ -195,7 +556,7 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                 name="entry.830196533"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Enter your system identifier / full name"
+                placeholder="Enter your full name"
                 className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
                   errors.name ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
                   isSaudiGreenMode 
@@ -209,29 +570,191 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
             </div>
 
             {/* Place Field */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 relative text-left z-30" ref={dropdownRef}>
               <label className="flex items-center gap-1.5 text-xs font-mono text-white/70 uppercase font-semibold">
                 <MapPin className="w-3.5 h-3.5 text-[#00a36c]" />
                 <span>Location / Place</span>
                 <span className="text-red-500/80 font-bold">*</span>
               </label>
-              <input 
-                type="text"
-                name="entry.1993612319"
-                value={place}
-                onChange={(e) => setPlace(e.target.value)}
-                placeholder="Where are you writing from? (City / Org)"
-                className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
-                  errors.place ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
-                  isSaudiGreenMode 
-                    ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
-                    : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
-                }`}
-              />
+              <div className="relative">
+                {/* Google Forms mapped entry transmission (Aggregated cleanly so either Country or Country - District/Region is sent perfectly) */}
+                <input 
+                  type="hidden" 
+                  name="entry.1993612319" 
+                  value={subDivision ? `${place} - ${subDivision}` : place} 
+                />
+                <input 
+                  type="text"
+                  value={place}
+                  onChange={(e) => {
+                    setPlace(e.target.value);
+                    setSubDivision('');
+                    setShowDropdown(true);
+                    setActiveDropdownIndex(-1);
+                  }}
+                  onFocus={() => {
+                    setShowDropdown(true);
+                    setActiveDropdownIndex(-1);
+                  }}
+                  onKeyDown={handlePlaceKeyDown}
+                  placeholder="Where are you writing from? (City / Org)"
+                  className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
+                    errors.place ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
+                    isSaudiGreenMode 
+                      ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
+                      : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
+                  }`}
+                />
+                
+                <AnimatePresence>
+                  {showDropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 5 }}
+                      transition={{ duration: 0.12 }}
+                      className={`absolute top-full left-0 right-0 mt-1 max-h-60 overflow-y-auto z-40 rounded-2xl border shadow-xl ${
+                        isSaudiGreenMode 
+                          ? 'bg-black border-white/15 text-white' 
+                          : 'bg-[#faf6eb] border-[#0d5c56]/20 text-teal-950'
+                      }`}
+                    >
+                      {filteredCountries.length > 0 ? (
+                        filteredCountries.map((country, idx) => {
+                          const isHighlighted = idx === activeDropdownIndex;
+                          return (
+                            <button
+                              id={`country-item-${idx}`}
+                              key={country}
+                              type="button"
+                              onClick={() => {
+                                setPlace(country);
+                                setSubDivision('');
+                                setShowDropdown(false);
+                                setActiveDropdownIndex(-1);
+                              }}
+                              onMouseEnter={() => setActiveDropdownIndex(idx)}
+                              className={`w-full text-left px-4 py-2.5 text-xs font-mono transition-all border-b border-white/[0.04] last:border-b-0 ${
+                                isHighlighted
+                                  ? isSaudiGreenMode 
+                                    ? 'bg-teal-500/25 text-white border-l-2 border-teal-400 font-bold' 
+                                    : 'bg-[#0d5c56]/20 text-teal-950 font-bold border-l-2 border-[#0d5c56]'
+                                  : isSaudiGreenMode 
+                                    ? 'hover:bg-teal-500/15 text-gray-300 hover:text-teal-300' 
+                                    : 'hover:bg-[#0d5c56]/10 text-teal-900 hover:text-[#0d5c56]'
+                              }`}
+                            >
+                              {country}
+                            </button>
+                          );
+                        })
+                      ) : (
+                        <div className="px-4 py-3 text-xs font-mono opacity-50">
+                          Country not found
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               {errors.place && (
                 <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.place}</motion.p>
               )}
             </div>
+
+            {/* Dynamic Subdivision Field based on selections of Saudi Arabia or India */}
+            <AnimatePresence>
+              {(place.toLowerCase().trim() === 'saudi arabia' || place.toLowerCase().trim() === 'india') && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="space-y-1.5 relative text-left z-20" 
+                  ref={subDropdownRef}
+                >
+                  <label className="flex items-center gap-1.5 text-xs font-mono text-white/70 uppercase font-semibold">
+                    <MapPin className="w-3.5 h-3.5 text-[#00a36c]" />
+                    <span>{place.toLowerCase().trim() === 'saudi arabia' ? 'Saudi Region' : 'Select Your State'}</span>
+                    <span className="text-red-500/80 font-bold">*</span>
+                  </label>
+                  <div className="relative">
+                    <input 
+                      type="text"
+                      value={subDivision}
+                      onChange={(e) => {
+                        setSubDivision(e.target.value);
+                        setShowSubDropdown(true);
+                        setActiveSubDropdownIndex(-1);
+                      }}
+                      onFocus={() => {
+                        setShowSubDropdown(true);
+                        setActiveSubDropdownIndex(-1);
+                      }}
+                      onKeyDown={handleSubDivisionKeyDown}
+                      placeholder={place.toLowerCase().trim() === 'saudi arabia' ? "Select or search Saudi Region (e.g. Ar Riyadh, Mecca)" : "Select or search State (all 28 states of India)"}
+                      className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
+                        errors.subDivision ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
+                        isSaudiGreenMode 
+                          ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
+                          : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
+                      }`}
+                    />
+                    
+                    {showSubDropdown && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 5 }}
+                        transition={{ duration: 0.12 }}
+                        className={`absolute top-full left-0 right-0 mt-1 max-h-56 overflow-y-auto z-40 rounded-2xl border shadow-xl ${
+                          isSaudiGreenMode 
+                            ? 'bg-black border-white/15 text-white' 
+                            : 'bg-[#faf6eb] border-[#0d5c56]/20 text-teal-950'
+                        }`}
+                      >
+                        {filteredSubdivisions.length > 0 ? (
+                          filteredSubdivisions.map((subName, idx) => {
+                            const isHighlighted = idx === activeSubDropdownIndex;
+                            return (
+                              <button
+                                id={`subdivision-item-${idx}`}
+                                key={subName}
+                                type="button"
+                                onClick={() => {
+                                  setSubDivision(subName);
+                                  setShowSubDropdown(false);
+                                  setActiveSubDropdownIndex(-1);
+                                }}
+                                onMouseEnter={() => setActiveSubDropdownIndex(idx)}
+                                className={`w-full text-left px-4 py-2.5 text-xs font-mono transition-all border-b border-white/[0.04] last:border-b-0 ${
+                                  isHighlighted
+                                    ? isSaudiGreenMode 
+                                      ? 'bg-teal-500/25 text-white border-l-2 border-teal-400 font-bold' 
+                                      : 'bg-[#0d5c56]/20 text-teal-950 font-bold border-l-2 border-[#0d5c56]'
+                                    : isSaudiGreenMode 
+                                      ? 'hover:bg-teal-500/15 text-gray-300 hover:text-teal-300' 
+                                      : 'hover:bg-[#0d5c56]/10 text-teal-900 hover:text-[#0d5c56]'
+                                }`}
+                              >
+                                {subName}
+                              </button>
+                            );
+                          })
+                        ) : (
+                          <div className="px-4 py-3 text-xs font-mono opacity-50">
+                            No regions or states match your filter
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </div>
+                  {errors.subDivision && (
+                    <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.subDivision}</motion.p>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Email Field */}
             <div className="space-y-1.5">
@@ -294,22 +817,22 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full group relative flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl border font-mono text-xs uppercase font-bold tracking-wider select-none outline-none focus:outline-none transition-all cursor-pointer text-white hover:text-white !text-white ${
+              className={`w-full group relative flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl border font-mono text-xs uppercase font-bold tracking-wider select-none outline-none focus:outline-none transition-all cursor-pointer text-white hover:text-white !text-white keep-text-white ${
                 isSubmitting ? 'bg-teal-850 border-teal-500/20 text-teal-400 cursor-not-allowed opacity-80' :
                 isSaudiGreenMode 
                   ? 'bg-teal-600 border-[#00a36c]/40 hover:border-[#00a36c] hover:bg-teal-700 text-white hover:shadow-[0_4px_20px_rgba(0,163,108,0.2)]'
-                  : 'bg-[#0d5c56] border-[#0d5c56] hover:bg-[#09413c] text-white hover:shadow-lg'
+                  : 'bg-[#0d5c56] border-[#0d5c56] hover:bg-[#09413c] text-white hover:shadow-lg font-bold'
               }`}
             >
               {isSubmitting ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin text-white" />
-                  <span className="text-white">Sending Message...</span>
+                  <RefreshCw className="w-4 h-4 animate-spin text-white keep-text-white" />
+                  <span className="text-white keep-text-white">Sending Message...</span>
                 </>
               ) : (
                 <>
-                  <Send className="w-4 h-4 text-white group-hover:scale-115 transition-transform" />
-                  <span className="text-white">Your Message</span>
+                  <Send className="w-4 h-4 text-white keep-text-white group-hover:scale-115 transition-transform" />
+                  <span className="text-white keep-text-white font-bold">Your Message</span>
                 </>
               )}
             </button>

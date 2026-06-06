@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TabID, Project, StoryItem } from './types';
 import Header from './components/Header';
 import HomeView from './components/HomeView';
@@ -16,6 +16,7 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null);
   const [isSaudiGreenMode, setSaudiGreenMode] = useState<boolean>(false);
+  const [isScrollingFromNav, setIsScrollingFromNav] = useState<boolean>(false);
 
   // Scroll tracking for long-form views
   const { scrollYProgress } = useScroll();
@@ -25,51 +26,69 @@ export default function App() {
     restDelta: 0.001
   });
 
-  // Helper renderer to swap active tabs with fluid exit/entrance transitions
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'home':
-        return (
-          <HomeView 
-            setActiveTab={setActiveTab}
-            setSelectedProject={setSelectedProject}
-            setSelectedStory={(story) => {
-              setSelectedStory(story);
-              setActiveTab('story');
-            }}
-          />
-        );
-      case 'timeline':
-        return <TimelineView />;
-      case 'work':
-        return <WorkView setSelectedProject={setSelectedProject} isSaudiGreenMode={isSaudiGreenMode} />;
-      case 'about':
-        return <AboutView isSaudiGreenMode={isSaudiGreenMode} />;
-      case 'story':
-        return (
-          <StoryView 
-            selectedStory={selectedStory} 
-            setSelectedStory={setSelectedStory} 
-          />
-        );
-      case 'contact':
-        return <ContactView isSaudiGreenMode={isSaudiGreenMode} />;
-      default:
-        return (
-          <HomeView 
-            setActiveTab={setActiveTab}
-            setSelectedProject={setSelectedProject}
-            setSelectedStory={(story) => {
-              setSelectedStory(story);
-              setActiveTab('story');
-            }}
-          />
-        );
+  // Helper method to scroll to section smoothly on nav click
+  const handleTabChange = (tab: TabID) => {
+    setActiveTab(tab);
+    // If swapping away, clean deep-read selection state
+    if (tab !== 'story') {
+      setSelectedStory(null);
+    }
+
+    const element = document.getElementById(tab);
+    if (element) {
+      setIsScrollingFromNav(true);
+      const headerOffset = 90; // Height of the sticky navigation header
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+
+      // Resume scrollspy tracker once smoothly scrolled
+      setTimeout(() => {
+        setIsScrollingFromNav(false);
+      }, 1000);
     }
   };
 
+  // Scroll spy effect using a robust IntersectionObserver
+  useEffect(() => {
+    if (isScrollingFromNav) return;
+
+    const sections = ['home', 'timeline', 'work', 'about', 'story', 'contact'];
+    const observerOptions = {
+      root: null,
+      rootMargin: '-110px 0px -55% 0px', // focused window in viewport
+      threshold: 0.12
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      // Find the entry that has crossed into the viewport
+      const activeEntry = entries.find((entry) => entry.isIntersecting);
+      if (activeEntry) {
+        setActiveTab(activeEntry.target.id as TabID);
+      }
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      sections.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) observer.unobserve(el);
+      });
+    };
+  }, [isScrollingFromNav]);
+
   return (
-    <div className={`min-h-screen flex flex-col justify-between selection:bg-brand-green/30 selection:text-emerald-300 relative transition-all duration-500 ${
+    <div className={`min-h-screen flex flex-col justify-between relative transition-all duration-500 ${
       isSaudiGreenMode 
         ? 'bg-[#0b0a0c] text-gray-100' 
         : 'bg-[#FAF6EB] text-[#0d5c56] theme-cream'
@@ -82,7 +101,7 @@ export default function App() {
         style={{ scaleX }}
       />
       
-      {/* 1. LAYERED AMBIENT LIGHT LEAKS (Emulating vjy.me design style perfectly) */}
+      {/* 1. LAYERED AMBIENT LIGHT LEAKS */}
       <div className="absolute inset-0 select-none overflow-hidden pointer-events-none z-0">
         <div className="absolute top-0 inset-x-0 h-[800px] grid-overlay opacity-30"></div>
         {/* Left Leak (affected by Saudi Green Toggle) */}
@@ -99,38 +118,52 @@ export default function App() {
       {/* 2. NAVIGATION BAR */}
       <Header 
         activeTab={activeTab} 
-        setActiveTab={(tab) => {
-          setActiveTab(tab);
-          // If swapping away from Story tab, clean deep-read selection state
-          if (tab !== 'story') setSelectedStory(null);
-          window.scrollTo({ top: 0, behavior: 'instant' });
-        }}
+        setActiveTab={handleTabChange}
         isSaudiGreenMode={isSaudiGreenMode}
         setSaudiGreenMode={setSaudiGreenMode}
       />
 
-      {/* 3. MAIN TAB CONTENT */}
-      <main className="flex-grow max-w-5xl mx-auto px-4 sm:px-6 w-full z-10 pt-4">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
-          >
-            {renderTabContent()}
-          </motion.div>
-        </AnimatePresence>
+      {/* 3. MAIN SCROLL-SPY STACKED CONTENT */}
+      <main className="flex-grow max-w-5xl mx-auto px-4 sm:px-6 w-full z-10 pt-4 space-y-24 md:space-y-32">
+        <section id="home" className="scroll-mt-24">
+          <HomeView 
+            setActiveTab={handleTabChange}
+            setSelectedProject={setSelectedProject}
+            setSelectedStory={(story) => {
+              setSelectedStory(story);
+              handleTabChange('story');
+            }}
+          />
+        </section>
+
+        <section id="timeline" className="scroll-mt-24 pt-12 border-t border-white/[0.04]">
+          <TimelineView />
+        </section>
+
+        <section id="work" className="scroll-mt-24 pt-12 border-t border-white/[0.04]">
+          <WorkView setSelectedProject={setSelectedProject} isSaudiGreenMode={isSaudiGreenMode} />
+        </section>
+
+        <section id="about" className="scroll-mt-24 pt-12 border-t border-white/[0.04]">
+          <AboutView isSaudiGreenMode={isSaudiGreenMode} />
+        </section>
+
+        <section id="story" className="scroll-mt-24 pt-12 border-t border-white/[0.04]">
+          <StoryView 
+            selectedStory={selectedStory} 
+            setSelectedStory={setSelectedStory} 
+          />
+        </section>
+
+        <section id="contact" className="scroll-mt-24 pt-12 border-t border-white/[0.04]">
+          <ContactView isSaudiGreenMode={isSaudiGreenMode} />
+        </section>
       </main>
 
       {/* 4. FOOTER */}
       <Footer 
         isSaudiGreenMode={isSaudiGreenMode}
-        setActiveTab={(tab) => {
-          setActiveTab(tab);
-          if (tab !== 'story') setSelectedStory(null);
-        }} 
+        setActiveTab={handleTabChange} 
       />
 
       {/* 5. PORTFOLIO WORK DETAILS OVERLAY DRAWER */}

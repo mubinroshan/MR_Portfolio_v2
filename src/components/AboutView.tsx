@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { handleDownloadResume } from '../utils';
+import GithubStats from './GithubStats';
 
 interface Skill {
   name: string;
@@ -415,6 +416,11 @@ export default function AboutView({ isSaudiGreenMode = true }: AboutViewProps) {
             When I am not writing security configurations, audit lines, or cleaning database queues, I dedicate my hours to writing technical guides detailing clinical hardware vulnerabilities and threat reports on Substack.
           </p>
         </div>
+      </section>
+
+      {/* 4. REAL-TIME GITHUB TELEMETRY */}
+      <section className="pt-6 border-t border-white/10">
+        <GithubStats isSaudiGreenMode={isSaudiGreenMode} />
       </section>
 
     </motion.div>

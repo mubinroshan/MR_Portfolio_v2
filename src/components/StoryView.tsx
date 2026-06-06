@@ -161,7 +161,7 @@ export default function StoryView({ selectedStory, setSelectedStory }: StoryView
                           title="Like bulletin"
                         >
                           <ThumbsUp className="w-3.5 h-3.5" />
-                          <span className="text-[10px] font-mono">{likedArticles.includes(story.id) ? 1 : 0}</span>
+                          <span className="text-[10px] font-mono">{(story.likes || 0) + (likedArticles.includes(story.id) ? 1 : 0)}</span>
                         </button>
                       </div>
                     </div>

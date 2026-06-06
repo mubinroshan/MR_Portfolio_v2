@@ -159,6 +159,7 @@ export const STORIES_DATA: StoryItem[] = [
     title: 'Securing Medical IoT devices in Saudi Clinical Networks',
     summary: 'An depth review of architectural vulnerabilities of healthcare endpoints (HL7/DICOM) and how to configure custom IDS sensors using open-source tools.',
     readTime: '6 min read',
+    likes: 523,
     content: `
 Medical IoT devices represent one of the fast-growing surfaces for network breaches in the healthcare world today. At Yanbu National Hospital, keeping patient telemetry safe is as critical as active clinical treatement.
 
@@ -180,6 +181,7 @@ By protecting clinical systems, we protect patient security.
     title: 'Harnessing ICU Forecasting Models with SQL and Tableau',
     summary: 'A look inside the data analytics dashboard constructed to predict ward bottlenecks at YNH and deliver optimized nurse-to-patient allocation guides.',
     readTime: '4 min read',
+    likes: 654,
     content: `
 Hospital operations thrive when capacity fits demand. In typical emergency scenarios, nurses struggle with sudden admissions waves, causing delays.
 
@@ -199,6 +201,7 @@ Through raw data analysis, we ensure hospital systems are responsive and efficie
     title: 'Altering Cyber-Governance: Passing NCA ECC Audits',
     summary: 'A breakdown of key documentation steps, policy audits, and host hardening protocols required to achieve high conformance scores in Saudi National Cybersecurity regulations.',
     readTime: '8 min read',
+    likes: 853,
     content: `
 Achieving outstanding compliance with the Saudi National Cybersecurity Authority (NCA) Essential Cybersecurity Controls (ECC-1:2018) is a comprehensive group objective.
 

@@ -37,4 +37,5 @@ export interface StoryItem {
   summary: string;
   readTime: string;
   content: string; // Markdown structure
+  likes: number;
 }

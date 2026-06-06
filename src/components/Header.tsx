@@ -69,46 +69,46 @@ export default function Header({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#0b0a0c]/85 backdrop-blur-md border-b border-white/[0.04]">
-      <div className="max-w-5xl mx-auto px-2.5 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-1.5 sm:gap-4">
+      <div className="max-w-5xl mx-auto px-2 lg:px-4 py-2.5 lg:py-3 flex items-center justify-between gap-1.5 lg:gap-3">
         
         {/* Mobile Menu Button - 3 bar icon at top left */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 text-gray-300 hover:text-white hover:bg-white/[0.05] rounded-xl focus:outline-none shrink-0"
+          className="md:hidden p-1.5 text-gray-300 hover:text-white hover:bg-white/[0.05] rounded-xl focus:outline-none shrink-0"
           aria-label="Toggle Navigation Menu"
         >
-          {mobileMenuOpen ? <X className="w-6 h-6 text-teal-400" /> : <Menu className="w-6 h-6" />}
+          {mobileMenuOpen ? <X className="w-5.5 h-5.5 text-teal-400" /> : <Menu className="w-5.5 h-5.5" />}
         </button>
 
         {/* Left: Avatar replaced with MR_LOGO fitting the header directly without backgrounds or circles */}
         <div 
           onClick={() => setActiveTab('home')} 
-          className="flex items-center gap-2 sm:gap-3.5 cursor-pointer group select-none outline-none focus:outline-none shrink-0"
+          className="flex items-center gap-1.5 sm:gap-2.5 cursor-pointer group select-none outline-none focus:outline-none shrink-0"
           id="nav-avatar"
         >
           <img 
             src={mrLogoTealRemovebg} 
             alt="Mubin Roshan Logo" 
-            className="h-9 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            className="h-8 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
             referrerPolicy="no-referrer"
           />
           <div className="hidden min-[480px]:block shrink-0">
-            <span className="font-serif font-bold text-xs xs:text-sm sm:text-base md:text-lg lg:text-2xl tracking-normal text-white group-hover:text-teal-400 transition-colors whitespace-nowrap">mubin.roshan</span>
-            <div className="text-[10px] sm:text-xs text-gray-500 font-mono flex items-center gap-1 sm:gap-1.5 mt-0.5 whitespace-nowrap">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-ping shrink-0"></span>
+            <span className="font-serif font-bold text-xs xs:text-sm sm:text-base lg:text-lg xl:text-xl tracking-normal text-white group-hover:text-teal-400 transition-colors whitespace-nowrap">mubin.roshan</span>
+            <div className="text-[9px] sm:text-[10px] text-gray-500 font-mono flex items-center gap-1 sm:gap-1.5 mt-0.5 whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping shrink-0"></span>
               SecOps // Active
             </div>
           </div>
         </div>
 
         {/* Center: Tabs mimicking vjy.me design exactly but with curved round teal hover boxes */}
-        <nav className="hidden md:flex items-center gap-1 sm:gap-2 md:gap-3.5 text-xs sm:text-sm md:text-base justify-center">
+        <nav className="hidden md:flex items-center gap-1 lg:gap-1.5 xl:gap-2.5 text-[11px] lg:text-xs xl:text-sm justify-center">
           <button 
             id="tab-home"
             tabIndex={0}
             onClick={() => setActiveTab('home')}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveTab('home'); } }}
-            className={`relative px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
+            className={`relative px-2 py-1 lg:px-3 lg:py-1.5 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
               activeTab === 'home' 
                 ? 'font-bold text-white bg-teal-600 border-teal-600 shadow-sm shadow-teal-500/10 keep-teal-active' 
                 : isSaudiGreenMode 
@@ -124,7 +124,7 @@ export default function Header({
             tabIndex={0}
             onClick={() => setActiveTab('timeline')}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveTab('timeline'); } }}
-            className={`relative px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
+            className={`relative px-2 py-1 lg:px-3 lg:py-1.5 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
               activeTab === 'timeline' 
                 ? 'font-bold text-white bg-teal-600 border-teal-600 shadow-sm shadow-teal-500/10 keep-teal-active' 
                 : isSaudiGreenMode 
@@ -147,7 +147,7 @@ export default function Header({
             tabIndex={0}
             onClick={() => setActiveTab('work')}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveTab('work'); } }}
-            className={`relative px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
+            className={`relative px-2 py-1 lg:px-3 lg:py-1.5 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
               activeTab === 'work' 
                 ? 'font-bold text-white bg-teal-600 border-teal-600 shadow-sm shadow-teal-500/10 keep-teal-active' 
                 : isSaudiGreenMode 
@@ -163,7 +163,7 @@ export default function Header({
             tabIndex={0}
             onClick={() => setActiveTab('about')}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveTab('about'); } }}
-            className={`relative px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
+            className={`relative px-2 py-1 lg:px-3 lg:py-1.5 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
               activeTab === 'about' 
                 ? 'font-bold text-white bg-teal-600 border-teal-600 shadow-sm shadow-teal-500/10 keep-teal-active' 
                 : isSaudiGreenMode 
@@ -179,7 +179,7 @@ export default function Header({
             tabIndex={0}
             onClick={() => setActiveTab('story')}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveTab('story'); } }}
-            className={`relative px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
+            className={`relative px-2 py-1 lg:px-3 lg:py-1.5 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
               activeTab === 'story' 
                 ? 'font-bold text-white bg-teal-600 border-teal-600 shadow-sm shadow-teal-500/10 keep-teal-active' 
                 : isSaudiGreenMode 
@@ -202,7 +202,7 @@ export default function Header({
             tabIndex={0}
             onClick={() => setActiveTab('contact')}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveTab('contact'); } }}
-            className={`relative px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
+            className={`relative px-2 py-1 lg:px-3 lg:py-1.5 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
               activeTab === 'contact' 
                 ? 'font-bold text-white bg-teal-600 border-teal-600 shadow-sm shadow-teal-500/10 keep-teal-active' 
                 : isSaudiGreenMode 
@@ -220,7 +220,7 @@ export default function Header({
               tabIndex={0}
               onClick={() => setDropdownOpen(!dropdownOpen)}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setDropdownOpen(!dropdownOpen); } }}
-              className={`flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
+              className={`flex items-center gap-1 px-2 py-1 lg:px-3 lg:py-1.5 rounded-full border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none ${
                 dropdownOpen 
                   ? 'font-bold text-white bg-teal-600 border-teal-600 shadow-sm keep-teal-active' 
                   : isSaudiGreenMode 
@@ -229,7 +229,7 @@ export default function Header({
               }`}
             >
               more
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown className="w-3.5 h-3.5" />
             </button>
 
             <AnimatePresence>
@@ -238,7 +238,7 @@ export default function Header({
                   initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  transition={{ duration: 0.45, ease: "easeInOut" }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
                   className="absolute right-0 mt-3 w-64 rounded-2xl bg-white border border-gray-200/90 shadow-[0_12px_40px_rgba(0,0,0,0.15)] z-20 flex flex-col gap-1.5 p-2 focus:outline-none"
                 >
                   {moreLinks.map((link, idx) => (
@@ -251,7 +251,7 @@ export default function Header({
                           href={link.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-between w-full text-left px-3 py-2 rounded-lg text-xs sm:text-sm text-gray-700 hover:text-teal-800 transition-all font-mono outline-none focus:outline-none"
+                          className="flex items-center justify-between w-full text-left px-3 py-2 rounded-lg text-xs lg:text-sm text-gray-700 hover:text-teal-800 transition-all font-mono outline-none focus:outline-none"
                           onClick={() => setDropdownOpen(false)}
                         >
                           <span className="flex items-center gap-2">
@@ -263,7 +263,7 @@ export default function Header({
                       ) : (
                         <button
                           onClick={link.action}
-                          className="flex items-center gap-2 w-full text-left px-3 py-2 rounded-lg text-xs sm:text-sm text-gray-700 hover:text-teal-800 transition-all font-mono outline-none focus:outline-none"
+                          className="flex items-center gap-2 w-full text-left px-3 py-2 rounded-lg text-xs lg:text-sm text-gray-700 hover:text-teal-800 transition-all font-mono outline-none focus:outline-none"
                         >
                           {link.icon}
                           <span>{link.label}</span>
@@ -278,13 +278,13 @@ export default function Header({
         </nav>
 
         {/* Right: Quick actions */}
-        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
           <a 
             href="https://www.linkedin.com/in/mubinroshan/" 
             target="_blank" 
             rel="noopener noreferrer" 
             aria-label="LinkedIn Profile"
-            className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all hidden sm:flex"
+            className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all hidden xl:flex"
           >
             <Linkedin className="w-4 h-4" />
           </a>
@@ -293,7 +293,7 @@ export default function Header({
             target="_blank" 
             rel="noopener noreferrer" 
             aria-label="Instagram Profile"
-            className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all hidden sm:flex"
+            className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all hidden xl:flex"
           >
             <Instagram className="w-4 h-4" />
           </a>
@@ -302,7 +302,7 @@ export default function Header({
             target="_blank" 
             rel="noopener noreferrer" 
             aria-label="Twitter Profile"
-            className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all hidden sm:flex"
+            className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all hidden xl:flex"
           >
             <Twitter className="w-4 h-4" />
           </a>
@@ -311,7 +311,7 @@ export default function Header({
           <button
             id="download-resume-header"
             onClick={handleDownloadResume}
-            className="group flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-1.5 md:px-4 md:py-2 rounded-xl border border-white/5 text-xs sm:text-sm md:text-base font-mono text-gray-300 hover:text-white hover:border-[#00a36c]/40 bg-white/[0.01] hover:bg-[#005639]/10 transition-all duration-300 relative overflow-hidden shrink-0"
+            className="group flex items-center gap-1 sm:gap-1.5 px-2 py-1.5 lg:px-3 lg:py-1.5 rounded-xl border border-white/5 text-[11px] lg:text-xs xl:text-sm font-mono text-gray-300 hover:text-white hover:border-[#00a36c]/40 bg-white/[0.01] hover:bg-[#005639]/10 transition-all duration-300 relative overflow-hidden shrink-0"
             title="Download Mubin Roshan's Resume"
           >
             {/* Ambient green hover leak background */}
@@ -319,7 +319,7 @@ export default function Header({
             {/* Left accent marker lines */}
             <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-3 bg-[#00a36c] opacity-50 group-hover:h-5 group-hover:bg-[#00a36c] transition-all duration-300"></span>
             
-            <FileDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00a36c] group-hover:scale-110 transition-transform duration-300 relative z-10" />
+            <FileDown className="w-3.5 h-3.5 text-[#00a36c] group-hover:scale-110 transition-transform duration-300 relative z-10" />
             <span className="relative z-10">resume</span>
           </button>
           
@@ -331,9 +331,9 @@ export default function Header({
               setShowStatusAlert(true);
               setTimeout(() => setShowStatusAlert(false), 3500);
             }}
-            className={`p-2 rounded-xl border transition-all duration-300 ${
+            className={`p-1.5 sm:p-2 rounded-xl border transition-all duration-300 ${
               isSaudiGreenMode 
-                ? 'bg-brand-green/20 text-emerald-400 border-brand-green/50 animate-pulse' 
+                ? 'bg-brand-green/20 text-emerald-400 border-brand-green/50' 
                 : 'bg-white/[0.02] text-gray-400 border-white/5 hover:text-white hover:bg-white/[0.04]'
             }`}
             title="Toggle Saudi Emerald Theme Glow"
