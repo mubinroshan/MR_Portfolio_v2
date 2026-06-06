@@ -11,10 +11,67 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+const TimelineSkeleton = () => {
+  return (
+    <div className="space-y-16 animate-pulse w-full">
+      {[1, 2, 3].map((num) => {
+        const isLeft = num % 2 === 0;
+        return (
+          <div 
+            key={num}
+            className={`relative flex flex-col sm:flex-row items-start sm:justify-between w-full ${
+              isLeft ? 'sm:flex-row-reverse' : ''
+            }`}
+          >
+            {/* Date skeleton */}
+            <div className={`sm:w-[44%] text-left ${isLeft ? 'sm:text-left' : 'sm:text-right'} pl-12 sm:pl-0 pb-3 sm:pb-0`}>
+              <div className="inline-flex items-center gap-2">
+                <div className="w-4 h-4 rounded bg-white/10"></div>
+                <div className="h-4 w-28 bg-white/10 rounded"></div>
+              </div>
+            </div>
+
+            {/* Line center dot */}
+            <div className="absolute left-8 sm:left-1/2 -translate-x-1/2 top-2 z-10">
+              <div className="w-5 h-5 rounded-full bg-white/10 border-2 border-white/20"></div>
+            </div>
+
+            {/* Card Skeleton */}
+            <div className="sm:w-[44%] pl-12 sm:pl-0 relative w-full">
+              <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 sm:p-9 space-y-4">
+                {/* Badge tags */}
+                <div className="flex gap-2">
+                  <div className="h-5 w-16 bg-white/10 rounded"></div>
+                  <div className="h-5 w-12 bg-white/5 rounded"></div>
+                </div>
+                {/* Title */}
+                <div className="h-6 w-3/4 bg-white/20 rounded"></div>
+                {/* Description lines */}
+                <div className="space-y-2 pt-2">
+                  <div className="h-4 w-full bg-white/5 rounded"></div>
+                  <div className="h-4 w-5/6 bg-white/5 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export default function TimelineView() {
   const [filter, setFilter] = useState<'all' | 'career' | 'certification'>('all');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 900);
+    return () => clearTimeout(timer);
+  }, []);
 
   const filteredTimeline = TIMELINE_DATA.filter(item => {
     if (filter === 'all') return true;
@@ -97,86 +154,90 @@ export default function TimelineView() {
         <div className="absolute left-8 sm:left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#00a36c]/60 via-white/15 to-transparent"></div>
 
         <div className="space-y-16">
-          {filteredTimeline.map((item, idx) => {
-            const isLeft = idx % 2 === 0;
-            return (
-              <motion.div 
-                key={item.id}
-                initial={{ opacity: 0, x: isLeft ? -20 : 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{ duration: 0.5 }}
-                className={`relative flex flex-col sm:flex-row items-start sm:justify-between w-full ${
-                  isLeft ? 'sm:flex-row-reverse' : ''
-                }`}
-              >
-                {/* 1. Date label side (Desktop Left/Right layout) */}
-                <div className={`sm:w-[44%] text-left ${isLeft ? 'sm:text-left' : 'sm:text-right'} pl-12 sm:pl-0 pb-3 sm:pb-0`}>
-                  <div className={`inline-flex items-center gap-2.5 text-sm sm:text-base font-semibold font-mono text-white/50`}>
-                    <Calendar className="w-4 h-4 text-teal-400" />
-                    <span>{item.date}</span>
-                  </div>
-                </div>
-
-                {/* 2. Absolute center dot indicator on the line */}
-                <div className="absolute left-8 sm:left-1/2 -translate-x-1/2 top-2 z-10">
-                  <div className="relative flex items-center justify-center">
-                    <div className="absolute inset-0 w-6 h-6 rounded-full bg-teal-500/20 blur-md scale-150 animate-pulse"></div>
-                    <div className="w-5 h-5 rounded-full bg-[#0a0a0a] border-2 border-teal-500 flex items-center justify-center">
-                      <div className="w-2.5 h-2.5 rounded-full bg-teal-400"></div>
+          {isLoading ? (
+            <TimelineSkeleton />
+          ) : (
+            filteredTimeline.map((item, idx) => {
+              const isLeft = idx % 2 === 0;
+              return (
+                <motion.div 
+                  key={item.id}
+                  initial={{ opacity: 0, x: isLeft ? -20 : 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: '-100px' }}
+                  transition={{ duration: 0.5 }}
+                  className={`relative flex flex-col sm:flex-row items-start sm:justify-between w-full ${
+                    isLeft ? 'sm:flex-row-reverse' : ''
+                  }`}
+                >
+                  {/* 1. Date label side (Desktop Left/Right layout) */}
+                  <div className={`sm:w-[44%] text-left ${isLeft ? 'sm:text-left' : 'sm:text-right'} pl-12 sm:pl-0 pb-3 sm:pb-0`}>
+                    <div className={`inline-flex items-center gap-2.5 text-sm sm:text-base font-semibold font-mono text-white/50`}>
+                      <Calendar className="w-4 h-4 text-teal-400" />
+                      <span>{item.date}</span>
                     </div>
                   </div>
-                </div>
 
-                {/* 3. Card detail side */}
-                <div className="sm:w-[44%] pl-12 sm:pl-0 relative w-full">
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }}
-                    tabIndex={0}
-                    className="bg-white/[0.03] border border-white/10 rounded-3xl hover:border-teal-500/40 hover:bg-white/[0.05] p-8 sm:p-9 transition-all duration-300 shadow-xl space-y-5 outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-                  >
-                    {/* Badge Category pill */}
-                    <div className="flex flex-wrap gap-2.5">
-                      <span className={`text-[10px] sm:text-xs uppercase tracking-wider px-3 py-1 rounded-md font-mono font-semibold border ${
-                        item.category === 'career' ? 'bg-[#005639]/30 text-[#00a36c] border-brand-green-light/35' :
-                        item.category === 'certification' ? 'bg-amber-950/20 text-amber-400 border-amber-800/30 font-bold' :
-                        'bg-blue-950/20 text-blue-400 border-blue-900/30'
-                      }`}>
-                        {item.category}
-                      </span>
-                      {item.tags.map(tag => (
-                        <span key={tag} className="text-xs font-mono text-white/50 bg-white/[0.02] border border-white/10 px-2.5 py-0.5 rounded">
-                          #{tag}
+                  {/* 2. Absolute center dot indicator on the line */}
+                  <div className="absolute left-8 sm:left-1/2 -translate-x-1/2 top-2 z-10">
+                    <div className="relative flex items-center justify-center">
+                      <div className="absolute inset-0 w-6 h-6 rounded-full bg-teal-500/20 blur-md scale-150 animate-pulse"></div>
+                      <div className="w-5 h-5 rounded-full bg-[#0a0a0a] border-2 border-teal-500 flex items-center justify-center">
+                        <div className="w-2.5 h-2.5 rounded-full bg-teal-400"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. Card detail side */}
+                  <div className="sm:w-[44%] pl-12 sm:pl-0 relative w-full">
+                    <motion.div 
+                      whileHover={{ scale: 1.02 }}
+                      tabIndex={0}
+                      className="bg-white/[0.03] border border-white/10 rounded-3xl hover:border-teal-500/40 hover:bg-white/[0.05] p-8 sm:p-9 transition-all duration-300 shadow-xl space-y-5 outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                    >
+                      {/* Badge Category pill */}
+                      <div className="flex flex-wrap gap-2.5">
+                        <span className={`text-[10px] sm:text-xs uppercase tracking-wider px-3 py-1 rounded-md font-mono font-semibold border ${
+                          item.category === 'career' ? 'bg-[#005639]/30 text-[#00a36c] border-brand-green-light/35' :
+                          item.category === 'certification' ? 'bg-amber-950/20 text-amber-400 border-amber-800/30 font-bold' :
+                          'bg-blue-950/20 text-blue-400 border-blue-900/30'
+                        }`}>
+                          {item.category}
                         </span>
-                      ))}
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-xl sm:text-2xl font-serif text-white hover:text-teal-300 transition-colors leading-snug">
-                      {item.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-base text-gray-300 leading-relaxed font-sans font-light">
-                      {item.description}
-                    </p>
-
-                    {/* Details Bullet breakdown if provided */}
-                    {item.details && item.details.length > 0 && (
-                      <div className="border-t border-white/[0.06] pt-4 mt-3 space-y-3">
-                        {item.details.map((detail, dIdx) => (
-                          <div key={dIdx} className="flex items-start gap-3 text-sm sm:text-base text-gray-400">
-                             <span className="text-teal-400 font-extrabold mt-0.5">•</span>
-                             <span className="leading-relaxed font-light">{detail}</span>
-                          </div>
+                        {item.tags.map(tag => (
+                          <span key={tag} className="text-xs font-mono text-white/50 bg-white/[0.02] border border-white/10 px-2.5 py-0.5 rounded">
+                            #{tag}
+                          </span>
                         ))}
                       </div>
-                    )}
-                  </motion.div>
-                </div>
-              </motion.div>
-            );
-          })}
+
+                      {/* Title */}
+                      <h3 className="text-xl sm:text-2xl font-serif text-white hover:text-teal-300 transition-colors leading-snug">
+                        {item.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="text-base text-gray-300 leading-relaxed font-sans font-light">
+                        {item.description}
+                      </p>
+
+                      {/* Details Bullet breakdown if provided */}
+                      {item.details && item.details.length > 0 && (
+                        <div className="border-t border-white/[0.06] pt-4 mt-3 space-y-3">
+                          {item.details.map((detail, dIdx) => (
+                            <div key={dIdx} className="flex items-start gap-3 text-sm sm:text-base text-gray-400">
+                               <span className="text-teal-400 font-extrabold mt-0.5">•</span>
+                               <span className="leading-relaxed font-light">{detail}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </motion.div>
+                  </div>
+                </motion.div>
+              );
+            })
+          )}
         </div>
       </div>
     </motion.div>

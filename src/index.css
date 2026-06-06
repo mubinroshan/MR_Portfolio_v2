@@ -36,6 +36,31 @@ html, body, #root, div, span, h1, h2, h3, h4, h5, h6, p, a, button, input, selec
   background: #00a36c;
 }
 
+/* Base HTML responsive font size scaling for overall larger readable text */
+html {
+  font-size: 16.5px; /* Base for modern phones */
+}
+@media (min-width: 640px) {
+  html {
+    font-size: 17.5px; /* Responsive larger scale for small devices/handsets */
+  }
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 18.5px; /* Responsive scale for standard sized tablets */
+  }
+}
+@media (min-width: 1024px) {
+  html {
+    font-size: 19.5px; /* Beautifully large adjusted font-size for laptops */
+  }
+}
+@media (min-width: 1440px) {
+  html {
+    font-size: 20.5px; /* Ultra high-res responsive large font-size for monitors */
+  }
+}
+
 /* Base body styles */
 body {
   background-color: #0a0a0a;

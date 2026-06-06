@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TabID } from '../types';
 import { AVATAR_URL } from '../data';
 import mrLogoTealRemovebg from '../../mr_logo_teal_removebg.png';
@@ -15,7 +15,9 @@ import {
   Terminal,
   FileCheck2,
   Heart,
-  FileDown
+  FileDown,
+  Menu,
+  X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { handleDownloadResume } from '../utils';
@@ -34,7 +36,30 @@ export default function Header({
   setSaudiGreenMode 
 }: HeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showStatusAlert, setShowStatusAlert] = useState(false);
+
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('#tab-more')) {
+        return;
+      }
+      setDropdownOpen(false);
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [dropdownOpen]);
+
+  const navItems = [
+    { id: 'home', label: 'home' },
+    { id: 'timeline', label: 'timeline', badge: 5 },
+    { id: 'work', label: 'work' },
+    { id: 'about', label: 'about' },
+    { id: 'story', label: 'story', badge: 3 },
+    { id: 'contact', label: 'contact' }
+  ];
 
   const moreLinks = [
     { label: 'Technical Stack', icon: <Terminal className="w-4 h-4 text-emerald-600" />, action: () => { setActiveTab('about'); setDropdownOpen(false); } },
@@ -46,6 +71,15 @@ export default function Header({
     <header className="sticky top-0 z-50 w-full bg-[#0b0a0c]/85 backdrop-blur-md border-b border-white/[0.04]">
       <div className="max-w-5xl mx-auto px-2.5 sm:px-4 py-3 sm:py-4 flex items-center justify-between gap-1.5 sm:gap-4">
         
+        {/* Mobile Menu Button - 3 bar icon at top left */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden p-2 text-gray-300 hover:text-white hover:bg-white/[0.05] rounded-xl focus:outline-none shrink-0"
+          aria-label="Toggle Navigation Menu"
+        >
+          {mobileMenuOpen ? <X className="w-6 h-6 text-teal-400" /> : <Menu className="w-6 h-6" />}
+        </button>
+
         {/* Left: Avatar replaced with MR_LOGO fitting the header directly without backgrounds or circles */}
         <div 
           onClick={() => setActiveTab('home')} 
@@ -68,7 +102,7 @@ export default function Header({
         </div>
 
         {/* Center: Tabs mimicking vjy.me design exactly but with curved round teal hover boxes */}
-        <nav className="flex items-center gap-1 sm:gap-2 md:gap-3.5 text-xs sm:text-sm md:text-base justify-center">
+        <nav className="hidden md:flex items-center gap-1 sm:gap-2 md:gap-3.5 text-xs sm:text-sm md:text-base justify-center">
           <button 
             id="tab-home"
             tabIndex={0}
@@ -200,47 +234,44 @@ export default function Header({
 
             <AnimatePresence>
               {dropdownOpen && (
-                <>
-                  <div className="fixed inset-0 z-10 bg-transparent" onClick={() => setDropdownOpen(false)}></div>
-                  <motion.div 
-                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                    transition={{ duration: 0.45, ease: "easeInOut" }}
-                    className="absolute right-0 mt-3 w-64 rounded-2xl bg-white border border-gray-200/90 shadow-[0_12px_40px_rgba(0,0,0,0.15)] z-20 flex flex-col gap-1.5 p-2 focus:outline-none"
-                  >
-                    {moreLinks.map((link, idx) => (
-                      <div 
-                        key={idx}
-                        className="bg-gray-50/70 hover:bg-teal-50/40 border border-gray-100 hover:border-teal-200 rounded-xl p-0.5 transition-all duration-300 shadow-sm hover:shadow"
-                      >
-                        {link.href ? (
-                          <a 
-                            href={link.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-between w-full text-left px-3 py-2 rounded-lg text-xs sm:text-sm text-gray-700 hover:text-teal-800 transition-all font-mono outline-none focus:outline-none"
-                            onClick={() => setDropdownOpen(false)}
-                          >
-                            <span className="flex items-center gap-2">
-                              {link.icon}
-                              <span>{link.label}</span>
-                            </span>
-                            <ArrowUpRight className="w-3.5 h-3.5 text-gray-400 hover:text-teal-600" />
-                          </a>
-                        ) : (
-                          <button
-                            onClick={link.action}
-                            className="flex items-center gap-2 w-full text-left px-3 py-2 rounded-lg text-xs sm:text-sm text-gray-700 hover:text-teal-800 transition-all font-mono outline-none focus:outline-none"
-                          >
+                <motion.div 
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                  transition={{ duration: 0.45, ease: "easeInOut" }}
+                  className="absolute right-0 mt-3 w-64 rounded-2xl bg-white border border-gray-200/90 shadow-[0_12px_40px_rgba(0,0,0,0.15)] z-20 flex flex-col gap-1.5 p-2 focus:outline-none"
+                >
+                  {moreLinks.map((link, idx) => (
+                    <div 
+                      key={idx}
+                      className="bg-gray-50/70 hover:bg-teal-50/40 border border-gray-100 hover:border-teal-200 rounded-xl p-0.5 transition-all duration-300 shadow-sm hover:shadow"
+                    >
+                      {link.href ? (
+                        <a 
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between w-full text-left px-3 py-2 rounded-lg text-xs sm:text-sm text-gray-700 hover:text-teal-800 transition-all font-mono outline-none focus:outline-none"
+                          onClick={() => setDropdownOpen(false)}
+                        >
+                          <span className="flex items-center gap-2">
                             {link.icon}
                             <span>{link.label}</span>
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                  </motion.div>
-                </>
+                          </span>
+                          <ArrowUpRight className="w-3.5 h-3.5 text-gray-400 hover:text-teal-600" />
+                        </a>
+                      ) : (
+                        <button
+                          onClick={link.action}
+                          className="flex items-center gap-2 w-full text-left px-3 py-2 rounded-lg text-xs sm:text-sm text-gray-700 hover:text-teal-800 transition-all font-mono outline-none focus:outline-none"
+                        >
+                          {link.icon}
+                          <span>{link.label}</span>
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </motion.div>
               )}
             </AnimatePresence>
           </div>
@@ -312,6 +343,84 @@ export default function Header({
         </div>
 
       </div>
+
+      {/* Mobile Nav Menu Dropdown */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
+            className="md:hidden border-t border-[#FAF6EB]/10 bg-[#0d5c56] overflow-hidden backdrop-blur-md shadow-xl"
+          >
+            <div className="flex flex-col gap-2 p-4">
+              {navItems.map((item) => {
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setActiveTab(item.id as TabID);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`w-full text-left px-5 py-3 rounded-xl border text-sm font-bold transition-all flex items-center justify-between outline-none focus:outline-none ${
+                      isActive
+                        ? 'text-[#0d5c56] bg-[#FAF6EB] border-[#FAF6EB] shadow-md font-extrabold'
+                        : 'text-white !text-white border-transparent hover:bg-white/[0.08]'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {item.badge && (
+                      <span className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded-full border ${
+                        isActive 
+                          ? 'bg-[#0d5c56] text-[#FAF6EB] border-[#0d5c56]' 
+                          : 'bg-[#FAF6EB]/20 text-[#FAF6EB] border-[#FAF6EB]/40'
+                      }`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+              
+              <div className="border-t border-[#FAF6EB]/15 pt-3 mt-2">
+                <p className="text-[10px] font-mono uppercase text-[#FAF6EB]/60 px-4 mb-2">More Resources</p>
+                {moreLinks.map((link, idx) => (
+                  <div key={idx} className="mb-1.5 last:mb-0">
+                    {link.href ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between w-full text-left px-4 py-2.5 rounded-xl border border-transparent text-xs text-[#FAF6EB]/80 hover:text-white hover:bg-[#FAF6EB]/10 font-mono transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <span className="flex items-center gap-2">
+                          {React.cloneElement(link.icon as React.ReactElement, { className: 'w-4 h-4 text-[#FAF6EB]' })}
+                          <span>{link.label}</span>
+                        </span>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-[#FAF6EB]/50" />
+                      </a>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          if (link.action) link.action();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="flex items-center gap-2 w-full text-left px-4 py-2.5 rounded-xl border border-transparent text-xs text-[#FAF6EB]/80 hover:text-[#FAF6EB] hover:bg-[#FAF6EB]/10 font-mono transition-colors"
+                      >
+                        {React.cloneElement(link.icon as React.ReactElement, { className: 'w-4 h-4 text-[#FAF6EB]' })}
+                        <span>{link.label}</span>
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Floating Status Notification on Theme Toggling */}
       <AnimatePresence>

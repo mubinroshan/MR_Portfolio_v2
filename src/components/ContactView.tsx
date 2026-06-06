@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { User, Mail, MapPin, MessageSquare, Send, ShieldCheck, RefreshCw, CheckCircle2 } from 'lucide-react';
 import NotificationToast from './NotificationToast';
 
@@ -165,188 +165,224 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
 
         {/* Right Side: Secure Contact Form */}
         <div className="lg:col-span-7">
-          {hasSubmittedSuccessfully ? (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className={`p-10 rounded-3xl border text-center space-y-6 ${
+          <form
+            ref={formRef}
+            id="mG61Hd"
+            action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSctLGCtnUdgzT4vV2S2s-7HJsZXGCZj6ApkBOBySwbmPht8tQ/formResponse"
+            target="hidden_iframe"
+            method="POST"
+            onSubmit={handleSubmit}
+            className={`p-6 sm:p-8 rounded-3xl border ${
+              isSaudiGreenMode 
+                ? 'bg-white/[0.02] border-white/10' 
+                : 'bg-[#FAF6EB] border-[#0d5c56]/15'
+            } space-y-6`}
+          >
+            <div className="flex items-center justify-between border-b border-white/5 pb-4">
+              <span className="text-xs font-mono uppercase tracking-wider text-[#00a36c] font-bold">Send me a message</span>
+              <span className="text-[10px] font-mono text-white/30 bg-black/40 px-2 py-0.5 rounded-md border border-white/5">YNH Link 0.1</span>
+            </div>
+
+            {/* Name Field */}
+            <div className="space-y-1.5">
+              <label className="flex items-center gap-1.5 text-xs font-mono text-white/70 uppercase font-semibold">
+                <User className="w-3.5 h-3.5 text-[#00a36c]" />
+                <span>Name</span>
+                <span className="text-red-500/80 font-bold">*</span>
+              </label>
+              <input 
+                type="text"
+                name="entry.830196533"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your system identifier / full name"
+                className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
+                  errors.name ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
+                  isSaudiGreenMode 
+                    ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
+                    : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
+                }`}
+              />
+              {errors.name && (
+                <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.name}</motion.p>
+              )}
+            </div>
+
+            {/* Place Field */}
+            <div className="space-y-1.5">
+              <label className="flex items-center gap-1.5 text-xs font-mono text-white/70 uppercase font-semibold">
+                <MapPin className="w-3.5 h-3.5 text-[#00a36c]" />
+                <span>Location / Place</span>
+                <span className="text-red-500/80 font-bold">*</span>
+              </label>
+              <input 
+                type="text"
+                name="entry.1993612319"
+                value={place}
+                onChange={(e) => setPlace(e.target.value)}
+                placeholder="Where are you writing from? (City / Org)"
+                className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
+                  errors.place ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
+                  isSaudiGreenMode 
+                    ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
+                    : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
+                }`}
+              />
+              {errors.place && (
+                <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.place}</motion.p>
+              )}
+            </div>
+
+            {/* Email Field */}
+            <div className="space-y-1.5">
+              <label className="flex items-center gap-1.5 text-xs font-mono text-white/70 uppercase font-semibold">
+                <Mail className="w-3.5 h-3.5 text-[#00a36c]" />
+                <span>Email</span>
+                <span className="text-red-500/80 font-bold">*</span>
+              </label>
+              <input 
+                type="email"
+                name="entry.193799992"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter contact email address for feedback"
+                className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
+                  errors.email ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
+                  isSaudiGreenMode 
+                    ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
+                    : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
+                }`}
+              />
+              {errors.email && (
+                <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.email}</motion.p>
+              )}
+            </div>
+
+            {/* Message Field */}
+            <div className="space-y-1.5">
+              <label className="flex items-center gap-1.5 text-xs font-mono text-white/70 uppercase font-semibold">
+                <MessageSquare className="w-3.5 h-3.5 text-[#00a36c]" />
+                <span>YOUR MESSAGE</span>
+                <span className="text-red-500/80 font-bold">*</span>
+              </label>
+              <textarea 
+                name="entry.2041270531"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Write clear operational requirements or inquiry text here..."
+                rows={4}
+                className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all resize-none ${
+                  errors.message ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
+                  isSaudiGreenMode 
+                    ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
+                    : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
+                }`}
+              />
+              {errors.message && (
+                <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.message}</motion.p>
+              )}
+            </div>
+
+            {/* Inputs required for submitting to Google Forms successfully */}
+            <input type="hidden" name="fvv" value="1" />
+            <input type="hidden" name="partialResponse" value='[null,null,"8006628840634686139"]' />
+            <input type="hidden" name="pageHistory" value="0" />
+            <input type="hidden" name="fbzx" value="8006628840634686139" />
+            <input type="hidden" name="submissionTimestamp" value="-1" />
+
+            {/* Submit Buttons */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full group relative flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl border font-mono text-xs uppercase font-bold tracking-wider select-none outline-none focus:outline-none transition-all cursor-pointer text-white hover:text-white !text-white ${
+                isSubmitting ? 'bg-teal-850 border-teal-500/20 text-teal-400 cursor-not-allowed opacity-80' :
                 isSaudiGreenMode 
-                  ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-50' 
+                  ? 'bg-teal-600 border-[#00a36c]/40 hover:border-[#00a36c] hover:bg-teal-700 text-white hover:shadow-[0_4px_20px_rgba(0,163,108,0.2)]'
+                  : 'bg-[#0d5c56] border-[#0d5c56] hover:bg-[#09413c] text-white hover:shadow-lg'
+              }`}
+            >
+              {isSubmitting ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin text-white" />
+                  <span className="text-white">Sending Message...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 text-white group-hover:scale-115 transition-transform" />
+                  <span className="text-white">Your Message</span>
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {/* 5. SUCCESS CONFIRMATION POPUP MODAL */}
+      <AnimatePresence>
+        {hasSubmittedSuccessfully && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            {/* Background Dim Backdrop */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={resetForm}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            ></motion.div>
+
+            {/* Floating Confirmation Popup Panel */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 25 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 25 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 280 }}
+              className={`relative w-full max-w-md p-6 sm:p-8 rounded-3xl border z-10 text-center space-y-6 shadow-2xl ${
+                isSaudiGreenMode 
+                  ? 'bg-[#121212] border-emerald-500/30 text-white' 
                   : 'bg-[#FAF6EB] border-[#0d5c56]/30 text-[#0d5c56]'
               }`}
             >
-              <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-[#00a36c] flex items-center justify-center mx-auto scale-110">
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto ${
+                isSaudiGreenMode 
+                  ? 'bg-emerald-500/10 text-emerald-400' 
+                  : 'bg-[#0d5c56]/10 text-[#0d5c56]'
+              }`}>
                 <CheckCircle2 className="w-10 h-10" />
               </div>
+
               <div className="space-y-2">
-                <h3 className="text-2xl font-serif text-white tracking-tight">Dispatch Transmitted</h3>
-                <p className="text-xs font-mono text-emerald-400 uppercase tracking-widest font-bold">Secure Signal Route Completed</p>
-                <p className="text-sm text-white/60 max-w-md mx-auto pt-2">
-                  Thank you! Your contact message has successfully registered in Mubin's secure Google database.
+                <h3 className={`text-2xl font-serif font-extrabold tracking-tight ${
+                  isSaudiGreenMode ? 'text-white' : 'text-[#0d5c56]'
+                }`}>
+                  Message Sent Successfully
+                </h3>
+                <p className={`text-xs font-mono uppercase tracking-widest font-bold ${
+                  isSaudiGreenMode ? 'text-emerald-400' : 'text-amber-600'
+                }`}>
+                  Confirmation Complete
+                </p>
+                <p className={`text-sm leading-relaxed ${
+                  isSaudiGreenMode ? 'text-white/60' : 'text-[#1a6f68]'
+                }`}>
+                  Thank you! Your message has been successfully registered in Mubin's database. Expected response times are under 24 hours.
                 </p>
               </div>
 
               <button 
+                id="btn-close-confirmation"
                 onClick={resetForm}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-teal-500/30 text-xs font-mono hover:bg-teal-500/10 text-teal-300 transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                Submit Another Dispatch
-              </button>
-            </motion.div>
-          ) : (
-            <form
-              ref={formRef}
-              id="mG61Hd"
-              action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSctLGCtnUdgzT4vV2S2s-7HJsZXGCZj6ApkBOBySwbmPht8tQ/formResponse"
-              target="hidden_iframe"
-              method="POST"
-              onSubmit={handleSubmit}
-              className={`p-6 sm:p-8 rounded-3xl border ${
-                isSaudiGreenMode 
-                  ? 'bg-white/[0.02] border-white/10' 
-                  : 'bg-[#FAF6EB] border-[#0d5c56]/15'
-              } space-y-6`}
-            >
-              <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                <span className="text-xs font-mono uppercase tracking-wider text-[#00a36c] font-bold">Secure Payload Parameters</span>
-                <span className="text-[10px] font-mono text-white/30 bg-black/40 px-2 py-0.5 rounded-md border border-white/5">YNH Link 0.1</span>
-              </div>
-
-              {/* Name Field */}
-              <div className="space-y-1.5">
-                <label className="flex items-center gap-1.5 text-xs font-mono text-white/70 uppercase font-semibold">
-                  <User className="w-3.5 h-3.5 text-[#00a36c]" />
-                  <span>Name Ident</span>
-                  <span className="text-red-500/80 font-bold">*</span>
-                </label>
-                <input 
-                  type="text"
-                  name="entry.830196533"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your system identifier / full name"
-                  className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
-                    errors.name ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
-                    isSaudiGreenMode 
-                      ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
-                      : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
-                  }`}
-                />
-                {errors.name && (
-                  <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.name}</motion.p>
-                )}
-              </div>
-
-              {/* Place Field */}
-              <div className="space-y-1.5">
-                <label className="flex items-center gap-1.5 text-xs font-mono text-white/70 uppercase font-semibold">
-                  <MapPin className="w-3.5 h-3.5 text-[#00a36c]" />
-                  <span>Location / Place</span>
-                  <span className="text-red-500/80 font-bold">*</span>
-                </label>
-                <input 
-                  type="text"
-                  name="entry.1993612319"
-                  value={place}
-                  onChange={(e) => setPlace(e.target.value)}
-                  placeholder="Where are you writing from? (City / Org)"
-                  className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
-                    errors.place ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
-                    isSaudiGreenMode 
-                      ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
-                      : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
-                  }`}
-                />
-                {errors.place && (
-                  <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.place}</motion.p>
-                )}
-              </div>
-
-              {/* Email Field */}
-              <div className="space-y-1.5">
-                <label className="flex items-center gap-1.5 text-xs font-mono text-white/70 uppercase font-semibold">
-                  <Mail className="w-3.5 h-3.5 text-[#00a36c]" />
-                  <span>Secure Email</span>
-                  <span className="text-red-500/80 font-bold">*</span>
-                </label>
-                <input 
-                  type="email"
-                  name="entry.193799992"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter contact email address for feedback"
-                  className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
-                    errors.email ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
-                    isSaudiGreenMode 
-                      ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
-                      : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
-                  }`}
-                />
-                {errors.email && (
-                  <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.email}</motion.p>
-                )}
-              </div>
-
-              {/* Message Field */}
-              <div className="space-y-1.5">
-                <label className="flex items-center gap-1.5 text-xs font-mono text-white/70 uppercase font-semibold">
-                  <MessageSquare className="w-3.5 h-3.5 text-[#00a36c]" />
-                  <span>Your Dispatch Message</span>
-                  <span className="text-red-500/80 font-bold">*</span>
-                </label>
-                <textarea 
-                  name="entry.2041270531"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Write clear operational requirements or inquiry text here..."
-                  rows={4}
-                  className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all resize-none ${
-                    errors.message ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
-                    isSaudiGreenMode 
-                      ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
-                      : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
-                  }`}
-                />
-                {errors.message && (
-                  <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.message}</motion.p>
-                )}
-              </div>
-
-              {/* Inputs required for submitting to Google Forms successfully */}
-              <input type="hidden" name="fvv" value="1" />
-              <input type="hidden" name="partialResponse" value='[null,null,"8006628840634686139"]' />
-              <input type="hidden" name="pageHistory" value="0" />
-              <input type="hidden" name="fbzx" value="8006628840634686139" />
-              <input type="hidden" name="submissionTimestamp" value="-1" />
-
-              {/* Submit Buttons */}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={`w-full group relative flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl border font-mono text-xs uppercase font-bold tracking-wider select-none outline-none focus:outline-none transition-all cursor-pointer ${
-                  isSubmitting ? 'bg-teal-850 border-teal-500/20 text-teal-400 cursor-not-allowed opacity-80' :
+                className={`w-full py-3.5 rounded-xl border text-xs font-mono font-bold tracking-widest uppercase transition-all cursor-pointer outline-none focus:outline-none ${
                   isSaudiGreenMode 
-                    ? 'bg-teal-900/40 border-[#00a36c]/40 hover:border-[#00a36c] hover:bg-[#005639]/30 text-emerald-300 hover:text-white hover:shadow-[0_4px_20px_rgba(0,163,108,0.2)]'
-                    : 'bg-[#0d5c56] border-[#0d5c56] hover:bg-[#09413c] text-white hover:shadow-lg'
+                    ? 'bg-[#005639] hover:bg-emerald-800 border-emerald-500/20 text-white' 
+                    : 'bg-[#0d5c56] hover:bg-[#09413c] border-[#0d5c56] text-[#FAF6EB]'
                 }`}
               >
-                {isSubmitting ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 animate-spin text-emerald-400" />
-                    <span>Transmitting Dispatch...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4 text-[#00a36c] group-hover:scale-115 transition-transform" />
-                    <span>Transmit Encrypted Dispatch</span>
-                  </>
-                )}
+                Close
               </button>
-            </form>
-          )}
-        </div>
-      </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* 5. FLOATING CONFIRMATION TOAST */}
       <NotificationToast 

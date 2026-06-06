@@ -17,6 +17,43 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
+const WorkSkeleton = () => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-pulse">
+      {[1, 2, 3].map((num) => (
+        <div 
+          key={num}
+          className="bg-white/[0.03] border border-white/10 rounded-3xl p-6 h-[400px] flex flex-col justify-between"
+        >
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="h-3 w-16 bg-white/10 rounded"></div>
+              <div className="h-3 w-10 bg-white/10 rounded"></div>
+            </div>
+            
+            {/* Image mock */}
+            <div className="w-full h-36 rounded-2xl bg-white/5 border border-white/10"></div>
+            
+            {/* Title */}
+            <div className="h-5 w-2/3 bg-white/20 rounded mt-2"></div>
+            
+            {/* Description lines */}
+            <div className="space-y-2">
+              <div className="h-3.5 w-full bg-white/5 rounded"></div>
+              <div className="h-3.5 w-4/5 bg-white/5 rounded"></div>
+            </div>
+          </div>
+
+          <div className="flex gap-1.5 pt-3">
+            <div className="h-4 w-12 bg-white/10 rounded"></div>
+            <div className="h-4 w-12 bg-white/10 rounded"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 interface WorkViewProps {
   setSelectedProject: (proj: Project | null) => void;
   isSaudiGreenMode?: boolean;
@@ -24,6 +61,14 @@ interface WorkViewProps {
 
 export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }: WorkViewProps) {
   const [activeTab, setActiveTab] = useState<'all' | 'cyber' | 'analytics'>('all');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 900);
+    return () => clearTimeout(timer);
+  }, []);
   
   // Interactive Simulator State
   const [simulationNodes, setSimulationNodes] = useState([
@@ -133,58 +178,62 @@ export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }
       </div>
 
       {/* 1. SEAMLESS INTERACTIVE WORK CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {filteredProjects.map((proj, idx) => (
-          <motion.div
-            key={proj.id}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: idx * 0.05 }}
-            whileHover={{ scale: 1.02 }}
-            tabIndex={0}
-            onClick={() => setSelectedProject(proj)}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedProject(proj); } }}
-            className="group cursor-pointer bg-white/[0.03] border border-white/10 hover:border-brand-green-light/40 rounded-3xl p-6 transition-all duration-300 flex flex-col justify-between hover:bg-white/[0.05] h-[400px] relative overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-          >
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono text-white/40">
-                  {proj.category}
-                </span>
-                <span className="text-[9px] font-mono px-2 py-0.5 bg-white/[0.02] border border-white/10 rounded-full text-white/40">
-                  {proj.year}
-                </span>
+      {isLoading ? (
+        <WorkSkeleton />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {filteredProjects.map((proj, idx) => (
+            <motion.div
+              key={proj.id}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: idx * 0.05 }}
+              whileHover={{ scale: 1.02 }}
+              tabIndex={0}
+              onClick={() => setSelectedProject(proj)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedProject(proj); } }}
+              className="group cursor-pointer bg-white/[0.03] border border-white/10 hover:border-brand-green-light/40 rounded-3xl p-6 transition-all duration-300 flex flex-col justify-between hover:bg-white/[0.05] h-[400px] relative overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-white/40">
+                    {proj.category}
+                  </span>
+                  <span className="text-[9px] font-mono px-2 py-0.5 bg-white/[0.02] border border-white/10 rounded-full text-white/40">
+                    {proj.year}
+                  </span>
+                </div>
+
+                {/* Large beautifully styled icon tile */}
+                <div className="w-full h-36 rounded-2xl overflow-hidden bg-black p-1.5 border border-white/10 flex items-center justify-center">
+                  <img 
+                    src={proj.image} 
+                    alt={proj.title} 
+                    className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+
+                <h2 className="text-lg font-serif text-white group-hover:text-[#00a36c] transition-colors mt-2">
+                  {proj.title}
+                </h2>
+
+                <p className="text-xs text-white/50 line-clamp-2">
+                  {proj.description}
+                </p>
               </div>
 
-              {/* Large beautifully styled icon tile */}
-              <div className="w-full h-36 rounded-2xl overflow-hidden bg-black p-1.5 border border-white/10 flex items-center justify-center">
-                <img 
-                  src={proj.image} 
-                  alt={proj.title} 
-                  className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
-                  referrerPolicy="no-referrer"
-                />
+              <div className="flex flex-wrap gap-1.5 pt-3">
+                {proj.tags.slice(0, 3).map(tag => (
+                  <span key={tag} className="text-[9px] font-mono px-2 py-0.5 rounded bg-white/[0.01] text-white/40 border border-white/10">
+                    #{tag}
+                  </span>
+                ))}
               </div>
-
-              <h2 className="text-lg font-serif text-white group-hover:text-[#00a36c] transition-colors mt-2">
-                {proj.title}
-              </h2>
-
-              <p className="text-xs text-white/50 line-clamp-2">
-                {proj.description}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-1.5 pt-3">
-              {proj.tags.slice(0, 3).map(tag => (
-                <span key={tag} className="text-[9px] font-mono px-2 py-0.5 rounded bg-white/[0.01] text-white/40 border border-white/10">
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          </motion.div>
-        ))}
-      </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
 
       {/* 2. DYNAMICAL CLINICAL NETWORK SECURITY RADAR (Interactive Demo Widget) */}
       <section className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 space-y-6">

@@ -15,7 +15,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabID>('home');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null);
-  const [isSaudiGreenMode, setSaudiGreenMode] = useState<boolean>(true);
+  const [isSaudiGreenMode, setSaudiGreenMode] = useState<boolean>(false);
 
   // Scroll tracking for long-form views
   const { scrollYProgress } = useScroll();

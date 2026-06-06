@@ -170,7 +170,7 @@ export default function ProjectDetailsModal({ project, onClose }: ProjectDetails
         <div className="flex items-center gap-4 border-t border-white/10 pt-6 flex-wrap">
           <a
             href={project.demoUrl || '#'}
-            className="bg-[#005639] hover:bg-[#00704a] text-white px-5 py-3 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 hover:scale-105 active:scale-95"
+            className="bg-[#005639] hover:bg-[#00704a] text-white keep-text-white px-5 py-3 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 hover:scale-105 active:scale-95"
           >
             Launch Live Portal
             <ExternalLink className="w-3.5 h-3.5" />
