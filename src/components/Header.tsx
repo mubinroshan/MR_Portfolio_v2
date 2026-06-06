@@ -352,7 +352,7 @@ export default function Header({
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
-            className="md:hidden border-t border-[#FAF6EB]/10 bg-[#0d5c56] overflow-hidden backdrop-blur-md shadow-xl"
+            className="md:hidden border-t border-[#FAF6EB]/10 bg-[#0d5c56] overflow-hidden backdrop-blur-md shadow-xl mobile-nav-container"
           >
             <div className="flex flex-col gap-2 p-4">
               {navItems.map((item) => {
@@ -366,16 +366,16 @@ export default function Header({
                     }}
                     className={`w-full text-left px-5 py-3 rounded-xl border text-sm font-bold transition-all flex items-center justify-between outline-none focus:outline-none ${
                       isActive
-                        ? 'text-[#0d5c56] bg-[#FAF6EB] border-[#FAF6EB] shadow-md font-extrabold'
-                        : 'text-white !text-white border-transparent hover:bg-white/[0.08]'
+                        ? 'text-[#0d5c56] bg-[#FAF6EB] border-[#FAF6EB] shadow-md font-extrabold active'
+                        : 'text-white !text-white border-transparent hover:bg-white/[0.08] inactive'
                     }`}
                   >
                     <span>{item.label}</span>
                     {item.badge && (
-                      <span className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded-full border ${
+                      <span className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded-full border badge ${
                         isActive 
-                          ? 'bg-[#0d5c56] text-[#FAF6EB] border-[#0d5c56]' 
-                          : 'bg-[#FAF6EB]/20 text-[#FAF6EB] border-[#FAF6EB]/40'
+                          ? 'bg-[#0d5c56] text-[#FAF6EB] border-[#0d5c56] active-badge' 
+                          : 'bg-[#FAF6EB]/20 text-[#FAF6EB] border-[#FAF6EB]/40 inactive-badge'
                       }`}>
                         {item.badge}
                       </span>
@@ -385,7 +385,7 @@ export default function Header({
               })}
               
               <div className="border-t border-[#FAF6EB]/15 pt-3 mt-2">
-                <p className="text-[10px] font-mono uppercase text-[#FAF6EB]/60 px-4 mb-2">More Resources</p>
+                <p className="text-[10px] font-mono uppercase text-[#FAF6EB]/60 px-4 mb-2 mobile-section-title">More Resources</p>
                 {moreLinks.map((link, idx) => (
                   <div key={idx} className="mb-1.5 last:mb-0">
                     {link.href ? (
@@ -393,14 +393,14 @@ export default function Header({
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between w-full text-left px-4 py-2.5 rounded-xl border border-transparent text-xs text-[#FAF6EB]/80 hover:text-white hover:bg-[#FAF6EB]/10 font-mono transition-colors"
+                        className="flex items-center justify-between w-full text-left px-4 py-2.5 rounded-xl border border-transparent text-xs text-[#FAF6EB]/80 hover:text-white hover:bg-[#FAF6EB]/10 font-mono transition-colors mobile-resource-link"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         <span className="flex items-center gap-2">
-                          {React.cloneElement(link.icon as React.ReactElement, { className: 'w-4 h-4 text-[#FAF6EB]' })}
+                          {React.cloneElement(link.icon as React.ReactElement, { className: 'w-4 h-4 text-[#FAF6EB] mobile-icon' })}
                           <span>{link.label}</span>
                         </span>
-                        <ArrowUpRight className="w-3.5 h-3.5 text-[#FAF6EB]/50" />
+                        <ArrowUpRight className="w-3.5 h-3.5 text-[#FAF6EB]/50 mobile-arrow" />
                       </a>
                     ) : (
                       <button
@@ -408,9 +408,9 @@ export default function Header({
                           if (link.action) link.action();
                           setMobileMenuOpen(false);
                         }}
-                        className="flex items-center gap-2 w-full text-left px-4 py-2.5 rounded-xl border border-transparent text-xs text-[#FAF6EB]/80 hover:text-[#FAF6EB] hover:bg-[#FAF6EB]/10 font-mono transition-colors"
+                        className="flex items-center gap-2 w-full text-left px-4 py-2.5 rounded-xl border border-transparent text-xs text-[#FAF6EB]/80 hover:text-[#FAF6EB] hover:bg-[#FAF6EB]/10 font-mono transition-colors mobile-resource-link"
                       >
-                        {React.cloneElement(link.icon as React.ReactElement, { className: 'w-4 h-4 text-[#FAF6EB]' })}
+                        {React.cloneElement(link.icon as React.ReactElement, { className: 'w-4 h-4 text-[#FAF6EB] mobile-icon' })}
                         <span>{link.label}</span>
                       </button>
                     )}

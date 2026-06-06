@@ -253,6 +253,65 @@ body {
   .fixed .absolute.bg-black\/80 {
     background-color: rgba(0, 0, 0, 0.45) !important; /* slightly softer backdrop */
   }
+
+  /* 3. MOBILE MENU PURE WHITE TEXT OVERRIDES FOR HIGH-CONTRAST IN LIGHT/CREAM MODE */
+  .mobile-nav-container,
+  .mobile-nav-container * {
+    color: #ffffff !important;
+  }
+  .mobile-nav-container .inactive {
+    color: #ffffff !important;
+    border-color: transparent !important;
+    background-color: transparent !important;
+  }
+  .mobile-nav-container .inactive:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+  }
+  .mobile-nav-container .inactive span {
+    color: #ffffff !important;
+  }
+  .mobile-nav-container .active {
+    background-color: #FAF6EB !important;
+    color: #0d5c56 !important;
+    border-color: #FAF6EB !important;
+  }
+  .mobile-nav-container .active span {
+    color: #0d5c56 !important;
+  }
+  .mobile-nav-container .active-badge {
+    background-color: #0d5c56 !important;
+    color: #FAF6EB !important;
+    border-color: #0d5c56 !important;
+  }
+  .mobile-nav-container .active-badge * {
+    color: #FAF6EB !important;
+  }
+  .mobile-nav-container .inactive-badge {
+    background-color: rgba(250, 246, 235, 0.2) !important;
+    color: #FAF6EB !important;
+    border-color: rgba(250, 246, 235, 0.4) !important;
+  }
+  .mobile-nav-container .inactive-badge * {
+    color: #FAF6EB !important;
+  }
+  .mobile-nav-container .mobile-section-title {
+    color: rgba(250, 246, 235, 0.6) !important;
+  }
+  .mobile-nav-container .mobile-resource-link {
+    color: rgba(250, 246, 235, 0.8) !important;
+    border-color: transparent !important;
+    background-color: transparent !important;
+  }
+  .mobile-nav-container .mobile-resource-link:hover {
+    color: #ffffff !important;
+    background-color: rgba(250, 246, 235, 0.1) !important;
+  }
+  .mobile-nav-container .mobile-resource-link * {
+    color: rgba(250, 246, 235, 0.8) !important;
+  }
+  .mobile-nav-container .mobile-resource-link:hover * {
+    color: #ffffff !important;
+  }
 }
 
 /* Ensure white text is retained in light mode for elements with .keep-text-white */
