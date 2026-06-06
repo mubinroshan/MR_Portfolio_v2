@@ -1,10 +1,14 @@
 import { Project, TimelineItem, StoryItem } from './types';
+import mubinAvatar from './assets/images/mubin_avatar_1780675936140.png';
+import sentinelGuardIcon from './assets/images/sentinel_guard_icon_1780675958553.png';
+import healthDataIcon from './assets/images/health_data_icon_1780675975403.png';
+import cryptographyIcon from './assets/images/cryptography_icon_1780675992838.png';
 
 // Let's grab the actual generated asset paths from our image generation calls
-export const AVATAR_URL = '/src/assets/images/mubin_avatar_1780675936140.png';
-export const SENTINEL_GUARD_URL = '/src/assets/images/sentinel_guard_icon_1780675958553.png';
-export const HEALTH_DATA_URL = '/src/assets/images/health_data_icon_1780675975403.png';
-export const CRYPTOGRAPHY_URL = '/src/assets/images/cryptography_icon_1780675992838.png';
+export const AVATAR_URL = mubinAvatar;
+export const SENTINEL_GUARD_URL = sentinelGuardIcon;
+export const HEALTH_DATA_URL = healthDataIcon;
+export const CRYPTOGRAPHY_URL = cryptographyIcon;
 
 export const PROJECTS_DATA: Project[] = [
   {

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { TabID } from '../types';
 import { AVATAR_URL } from '../data';
+import mrLogoTealRemovebg from '../../mr_logo_teal_removebg.png';
 import { 
   Twitter, 
   Linkedin, 
@@ -52,7 +53,7 @@ export default function Header({
           id="nav-avatar"
         >
           <img 
-            src="/mr_logo_teal_removebg.png" 
+            src={mrLogoTealRemovebg} 
             alt="Mubin Roshan Logo" 
             className="h-9 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
             referrerPolicy="no-referrer"

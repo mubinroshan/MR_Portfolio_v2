@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TabID } from '../types';
 import { Heart, ShieldCheck, Mail, Copy } from 'lucide-react';
 import NotificationToast from './NotificationToast';
+import mrLogoTealRemovebg from '../../mr_logo_teal_removebg.png';
 
 interface FooterProps {
   setActiveTab: (tab: TabID) => void;
@@ -45,7 +46,7 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
         <div className="flex flex-col items-center gap-4">
           <div className="relative cursor-pointer group" onClick={() => handleNavClick('home')}>
             <img 
-              src="/mr_logo_teal_removebg.png" 
+              src={mrLogoTealRemovebg} 
               alt="Mubin Roshan Logo" 
               className="relative w-16 h-16 object-contain hover:scale-105 transition-transform"
               referrerPolicy="no-referrer"
