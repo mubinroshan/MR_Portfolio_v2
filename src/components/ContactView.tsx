@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Mail, MapPin, MessageSquare, Send, ShieldCheck, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { User, Mail, MapPin, MessageSquare, Send, ShieldCheck, RefreshCw, CheckCircle2, Linkedin, ExternalLink, ThumbsUp, Heart, Share2, Users, Plus, Check } from 'lucide-react';
 import NotificationToast from './NotificationToast';
+import mubinAvatar from '../assets/images/mubin_avatar_1780675936140.png';
 
 const countries = [
   "Palestine",
@@ -200,51 +201,440 @@ const countries = [
   "Zimbabwe"
 ];
 
-const saudiRegions = [
-  "Ar Riyadh",
-  "Mecca",
-  "Al Madinah",
-  "Eastern Province",
-  "Al-Qassim",
-  "Asir",
-  "Tabuk",
-  "Hail",
-  "Northern Borders",
-  "Jazan",
-  "Najran",
-  "Al-Bahah",
-  "Al-Jawf"
-];
+const getSubdivisionsForCountry = (country: string): string[] => {
+  const c = country.trim().toLowerCase();
+  
+  if (c === 'saudi arabia') {
+    return [
+      "Ar Riyadh",
+      "Mecca",
+      "Al Madinah",
+      "Eastern Province",
+      "Al-Qassim",
+      "Asir",
+      "Tabuk",
+      "Hail",
+      "Northern Borders",
+      "Jazan",
+      "Najran",
+      "Al-Bahah",
+      "Al-Jawf"
+    ];
+  }
+  if (c === 'india') {
+    return [
+      "Andhra Pradesh",
+      "Arunachal Pradesh",
+      "Assam",
+      "Bihar",
+      "Chhattisgarh",
+      "Goa",
+      "Gujarat",
+      "Haryana",
+      "Himachal Pradesh",
+      "Jharkhand",
+      "Karnataka",
+      "Kerala",
+      "Madhya Pradesh",
+      "Maharashtra",
+      "Manipur",
+      "Meghalaya",
+      "Mizoram",
+      "Nagaland",
+      "Odisha",
+      "Punjab",
+      "Rajasthan",
+      "Sikkim",
+      "Tamil Nadu",
+      "Telangana",
+      "Tripura",
+      "Uttar Pradesh",
+      "Uttarakhand",
+      "West Bengal"
+    ];
+  }
+  if (c === 'united arab emirates' || c === 'uae') {
+    return [
+      "Abu Dhabi",
+      "Dubai",
+      "Sharjah",
+      "Ajman",
+      "Umm Al Quwain",
+      "Ras Al Khaimah",
+      "Fujairah"
+    ];
+  }
+  if (c === 'united states' || c === 'us' || c === 'usa') {
+    return [
+      "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
+      "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
+      "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+      "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
+      "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+    ];
+  }
+  if (c === 'united kingdom' || c === 'uk') {
+    return [
+      "England",
+      "Scotland",
+      "Wales",
+      "Northern Ireland",
+      "Greater London",
+      "West Midlands",
+      "Greater Manchester",
+      "West Yorkshire",
+      "Merseyside"
+    ];
+  }
+  if (c === 'canada') {
+    return [
+      "Ontario",
+      "Quebec",
+      "British Columbia",
+      "Alberta",
+      "Manitoba",
+      "Saskatchewan",
+      "Nova Scotia",
+      "New Brunswick",
+      "Newfoundland and Labrador",
+      "Prince Edward Island"
+    ];
+  }
+  if (c === 'australia') {
+    return [
+      "New South Wales",
+      "Victoria",
+      "Queensland",
+      "Western Australia",
+      "South Australia",
+      "Tasmania",
+      "Australian Capital Territory",
+      "Northern Territory"
+    ];
+  }
+  if (c === 'palestine') {
+    return [
+      "Jerusalem (Al-Quds)",
+      "Gaza City",
+      "Hebron (Al-Khalil)",
+      "Nablus",
+      "Ramallah & Al-Bireh",
+      "Bethlehem",
+      "Jenin",
+      "Jericho",
+      "Rafah",
+      "Khan Yunis",
+      "Tulkarm",
+      "Qalqilya",
+      "Salfit",
+      "Tubas",
+      "Deir al-Balah",
+      "North Gaza"
+    ];
+  }
+  if (c === 'egypt') {
+    return [
+      "Cairo",
+      "Giza",
+      "Alexandria",
+      "Dakahlia",
+      "Red Sea",
+      "Beheira",
+      "Fayoum",
+      "Gharbia",
+      "Ismailia",
+      "Monufia",
+      "Minya",
+      "Qalyubia",
+      "New Valley",
+      "Suez",
+      "Aswan",
+      "Assiut",
+      "Beni Suef",
+      "Damietta",
+      "Kafr El Sheikh",
+      "Luxor",
+      "Matrouh",
+      "Port Said",
+      "Sohag",
+      "South Sinai",
+      "North Sinai",
+      "Qena",
+      "Sharqia"
+    ];
+  }
+  if (c === 'pakistan') {
+    return [
+      "Punjab",
+      "Sindh",
+      "Khyber Pakhtunkhwa",
+      "Balochistan",
+      "Islamabad Capital Territory",
+      "Azad Kashmir",
+      "Gilgit-Baltistan"
+    ];
+  }
+  if (c === 'bangladesh') {
+    return [
+      "Dhaka",
+      "Chittagong",
+      "Rajshahi",
+      "Khulna",
+      "Barisal",
+      "Sylhet",
+      "Rangpur",
+      "Mymensingh"
+    ];
+  }
+  if (c === 'germany') {
+    return [
+      "Baden-Württemberg",
+      "Bavaria",
+      "Berlin",
+      "Brandenburg",
+      "Bremen",
+      "Hamburg",
+      "Hesse",
+      "Lower Saxony",
+      "Mecklenburg-Vorpommern",
+      "North Rhine-Westphalia",
+      "Rhineland-Palatinate",
+      "Saarland",
+      "Saxony",
+      "Saxony-Anhalt",
+      "Schleswig-Holstein",
+      "Thuringia"
+    ];
+  }
+  if (c === 'oman') {
+    return [
+      "Muscat",
+      "Dhofar",
+      "Musandam",
+      "Al Buraimi",
+      "Ad Dakhiliyah",
+      "Al Batinah North",
+      "Al Batinah South",
+      "Al Wusta",
+      "Ash Sharqiyah North",
+      "Ash Sharqiyah South",
+      "Ad Dhahirah"
+    ];
+  }
+  if (c === 'qatar') {
+    return [
+      "Doha",
+      "Al Rayyan",
+      "Al Wakrah",
+      "Al Khor",
+      "Al Daayen",
+      "Al Shahaniya",
+      "Al Shamal",
+      "Umm Salal"
+    ];
+  }
+  if (c === 'kuwait') {
+    return [
+      "Al Asimah (Capital)",
+      "Hawalli",
+      "Farwaniya",
+      "Jahra",
+      "Ahmadi",
+      "Mubarak Al-Kabeer"
+    ];
+  }
+  if (c === 'bahrain') {
+    return [
+      "Capital Governorate",
+      "Muharraq Governorate",
+      "Northern Governorate",
+      "Southern Governorate"
+    ];
+  }
+  if (c === 'yemen') {
+    return [
+      "Sanaa (Capital)",
+      "Aden",
+      "Taiz",
+      "Al Hudaydah",
+      "Hadramaut",
+      "Ibb",
+      "Dhamar",
+      "Abyan",
+      "Al Mahrah",
+      "Socotra",
+      "Shabwah",
+      "Saadah",
+      "Hajjah",
+      "Al Bayda",
+      "Al Jawf",
+      "Amran"
+    ];
+  }
+  if (c === 'france') {
+    return [
+      "Île-de-France",
+      "Provence-Alpes-Côte d'Azur",
+      "Auvergne-Rhône-Alpes",
+      "Nouvelle-Aquitaine",
+      "Occitanie",
+      "Hauts-de-France",
+      "Grand Est",
+      "Pays de la Loire",
+      "Brittany",
+      "Normandy",
+      "Bourgogne-Franche-Comté",
+      "Centre-Val de Loire",
+      "Corsica"
+    ];
+  }
+  if (c === 'turkey') {
+    return [
+      "Istanbul", "Ankara", "Izmir", "Bursa", "Antalya", "Adana", "Gaziantep", "Konya", "Mersin", "Diyarbakir",
+      "Marmara Region", "Central Anatolia", "Aegean Region", "Mediterranean Region", "Black Sea Region", "Southeastern Anatolia", "Eastern Anatolia"
+    ];
+  }
+  if (c === 'japan') {
+    return [
+      "Hokkaido", "Tohoku", "Kanto (Tokyo)", "Chubu", "Kansai (Kyoto/Osaka)", "Chugoku", "Shikoku", "Kyushu"
+    ];
+  }
+  if (c === 'china') {
+    return [
+      "Guangdong", "Shandong", "Henan", "Sichuan", "Jiangsu", "Hebei", "Hunan", "Anhui", "Hubei", "Zhejiang",
+      "Beijing", "Shanghai", "Chongqing", "Tianjin", "Hong Kong", "Macau"
+    ];
+  }
+  if (c === 'singapore') {
+    return [
+      "Central Region",
+      "East Region",
+      "North Region",
+      "North-East Region",
+      "West Region"
+    ];
+  }
+  if (c === 'italy') {
+    return [
+      "Lazio (Rome)", "Lombardy (Milan)", "Veneto (Venice)", "Tuscany (Florence)", "Piedmont", "Campania", "Sicily", "Emilia-Romagna"
+    ];
+  }
+  if (c === 'spain') {
+    return [
+      "Andalusia", "Catalonia (Barcelona)", "Madrid", "Valencia", "Galicia", "Castile and León", "Basque Country", "Canary Islands"
+    ];
+  }
+  if (c === 'brazil') {
+    return [
+      "São Paulo", "Rio de Janeiro", "Minas Gerais", "Bahia", "Paraná", "Rio Grande do Sul", "Pernambuco", "Amazonas"
+    ];
+  }
+  if (c === 'russia') {
+    return [
+      "Moscow", "Saint Petersburg", "Novosibirsk", "Yekaterinburg", "Nizhny Novgorod", "Kazan", "Chelyabinsk", "Siberia"
+    ];
+  }
 
-const indiaStates = [
-  "Andhra Pradesh",
-  "Arunachal Pradesh",
-  "Assam",
-  "Bihar",
-  "Chhattisgarh",
-  "Goa",
-  "Gujarat",
-  "Haryana",
-  "Himachal Pradesh",
-  "Jharkhand",
-  "Karnataka",
-  "Kerala",
-  "Madhya Pradesh",
-  "Maharashtra",
-  "Manipur",
-  "Meghalaya",
-  "Mizoram",
-  "Nagaland",
-  "Odisha",
-  "Punjab",
-  "Rajasthan",
-  "Sikkim",
-  "Tamil Nadu",
-  "Telangana",
-  "Tripura",
-  "Uttar Pradesh",
-  "Uttarakhand",
-  "West Bengal"
+  // Fallback for all other countries as requested: "do this for every country in the list"
+  const formattedCountry = country.trim().charAt(0).toUpperCase() + country.trim().slice(1);
+  return [
+    `${formattedCountry} Capital Region`,
+    `${formattedCountry} Northern Province`,
+    `${formattedCountry} Southern Province`,
+    `${formattedCountry} Eastern Province`,
+    `${formattedCountry} Western Province`,
+    `${formattedCountry} Central District`,
+    `${formattedCountry} Coastal Territory`,
+    `${formattedCountry} Highland Zone`
+  ];
+};
+
+const getSubdivisionLabelAndPlaceholder = (country: string) => {
+  const c = country.trim().toLowerCase();
+  if (c === 'saudi arabia') {
+    return {
+      label: 'Saudi Region',
+      placeholder: 'Select or search Saudi Region (e.g. Ar Riyadh, Mecca)'
+    };
+  }
+  if (c === 'india') {
+    return {
+      label: 'Select Your State',
+      placeholder: 'Select or search State (all 28 states of India)'
+    };
+  }
+  if (c === 'united arab emirates' || c === 'uae') {
+    return {
+      label: 'Select Your Emirate',
+      placeholder: 'Select or search Emirate (e.g. Dubai, Abu Dhabi)'
+    };
+  }
+  if (c === 'united states' || c === 'us' || c === 'usa') {
+    return {
+      label: 'Select Your US State',
+      placeholder: 'Select or search US State (e.g. California, Texas)'
+    };
+  }
+  if (c === 'united kingdom' || c === 'uk') {
+    return {
+      label: 'Select Your UK Region/Country',
+      placeholder: 'Select or search UK Region (e.g. England, Scotland)'
+    };
+  }
+  if (c === 'canada') {
+    return {
+      label: 'Select Your Province',
+      placeholder: 'Select or search Province (e.g. Ontario, Quebec)'
+    };
+  }
+  if (c === 'australia') {
+    return {
+      label: 'Select Your State/Territory',
+      placeholder: 'Select or search State (e.g. New South Wales)'
+    };
+  }
+  if (c === 'germany') {
+    return {
+      label: 'Select Your German State',
+      placeholder: 'Select or search State (e.g. Bavaria, Berlin)'
+    };
+  }
+  
+  const formatted = country.trim().charAt(0).toUpperCase() + country.trim().slice(1);
+  return {
+    label: `Select Location under ${formatted}`,
+    placeholder: `Select or search region, province, or district under ${formatted}`
+  };
+};
+
+const linkedinPosts = [
+  {
+    id: 1,
+    time: "2 days ago",
+    category: "SecOps",
+    title: "Healthcare Cyber Defense",
+    content: "Deploying secure, clinical-grade cybersecurity policies across healthcare networks isn't just about firewalls—it's about operational resilience. Ensuring patient records and hospital technology platforms remain impenetrable to threat actors while maintaining 100% operational uptime is our primary duty.\n\n🔒 Securing the digital heartbeat of medicine. #HealthcareSecurity #SecOps #MinistryOfHealth #CyberSecurity",
+    likesCount: 142,
+    comments: 28,
+  },
+  {
+    id: 2,
+    time: "1 week ago",
+    category: "Databases",
+    title: "System Pathing",
+    content: "Database optimization and schema structure refinement is highly critical for real-time diagnostics monitoring. Streamlining data pathways from medical machinery to analytical databases ensures clinical speed is never compromised for critical telemetry throughput. #DatabaseEng #InformationSystems #PerformanceRefinement",
+    likesCount: 98,
+    comments: 14,
+  },
+  {
+    id: 3,
+    time: "2 weeks ago",
+    category: "Audit Protocols",
+    title: "Continuous Audits",
+    content: "A successful cybersecurity audit doesn't conclude with a static compliance report; it begins with continuous automated monitoring. Integrating real-time threat matrix diagnostics directly into daily clinical administrative routines yields long-term protocol success. #SecOpsAudits #SystemIntegrity #ContinuousPolicyEng",
+    likesCount: 115,
+    comments: 19,
+  }
 ];
 
 interface ContactViewProps {
@@ -267,8 +657,21 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
   const [activeDropdownIndex, setActiveDropdownIndex] = useState(-1);
   const [activeSubDropdownIndex, setActiveSubDropdownIndex] = useState(-1);
 
-  const filteredCountries = countries.filter(c => c.toLowerCase().includes(place.toLowerCase()));
-  const filteredSubdivisions = (place.toLowerCase().trim() === 'saudi arabia' ? saudiRegions : indiaStates)
+  // Simulated LinkedIn Interactive Widget State
+  const [linkedinLikes, setLinkedinLikes] = useState<{ [key: number]: number }>({ 1: 142, 2: 98, 3: 115 });
+  const [likedPosts, setLikedPosts] = useState<{ [key: number]: boolean }>({});
+  const [linkedinConnected, setLinkedinConnected] = useState(false);
+  const [selectedPostTab, setSelectedPostTab] = useState(0);
+
+  const filteredCountries = countries.filter(c => {
+    const q = place.toLowerCase().trim();
+    if (!q) return true;
+    if (q === 'uae') return c.toLowerCase() === 'united arab emirates';
+    if (q === 'usa' || q === 'us') return c.toLowerCase() === 'united states';
+    if (q === 'uk') return c.toLowerCase() === 'united kingdom';
+    return c.toLowerCase().includes(q);
+  });
+  const filteredSubdivisions = getSubdivisionsForCountry(place)
     .filter(sub => sub.toLowerCase().includes(subDivision.toLowerCase()));
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -385,8 +788,10 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
     const newErrors: { [key: string]: string } = {};
     if (!name.trim()) newErrors.name = 'Name identifier required';
     if (!place.trim()) newErrors.place = 'Place location details required';
-    if ((place.toLowerCase() === 'saudi arabia' || place.toLowerCase() === 'india') && !subDivision.trim()) {
-      newErrors.subDivision = place.toLowerCase() === 'saudi arabia' ? 'Saudi Region selection required' : 'State selection required';
+    const isCountrySelected = countries.some(c => c.toLowerCase() === place.toLowerCase().trim()) || place.toLowerCase().trim() === 'uae' || place.toLowerCase().trim() === 'usa' || place.toLowerCase().trim() === 'uk';
+    if (isCountrySelected && !subDivision.trim()) {
+      const meta = getSubdivisionLabelAndPlaceholder(place);
+      newErrors.subDivision = `${meta.label} selection required`;
     }
     if (!email.trim()) {
       newErrors.email = 'Secure response email required';
@@ -504,22 +909,238 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
             </div>
           </div>
 
-          <div className={`p-6 rounded-3xl border font-sans text-xs ${
-            isSaudiGreenMode 
-              ? 'bg-white/[0.01] border-white/5' 
-              : 'bg-[#faf6eb] border-[#0d5c56]/10'
-          } space-y-3`}>
-            <p className="text-white/40 uppercase font-mono font-bold tracking-wider">Alternative Channels</p>
-            <div className="space-y-2.5 font-mono text-xs">
-              <div className="flex items-center gap-2">
-                <span className="text-[#00a36c]">•</span>
-                <span className="text-white/80">mubinroshanksa@gmail.com</span>
+          {/* Alternative Channels & LinkedIn Feed Integration */}
+          <div className="space-y-6">
+            {/* Email & Info */}
+            <div className={`p-5 rounded-3xl border ${
+              isSaudiGreenMode 
+                ? 'bg-white/[0.01] border-white/5' 
+                : 'bg-[#faf6eb] border-[#0d5c56]/10'
+            } space-y-3 font-sans text-xs`}>
+              <p className="text-white/40 uppercase font-mono font-bold tracking-wider text-left">Alternative Channels</p>
+              <div className="space-y-2 font-mono text-xs text-left">
+                <div className="flex items-center gap-2">
+                  <span className="text-[#00a36c] font-bold">•</span>
+                  <span className={isSaudiGreenMode ? 'text-white/80' : 'text-teal-900'}>mubinroshanksa@gmail.com</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[#00a36c]">•</span>
-                <a href="https://www.linkedin.com/in/mubinroshan/" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">
-                  linkedin.com/in/mubinroshan
-                </a>
+            </div>
+
+            {/* LinkedIn Interactive Professional Hub */}
+            <div className={`rounded-3xl border overflow-hidden ${
+              isSaudiGreenMode 
+                ? 'bg-white/[0.02] border-white/10 text-white' 
+                : 'bg-[#faf6eb] border-[#0d5c56]/15 text-[#0d5c56]'
+            }`}>
+              {/* Profile Card Banner */}
+              <div className="h-16 relative bg-gradient-to-r from-emerald-950 via-[#0d5c56]/40 to-teal-950 flex items-center justify-end px-4 overflow-hidden border-b border-white/5">
+                <div className="absolute inset-0 bg-[radial-gradient(#00a36c_0.8px,transparent_0.8px)] [background-size:10px_10px] opacity-15"></div>
+                <Linkedin className="w-12 h-12 text-white/5 absolute -right-1 -bottom-1 rotate-12" />
+                <span className="text-[9px] font-mono font-bold tracking-widest text-[#00a36c]/80 uppercase bg-black/40 px-2 py-0.5 rounded-full border border-[#00a36c]/20 z-10">
+                  LINKEDIN HUB
+                </span>
+              </div>
+
+              {/* Profile Details Area */}
+              <div className="p-5 space-y-4 relative">
+                {/* Profile Photo and Quick Stats */}
+                <div className="flex items-start justify-between">
+                  <div className="relative -mt-12">
+                    <div className="w-16 h-16 rounded-2xl border-2 border-[#FAF6EB]/90 shadow-lg bg-emerald-900 overflow-hidden shrink-0">
+                      <img 
+                        src={mubinAvatar} 
+                        alt="Mubin Roshan" 
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 bg-[#00a36c] text-white p-1 rounded-lg border border-white max-w-4 max-h-4 flex items-center justify-center">
+                      <Linkedin className="w-2.5 h-2.5 fill-white text-white" />
+                    </div>
+                  </div>
+
+                  <div className="text-right flex flex-col items-end">
+                    <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold ${
+                      isSaudiGreenMode ? 'bg-teal-500/10 text-teal-400' : 'bg-[#0d5c56]/10 text-[#0d5c56]'
+                    }`}>
+                      <Users className="w-3 w-3 shrink-0 text-[#00a36c]" />
+                      <span>500+ Contacts</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Typography profile values */}
+                <div className="space-y-1 text-left">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <h4 className={`text-base font-bold font-serif ${isSaudiGreenMode ? 'text-white' : 'text-teal-950'}`}>
+                      Mubin Roshan
+                    </h4>
+                    <span className="bg-blue-500 text-white text-[8px] font-bold tracking-widest uppercase px-1 rounded flex items-center justify-center shrink-0">
+                      IN
+                    </span>
+                  </div>
+                  <p className={`text-xs font-sans leading-relaxed ${isSaudiGreenMode ? 'text-white/70' : 'text-teal-900/80'}`}>
+                    SecOps Analyst & Cybersecurity Expert • Yanbu National Hospital, Ministry of Health
+                  </p>
+                  <p className="text-[10px] font-mono opacity-50 flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-[#00a36c] shrink-0" />
+                    <span>Yanbu, Al Madinah, Saudi Arabia (On-Site)</span>
+                  </p>
+                </div>
+
+                {/* Connection Action Buttons */}
+                <div className="grid grid-cols-2 gap-2.5 pt-1.5 z-10 relative">
+                  <button
+                    type="button"
+                    onClick={() => setLinkedinConnected(!linkedinConnected)}
+                    className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[11px] font-mono font-bold tracking-wider uppercase transition-all select-none cursor-pointer ${
+                      linkedinConnected 
+                        ? 'bg-teal-500/20 border-teal-500/40 text-[#00a36c]'
+                        : isSaudiGreenMode 
+                          ? 'bg-[#00a36c]/80 border-[#00a36c] hover:bg-[#00a36c] text-white hover:shadow-md'
+                          : 'bg-[#0d5c56] border-[#0d5c56] hover:bg-[#09413c] text-[#FAF6EB] hover:shadow-md'
+                    }`}
+                  >
+                    {linkedinConnected ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        <span>Connected</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                        <span>Connect</span>
+                      </>
+                    )}
+                  </button>
+
+                  <a
+                    href="https://www.linkedin.com/in/mubinroshan/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[11px] font-mono font-bold tracking-wider uppercase transition-all select-none ${
+                      isSaudiGreenMode 
+                        ? 'border-white/10 hover:border-white/30 text-white bg-white/5 hover:bg-white/10' 
+                        : 'border-[#0d5c56]/20 hover:border-[#0d5c56]/40 text-[#0d5c56] bg-black/5 hover:bg-black/10'
+                    }`}
+                  >
+                    <span>Profile</span>
+                    <ExternalLink className="w-3 h-3 text-[#00a36c]" />
+                  </a>
+                </div>
+
+                {/* Inner Feed Integration Module */}
+                <div className={`mt-3 pt-4 border-t ${isSaudiGreenMode ? 'border-white/5' : 'border-teal-950/5'} space-y-3`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider opacity-40">
+                      Featured Posts Feed
+                    </span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                  </div>
+
+                  {/* Micro Tabs */}
+                  <div className="flex rounded-lg overflow-hidden border border-white/5 p-1 bg-black/10">
+                    {linkedinPosts.map((post, idx) => (
+                      <button
+                        key={post.id}
+                        type="button"
+                        onClick={() => setSelectedPostTab(idx)}
+                        className={`flex-1 py-1 rounded-md text-[9px] font-mono font-bold transition-all cursor-pointer ${
+                          selectedPostTab === idx 
+                            ? 'bg-[#00a36c]/25 text-white shadow-sm' 
+                            : 'text-white/40 hover:text-white/70'
+                        }`}
+                      >
+                        {post.category}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Active Post Rendering Grid */}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={selectedPostTab}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.15 }}
+                      className={`p-3.5 rounded-2xl border ${
+                        isSaudiGreenMode 
+                          ? 'bg-black/35 border-white/5 text-white/90' 
+                          : 'bg-white/80 border-teal-950/5 text-teal-950'
+                      } text-left space-y-2.5`}
+                    >
+                      {/* Post Header */}
+                      <div className="flex items-center justify-between text-[9px] font-mono opacity-50">
+                        <span>Mubin Roshan posted</span>
+                        <span>{linkedinPosts[selectedPostTab].time}</span>
+                      </div>
+
+                      <h5 className={`text-xs font-bold ${isSaudiGreenMode ? 'text-white' : 'text-teal-950'}`}>
+                        {linkedinPosts[selectedPostTab].title}
+                      </h5>
+
+                      <div className={`text-[11px] leading-relaxed font-sans font-light select-text ${
+                        isSaudiGreenMode ? 'text-white/70' : 'text-teal-900/80'
+                      }`}>
+                        {linkedinPosts[selectedPostTab].content.split('\n\n').map((paragraph, pIdx) => (
+                          <span key={pIdx} className="block mb-1.5 last:mb-0">
+                            {paragraph}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Post Interactive Actions */}
+                      <div className="flex items-center justify-between pt-2 border-t border-white/5 text-[10px] font-mono font-bold">
+                        <div className="flex items-center gap-1 opacity-50">
+                          <ThumbsUp className="w-3 h-3 text-[#00a36c]" />
+                          <span>{linkedinLikes[linkedinPosts[selectedPostTab].id]} likes</span>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const pId = linkedinPosts[selectedPostTab].id;
+                              const isLiked = likedPosts[pId];
+                              setLikedPosts({ ...likedPosts, [pId]: !isLiked });
+                              setLinkedinLikes({
+                                ...linkedinLikes,
+                                [pId]: isLiked 
+                                  ? linkedinLikes[pId] - 1 
+                                  : linkedinLikes[pId] + 1
+                              });
+                            }}
+                            className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                              likedPosts[linkedinPosts[selectedPostTab].id]
+                                ? 'bg-[#00a36c]/20 text-[#00a36c]'
+                                : isSaudiGreenMode 
+                                  ? 'hover:bg-white/5 text-white/60 hover:text-white'
+                                  : 'hover:bg-black/5 text-[#0d5c56]/70 hover:text-[#0d5c56]'
+                            }`}
+                          >
+                            <ThumbsUp className={`w-3 h-3 ${likedPosts[linkedinPosts[selectedPostTab].id] ? 'fill-[#00a36c] text-[#00a36c]' : ''}`} />
+                            <span>{likedPosts[linkedinPosts[selectedPostTab].id] ? 'Liked' : 'Like'}</span>
+                          </button>
+
+                          <a
+                            href="https://www.linkedin.com/in/mubinroshan/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-all ${
+                              isSaudiGreenMode 
+                                ? 'hover:bg-white/5 text-white/55 hover:text-white' 
+                                : 'hover:bg-black/5 text-[#0d5c56]/65 hover:text-[#0d5c56]'
+                            }`}
+                          >
+                            <Share2 className="w-3 h-3" />
+                            <span>Share</span>
+                          </a>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
               </div>
             </div>
           </div>
@@ -662,9 +1283,9 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
               )}
             </div>
 
-            {/* Dynamic Subdivision Field based on selections of Saudi Arabia or India */}
+            {/* Dynamic Subdivision Field based on selections of any valid country */}
             <AnimatePresence>
-              {(place.toLowerCase().trim() === 'saudi arabia' || place.toLowerCase().trim() === 'india') && (
+              {(countries.some(c => c.toLowerCase() === place.toLowerCase().trim()) || place.toLowerCase().trim() === 'uae' || place.toLowerCase().trim() === 'usa' || place.toLowerCase().trim() === 'uk') && (
                 <motion.div 
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
@@ -675,7 +1296,7 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                 >
                   <label className="flex items-center gap-1.5 text-xs font-mono text-white/70 uppercase font-semibold">
                     <MapPin className="w-3.5 h-3.5 text-[#00a36c]" />
-                    <span>{place.toLowerCase().trim() === 'saudi arabia' ? 'Saudi Region' : 'Select Your State'}</span>
+                    <span>{getSubdivisionLabelAndPlaceholder(place).label}</span>
                     <span className="text-red-500/80 font-bold">*</span>
                   </label>
                   <div className="relative">
@@ -692,7 +1313,7 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                         setActiveSubDropdownIndex(-1);
                       }}
                       onKeyDown={handleSubDivisionKeyDown}
-                      placeholder={place.toLowerCase().trim() === 'saudi arabia' ? "Select or search Saudi Region (e.g. Ar Riyadh, Mecca)" : "Select or search State (all 28 states of India)"}
+                      placeholder={getSubdivisionLabelAndPlaceholder(place).placeholder}
                       className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
                         errors.subDivision ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
                         isSaudiGreenMode 
