@@ -133,6 +133,7 @@ export default function App() {
               setSelectedStory(story);
               handleTabChange('story');
             }}
+            isSaudiGreenMode={isSaudiGreenMode}
           />
         </section>
 

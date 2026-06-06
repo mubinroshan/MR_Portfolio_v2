@@ -14,7 +14,9 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
   
   const handleNavClick = (tab: TabID) => {
     setActiveTab(tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (tab === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const copyEmailToClipboard = () => {

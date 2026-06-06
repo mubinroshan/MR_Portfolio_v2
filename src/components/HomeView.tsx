@@ -24,12 +24,14 @@ interface HomeViewProps {
   setActiveTab: (tab: TabID) => void;
   setSelectedProject: (proj: Project | null) => void;
   setSelectedStory: (story: StoryItem | null) => void;
+  isSaudiGreenMode?: boolean;
 }
 
 export default function HomeView({ 
   setActiveTab, 
   setSelectedProject, 
-  setSelectedStory 
+  setSelectedStory,
+  isSaudiGreenMode = false
 }: HomeViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [greeting, setGreeting] = useState('Good Evening');
@@ -135,19 +137,29 @@ export default function HomeView({
           <div className="pt-4 max-w-2xl relative">
             <div className="relative group/search">
               <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400 group-focus-within/search:text-[#00a36c] transition-colors" />
+                <Search className={`h-5 w-5 transition-colors ${
+                  isSaudiGreenMode 
+                    ? 'text-gray-400 group-focus-within/search:text-[#00a36c]' 
+                    : 'text-[#0d5c56]/40 group-focus-within/search:text-[#00a36c]'
+                }`} />
               </span>
               <input 
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search projects & professional keywords (e.g., Security+, SQL, Python, HL7...)"
-                className="w-full bg-white/[0.03] border border-white/10 group-hover/search:border-white/20 focus:border-[#00a36c] focus:ring-1 focus:ring-[#00a36c]/40 rounded-2xl pl-12 pr-10 py-3.5 text-base text-white placeholder-white/30 focus:outline-none transition-all duration-300 font-sans shadow-lg"
+                className={`w-full border rounded-2xl pl-12 pr-10 py-3.5 text-base focus:outline-none focus:ring-1 transition-all duration-300 font-sans shadow-lg ${
+                  isSaudiGreenMode
+                    ? 'bg-white/[0.02] border-white/10 group-hover/search:border-white/20 focus:border-[#00a36c] focus:ring-[#00a36c]/40 text-teal-200 placeholder-teal-600/50'
+                    : 'bg-white/80 border-[#0d5c56]/15 group-hover/search:border-[#0d5c56]/30 focus:border-[#00a36c] focus:ring-[#00a36c]/40 text-[#0d5c56] placeholder-teal-700/60'
+                }`}
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-white transition-colors"
+                  className={`absolute inset-y-0 right-0 pr-4 flex items-center transition-colors ${
+                    isSaudiGreenMode ? 'text-gray-400 hover:text-white' : 'text-[#0d5c56]/40 hover:text-[#0d5c56]'
+                  }`}
                 >
                   <X className="h-5 w-5" />
                 </button>

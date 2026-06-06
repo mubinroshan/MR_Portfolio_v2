@@ -361,8 +361,10 @@ export default function Header({
                   <button
                     key={item.id}
                     onClick={() => {
-                      setActiveTab(item.id as TabID);
                       setMobileMenuOpen(false);
+                      setTimeout(() => {
+                        setActiveTab(item.id as TabID);
+                      }, 250);
                     }}
                     className={`w-full text-left px-5 py-3 rounded-xl border text-sm font-bold transition-all flex items-center justify-between outline-none focus:outline-none ${
                       isActive
@@ -405,8 +407,10 @@ export default function Header({
                     ) : (
                       <button
                         onClick={() => {
-                          if (link.action) link.action();
                           setMobileMenuOpen(false);
+                          setTimeout(() => {
+                            if (link.action) link.action();
+                          }, 250);
                         }}
                         className="flex items-center gap-2 w-full text-left px-4 py-2.5 rounded-xl border border-transparent text-xs text-[#FAF6EB]/80 hover:text-[#FAF6EB] hover:bg-[#FAF6EB]/10 font-mono transition-colors mobile-resource-link"
                       >
