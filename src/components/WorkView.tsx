@@ -188,44 +188,71 @@ export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: idx * 0.05 }}
-              whileHover={{ scale: 1.02 }}
+              whileHover="hover"
+              variants={{
+                hover: {
+                  y: -6,
+                  scale: 1.018,
+                  borderColor: 'rgba(0, 163, 108, 0.4)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  transition: { type: 'spring', stiffness: 300, damping: 18 }
+                }
+              }}
               tabIndex={0}
               onClick={() => setSelectedProject(proj)}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedProject(proj); } }}
-              className="group cursor-pointer bg-white/[0.03] border border-white/10 hover:border-brand-green-light/40 rounded-3xl p-6 transition-all duration-300 flex flex-col justify-between hover:bg-white/[0.05] h-[400px] relative overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              className="group cursor-pointer bg-white/[0.03] border border-white/10 rounded-3xl p-6 transition-all duration-300 flex flex-col justify-between h-[400px] relative overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-white/40">
+                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest font-semibold group-hover:text-teal-400 transition-colors">
                     {proj.category}
                   </span>
-                  <span className="text-[9px] font-mono px-2 py-0.5 bg-white/[0.02] border border-white/10 rounded-full text-white/40">
-                    {proj.year}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[9px] font-mono px-2 py-0.5 bg-white/[0.02] border border-white/10 rounded-full text-white/40 group-hover:border-[#00a36c]/35 group-hover:text-white transition-all">
+                      {proj.year}
+                    </span>
+                    <motion.div
+                      variants={{
+                        hover: { x: 2, y: -2, scale: 1.15 }
+                      }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                      className="text-white/30 group-hover:text-[#00a36c] transition-colors"
+                    >
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </motion.div>
+                  </div>
                 </div>
 
                 {/* Large beautifully styled icon tile */}
-                <div className="w-full h-36 rounded-2xl overflow-hidden bg-black p-1.5 border border-white/10 flex items-center justify-center">
+                <div className="w-full h-36 rounded-2xl overflow-hidden bg-black p-1.5 border border-white/10 group-hover:border-[#00a36c]/25 transition-colors flex items-center justify-center relative">
                   <img 
                     src={proj.image} 
                     alt={proj.title} 
-                    className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover rounded-xl group-hover:scale-[1.04] transition-transform duration-500 will-change-transform"
                     referrerPolicy="no-referrer"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 </div>
 
                 <h2 className="text-lg font-serif text-white group-hover:text-[#00a36c] transition-colors mt-2">
                   {proj.title}
                 </h2>
 
-                <p className="text-xs text-white/50 line-clamp-2">
+                <p className="text-xs text-white/50 line-clamp-2 leading-relaxed">
                   {proj.description}
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-1.5 pt-3">
+              {/* Ambient radial accent flare at the bottom right corner */}
+              <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-[#00a36c]/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+              <div className="flex flex-wrap gap-1.5 pt-3 relative z-10">
                 {proj.tags.slice(0, 3).map(tag => (
-                  <span key={tag} className="text-[9px] font-mono px-2 py-0.5 rounded bg-white/[0.01] text-white/40 border border-white/10">
+                  <span 
+                    key={tag} 
+                    className="text-[9px] font-mono px-2 py-0.5 rounded bg-white/[0.01] text-white/40 border border-white/10 group-hover:border-[#00a36c]/20 group-hover:text-teal-400 group-hover:bg-[#00a36c]/5 transition-all duration-300"
+                  >
                     #{tag}
                   </span>
                 ))}

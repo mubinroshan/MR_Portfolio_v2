@@ -58,7 +58,7 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
           {/* Signature text */}
           <div className="space-y-1">
             <div className="font-serif italic text-3xl text-gray-100 relative group flex items-center justify-center gap-1.5 select-none tracking-wider font-extrabold font-serif">
-              Secure <Heart className="w-5 h-5 text-teal-400 fill-current animate-pulse" />
+              <Heart className="w-6 h-6 text-teal-400 fill-current animate-pulse" />
             </div>
             <span className="text-xs font-mono tracking-widest text-teal-400 uppercase">mubin roshan</span>
           </div>
@@ -69,13 +69,13 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
           <button
             id="copy-email-btn"
             onClick={copyEmailToClipboard}
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/[0.02] hover:bg-teal-500/10 border border-white/5 hover:border-teal-500/30 text-white/60 hover:text-white transition-all text-xs font-mono group cursor-pointer shadow-sm focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none"
+            className="flex items-center gap-3.5 px-6.5 py-4 rounded-2xl bg-white/[0.02] hover:bg-teal-500/10 border border-white/5 hover:border-teal-500/30 text-white/60 hover:text-white transition-all text-xs sm:text-sm font-mono group cursor-pointer shadow-md focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:outline-none"
             title="Click to copy email address"
           >
-            <Mail className="w-4 h-4 text-teal-400 group-hover:scale-110 transition-transform" />
-            <span className={!isSaudiGreenMode ? "text-white !text-white opacity-100" : ""}>mubinroshanksa@gmail.com</span>
+            <Mail className="w-5 h-5 text-teal-400 group-hover:scale-110 transition-transform" />
+            <span className={!isSaudiGreenMode ? "text-white !text-white opacity-100 font-medium" : "font-medium"}>mubinroshanksa@gmail.com</span>
             <span className="text-white/20">|</span>
-            <Copy className="w-3.5 h-3.5 text-white/30 group-hover:text-teal-300" />
+            <Copy className="w-4 h-4 text-white/30 group-hover:text-teal-300" />
           </button>
         </div>
 

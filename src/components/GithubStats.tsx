@@ -101,7 +101,7 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
   const [isUsingFallback, setIsUsingFallback] = useState(false);
   
   // Tooltip tracking state for contributions grid
-  const [hoveredDay, setHoveredDay] = useState<{ date: string; count: number; x: number; y: number } | null>(null);
+  const [hoveredDay, setHoveredDay] = useState<{ date: string; count: number; x: number; y: number; weekIndex: number } | null>(null);
 
   // Generate deterministic contribution data totaling exactly 265
   const contributionData = React.useMemo(() => {
@@ -545,7 +545,7 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
 
                 {/* Heatmap Outer overflow handler with elegant scrollbar support */}
                 <div className="overflow-x-auto overflow-y-visible pb-2 pt-1 -mx-2 px-2 mask-grad select-none relative">
-                  <div className="w-[780px] md:w-full relative">
+                  <div className="w-[780px] md:w-full relative pb-10">
                     
                     {/* Months header labels row */}
                     <div className="flex items-start mb-1 select-none">
@@ -601,7 +601,8 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
                                         date: day.date,
                                         count: day.count,
                                         x: rect.left - containerRect.left + rect.width / 2,
-                                        y: rect.top - containerRect.top
+                                        y: rect.top - containerRect.top,
+                                        weekIndex: wIdx
                                       });
                                     }
                                   }}
@@ -626,8 +627,12 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
                       }`}
                       style={{ 
                         left: `${hoveredDay.x}px`, 
-                        top: `${hoveredDay.y - 42}px`,
-                        transform: 'translateX(-50%)'
+                        top: `${hoveredDay.y + 18}px`,
+                        transform: hoveredDay.weekIndex < 5 
+                          ? 'translateX(-15%)' 
+                          : hoveredDay.weekIndex > 47 
+                            ? 'translateX(-85%)' 
+                            : 'translateX(-50%)'
                       }}
                     >
                       <div className="font-bold flex items-center gap-1">
