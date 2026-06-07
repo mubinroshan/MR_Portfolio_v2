@@ -325,7 +325,9 @@ body {
 
 /* Ensure white text is retained in light mode for elements with .keep-text-white */
 .keep-text-white, 
+.keep-text-white *,
 .theme-cream .keep-text-white,
+.theme-cream .keep-text-white *,
 .theme-cream button.keep-text-white,
 .theme-cream button.keep-text-white span,
 .theme-cream button.keep-text-white svg,
