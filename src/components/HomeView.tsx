@@ -22,6 +22,42 @@ import ProjectInsights from './ProjectInsights';
 import { DisplayCardsDemo } from '@/components/ui/demo';
 import Character3D from './Character3D';
 
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.1
+    }
+  }
+};
+
+const staggerItem = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.16, 1, 0.3, 1]
+    }
+  }
+};
+
+const characterItem = {
+  hidden: { opacity: 0, scale: 0.95, y: 15 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      duration: 0.9,
+      ease: [0.16, 1, 0.3, 1]
+    }
+  }
+};
+
 interface HomeViewProps {
   setActiveTab: (tab: TabID) => void;
   setSelectedProject: (proj: Project | null) => void;
@@ -96,9 +132,14 @@ export default function HomeView({
       className="space-y-20 pb-16"
     >
       {/* 1. HERO SECTION */}
-      <section className="space-y-6 pt-4 md:pt-8">
+      <motion.section 
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="space-y-6 pt-4 md:pt-8"
+      >
         {/* Social Row Handles */}
-        <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs font-mono text-gray-400">
+        <motion.div variants={staggerItem} className="flex flex-wrap gap-x-4 gap-y-2 text-xs font-mono text-gray-400">
           <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-[#00a36c] flex items-center gap-1 transition-colors">
             <span className="text-[#00a36c]/60">//</span> Twitter
           </a>
@@ -111,34 +152,34 @@ export default function HomeView({
           <a href="mailto:mubinroshanksa@gmail.com" className="hover:text-[#00a36c] flex items-center gap-1 transition-colors">
             <span className="text-[#00a36c]/60">//</span> Email
           </a>
-        </div>
+        </motion.div>
 
         {/* Big clean bold typography matching Artistic Flair exactly, split into responsive cols */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
           {/* Left Side: Headline & Bio Info & Search Bar */}
           <div id="home-greeting-container" className="lg:col-span-7 flex flex-col gap-1.5 pb-5">
-            <span className="font-sans font-bold tracking-tighter text-2xl sm:text-3xl text-teal-400">
+            <motion.span variants={staggerItem} className="font-sans font-bold tracking-tighter text-2xl sm:text-3xl text-teal-400">
               Hey {greeting}!
-            </span>
+            </motion.span>
 
-            <span className="text-[#00a36c] font-mono text-[13px] tracking-widest uppercase font-bold">Cyber Security & Data Analyst</span>
+            <motion.span variants={staggerItem} className="text-[#00a36c] font-mono text-[13px] tracking-widest uppercase font-bold">
+              Cyber Security & Data Analyst
+            </motion.span>
             
             <motion.h1 
               id="home-main-headline"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              variants={staggerItem}
               className="text-[56px] sm:text-[80px] md:text-[112px] font-bold tracking-tighter leading-[0.95] text-white"
             >
               Mubin<br className="hidden md:inline"/> Roshan
             </motion.h1>
 
-            <p className="mt-6 text-white/50 text-lg md:text-xl leading-relaxed max-w-xl font-light">
+            <motion.p variants={staggerItem} className="mt-6 text-white/50 text-lg md:text-xl leading-relaxed max-w-xl font-light">
               Protecting digital frontiers at <span className="text-white hover:text-[#00a36c] transition-colors">Yanbu National Hospital</span>. Bridging the gap between complex data streams and clinical security protocols.
-            </p>
+            </motion.p>
 
             {/* Interactive Search Bar across portfolio */}
-            <div className="pt-4 max-w-2xl relative">
+            <motion.div variants={staggerItem} className="pt-4 max-w-2xl relative">
               <div className="relative group/search">
                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Search className={`h-5 w-5 transition-colors ${
@@ -177,13 +218,16 @@ export default function HomeView({
                   </span>
                 </div>
               )}
-            </div>
+            </motion.div>
           </div>
 
-          {/* Right Side: Interactive 3D Spline Character (fits exactly on the right side on desktop) */}
-          <div className="lg:col-span-5 w-full">
+          {/* Right Side: Interactive 3D Spline Character */}
+          <motion.div 
+            variants={characterItem}
+            className="lg:col-span-5 w-full lg:-mt-12 xl:-mt-16"
+          >
             <Character3D isSaudiGreenMode={isSaudiGreenMode} />
-          </div>
+          </motion.div>
         </div>
 
 
@@ -227,7 +271,7 @@ export default function HomeView({
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {isSearching ? (
         /* ================= SEARCH RESULTS GRID ================= */

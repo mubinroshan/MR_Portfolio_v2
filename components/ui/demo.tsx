@@ -1,5 +1,4 @@
-"use client";
-
+import { CopyCode } from "@/components/ui/copy-code-button";
 import DisplayCards from "@/components/ui/display-cards";
 import { Sparkles, Shield, Database } from "lucide-react";
 
@@ -37,7 +36,7 @@ const defaultCards = [
   },
 ];
 
-function DisplayCardsDemo() {
+export function DisplayCardsDemo() {
   return (
     <div className="flex h-56 xs:h-64 sm:h-[18rem] md:h-[22rem] lg:h-[26rem] xl:h-[28rem] 2xl:h-[30rem] w-full items-center justify-center py-6 sm:py-8 select-none overflow-visible">
       <div className="w-full max-w-full flex justify-center overflow-visible">
@@ -47,4 +46,10 @@ function DisplayCardsDemo() {
   );
 }
 
-export { DisplayCardsDemo };
+export default function DemoOne() {
+  return (
+    <div className="w-full">
+      <CopyCode />
+    </div>
+  );
+}

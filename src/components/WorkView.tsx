@@ -16,6 +16,7 @@ import {
   Heart
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import GithubStats from './GithubStats';
 
 const WorkSkeleton = () => {
   return (
@@ -261,6 +262,9 @@ export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }
           ))}
         </div>
       )}
+
+      {/* GitHub telemetry stats and contribution heatmap */}
+      <GithubStats isSaudiGreenMode={isSaudiGreenMode} />
 
       {/* 2. DYNAMICAL CLINICAL NETWORK SECURITY RADAR (Interactive Demo Widget) */}
       <section className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 space-y-6">
