@@ -11,7 +11,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const TimelineSkeleton = () => {
   return (
@@ -59,6 +59,112 @@ const TimelineSkeleton = () => {
         );
       })}
     </div>
+  );
+};
+
+const TimelineCard = ({ item }: { item: TimelineItem }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [mobileHeight, setMobileHeight] = useState<string | number>('auto');
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (!containerRef.current || !contentRef.current) return;
+      
+      const isMobile = window.innerWidth < 640;
+      if (!isMobile) {
+        setMobileHeight('auto');
+        return;
+      }
+
+      // Measured width of the card container on the phone screen
+      const width = containerRef.current.getBoundingClientRect().width;
+      
+      // scrollHeight of the inner content wrapper
+      const contentHeight = contentRef.current.scrollHeight;
+      
+      // Vertical padding inside: p-8 is 2rem/32px on top and bottom, totaling 64px padding
+      const totalPadding = 64; 
+      const naturalHeight = contentHeight + totalPadding;
+
+      if (naturalHeight > width) {
+        // Content exceeds a perfect square, let it expand naturally so all text is 100% visible
+        setMobileHeight('auto');
+      } else {
+        // Content fits perfectly, force it into a correct 1:1 aspect-ratio square
+        setMobileHeight(width);
+      }
+    };
+
+    // Run measurement on mount with a safe render delay, and register resize listeners
+    const timer = setTimeout(handleResize, 150);
+    window.addEventListener('resize', handleResize);
+    
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined' && containerRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        handleResize();
+      });
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', handleResize);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, [item]);
+
+  return (
+    <motion.div 
+      ref={containerRef}
+      style={{ height: mobileHeight }}
+      whileHover={{ scale: 1.02 }}
+      tabIndex={0}
+      className="bg-white/[0.03] border border-white/10 rounded-3xl hover:border-teal-500/40 hover:bg-white/[0.05] p-8 sm:p-9 transition-all duration-300 shadow-xl outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black flex flex-col justify-center"
+    >
+      <div ref={contentRef} className="space-y-5 w-full">
+        {/* Badge Category pill */}
+        <div className="flex flex-wrap gap-2.5">
+          <span className={`text-[10px] sm:text-xs uppercase tracking-wider px-3 py-1 rounded-md font-mono font-semibold border ${
+            item.category === 'career' ? 'bg-[#005639]/30 text-[#00a36c] border-brand-green-light/35' :
+            item.category === 'certification' ? 'bg-amber-950/20 text-amber-400 border-amber-800/30' :
+            'bg-blue-950/20 text-blue-400 border-blue-900/30'
+          }`}>
+            {item.category}
+          </span>
+          {item.tags.map(tag => (
+            <span key={tag} className="text-xs font-mono text-white/50 bg-white/[0.02] border border-white/10 px-2.5 py-0.5 rounded">
+              #{tag}
+            </span>
+          ))}
+        </div>
+
+        {/* Title */}
+        <h3 className="text-xl sm:text-2xl font-serif text-white hover:text-teal-300 transition-colors leading-snug text-left">
+          {item.title}
+        </h3>
+
+        {/* Description */}
+        <p className="text-base text-gray-300 leading-relaxed font-sans font-light text-left">
+          {item.description}
+        </p>
+
+        {/* Details Bullet breakdown if provided */}
+        {item.details && item.details.length > 0 && (
+          <div className="border-t border-white/[0.06] pt-4 mt-3 space-y-3">
+            {item.details.map((detail, dIdx) => (
+              <div key={dIdx} className="flex items-start gap-3 text-sm sm:text-base text-gray-400 text-left">
+                 <span className="text-teal-400 font-extrabold mt-0.5">•</span>
+                 <span className="leading-relaxed font-light text-left">{detail}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 };
 
@@ -190,49 +296,7 @@ export default function TimelineView() {
 
                   {/* 3. Card detail side */}
                   <div className="sm:w-[44%] pl-12 sm:pl-0 relative w-full">
-                    <motion.div 
-                      whileHover={{ scale: 1.02 }}
-                      tabIndex={0}
-                      className="bg-white/[0.03] border border-white/10 rounded-3xl hover:border-teal-500/40 hover:bg-white/[0.05] p-8 sm:p-9 transition-all duration-300 shadow-xl space-y-5 outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-                    >
-                      {/* Badge Category pill */}
-                      <div className="flex flex-wrap gap-2.5">
-                        <span className={`text-[10px] sm:text-xs uppercase tracking-wider px-3 py-1 rounded-md font-mono font-semibold border ${
-                          item.category === 'career' ? 'bg-[#005639]/30 text-[#00a36c] border-brand-green-light/35' :
-                          item.category === 'certification' ? 'bg-amber-950/20 text-amber-400 border-amber-800/30 font-bold' :
-                          'bg-blue-950/20 text-blue-400 border-blue-900/30'
-                        }`}>
-                          {item.category}
-                        </span>
-                        {item.tags.map(tag => (
-                          <span key={tag} className="text-xs font-mono text-white/50 bg-white/[0.02] border border-white/10 px-2.5 py-0.5 rounded">
-                            #{tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="text-xl sm:text-2xl font-serif text-white hover:text-teal-300 transition-colors leading-snug">
-                        {item.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-base text-gray-300 leading-relaxed font-sans font-light">
-                        {item.description}
-                      </p>
-
-                      {/* Details Bullet breakdown if provided */}
-                      {item.details && item.details.length > 0 && (
-                        <div className="border-t border-white/[0.06] pt-4 mt-3 space-y-3">
-                          {item.details.map((detail, dIdx) => (
-                            <div key={dIdx} className="flex items-start gap-3 text-sm sm:text-base text-gray-400">
-                               <span className="text-teal-400 font-extrabold mt-0.5">•</span>
-                               <span className="leading-relaxed font-light">{detail}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </motion.div>
+                    <TimelineCard item={item} />
                   </div>
                 </motion.div>
               );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TabID } from '../types';
 import { AVATAR_URL } from '../data';
-import mrLogoTealRemovebg from '../../mr_logo_teal_removebg.png';
+import mrLogoTealRemovebg from '../assets/images/mr_logo_teal_removebg.png';
 import { 
   Twitter, 
   Linkedin, 
@@ -69,21 +69,35 @@ export default function Header({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#0b0a0c]/85 backdrop-blur-md border-b border-white/[0.04]">
-      <div className="max-w-5xl mx-auto px-2 lg:px-4 py-2.5 lg:py-3 flex items-center justify-between gap-1.5 lg:gap-3">
+      <div className="max-w-5xl mx-auto px-2 lg:px-4 py-2.5 lg:py-3 flex items-center justify-between gap-1.5 lg:gap-3 relative">
         
         {/* Mobile Menu Button - 3 bar icon at top left */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-1.5 text-gray-300 hover:text-white hover:bg-white/[0.05] rounded-xl focus:outline-none shrink-0"
+          className="md:hidden p-1.5 text-gray-300 hover:text-white hover:bg-white/[0.05] rounded-xl focus:outline-none shrink-0 z-10"
           aria-label="Toggle Navigation Menu"
         >
           {mobileMenuOpen ? <X className="w-5.5 h-5.5 text-teal-400" /> : <Menu className="w-5.5 h-5.5" />}
         </button>
 
+        {/* Mobile Centered Logo - perfectly centered on mobile browsers in the middle of the page */}
+        <div 
+          onClick={() => setActiveTab('home')} 
+          className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center md:hidden cursor-pointer gap-1.5 z-10"
+          id="nav-avatar-mobile"
+        >
+          <img 
+            src={mrLogoTealRemovebg} 
+            alt="Mubin Roshan Logo" 
+            className="h-8 w-auto object-contain transition-transform duration-300 active:scale-95"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+
         {/* Left: Avatar replaced with MR_LOGO fitting the header directly without backgrounds or circles */}
         <div 
           onClick={() => setActiveTab('home')} 
-          className="flex items-center gap-1.5 sm:gap-2.5 cursor-pointer group select-none outline-none focus:outline-none shrink-0"
+          className="hidden md:flex items-center gap-1.5 sm:gap-2.5 cursor-pointer group select-none outline-none focus:outline-none shrink-0"
           id="nav-avatar"
         >
           <img 

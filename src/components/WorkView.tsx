@@ -301,7 +301,7 @@ export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }
                     className={`${cardBg} border rounded-xl p-4 flex items-center justify-between transition-all`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg ${iconBg}`}>
+                      <div className={`p-2 rounded-lg ${iconBg} keep-text-white`}>
                         {node.type === 'database' ? <Database className="w-4 h-4" /> : node.type === 'iot' ? <Layers className="w-4 h-4" /> : <Terminal className="w-4 h-4" />}
                       </div>
                       <div>

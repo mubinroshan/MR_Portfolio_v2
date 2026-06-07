@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { User, Mail, MapPin, MessageSquare, Send, ShieldCheck, RefreshCw, CheckCircle2, Linkedin, ExternalLink, ThumbsUp, Heart, Share2, Users, Plus, Check } from 'lucide-react';
 import NotificationToast from './NotificationToast';
 import mubinAvatar from '../assets/images/mubin_avatar_1780675936140.png';
+import mrLogoTeal from '../assets/images/mr_logo_teal_removebg.png';
 
 const countries = [
   "Palestine",
@@ -946,12 +947,12 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                 {/* Profile Photo and Quick Stats */}
                 <div className="flex items-start justify-between">
                   <div className="relative -mt-12">
-                    <div className="w-16 h-16 rounded-2xl border-2 border-[#FAF6EB]/90 shadow-lg bg-emerald-900 overflow-hidden shrink-0">
+                    <div className="w-16 h-16 rounded-2xl border-2 border-[#FAF6EB]/90 shadow-lg bg-[#0d5c56]/20 backdrop-blur-md overflow-hidden shrink-0 flex items-center justify-center p-1">
                       <img 
-                        src={mubinAvatar} 
+                        src={mrLogoTeal} 
                         alt="Mubin Roshan" 
                         referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain pointer-events-none"
                       />
                     </div>
                     <div className="absolute -bottom-1 -right-1 bg-[#00a36c] text-white p-1 rounded-lg border border-white max-w-4 max-h-4 flex items-center justify-center">

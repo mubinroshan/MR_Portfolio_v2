@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { TabID } from '../types';
 import { Heart, ShieldCheck, Mail, Copy } from 'lucide-react';
 import NotificationToast from './NotificationToast';
-import mrLogoTealRemovebg from '../../mr_logo_teal_removebg.png';
+import mrLogoTealRemovebg from '../assets/images/mr_logo_teal_removebg.png';
 
 interface FooterProps {
   setActiveTab: (tab: TabID) => void;
