@@ -278,7 +278,7 @@ export default function TimelineView() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
-      className="max-w-5xl mx-auto space-y-12 pb-20"
+      className="max-w-[1360px] mx-auto space-y-12 pb-20"
     >
       {/* Page Title */}
       <div className="text-center space-y-5 pt-8">

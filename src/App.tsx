@@ -124,7 +124,7 @@ export default function App() {
       />
 
       {/* 3. MAIN SCROLL-SPY STACKED CONTENT */}
-      <main className="flex-grow max-w-5xl mx-auto px-4 sm:px-6 w-full z-10 pt-4 space-y-24 md:space-y-32">
+      <main className="flex-grow max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 w-full z-10 pt-4 space-y-24 md:space-y-32">
         <section id="home" className="scroll-mt-24">
           <HomeView 
             setActiveTab={handleTabChange}

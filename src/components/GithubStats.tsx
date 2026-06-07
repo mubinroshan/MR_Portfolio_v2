@@ -94,11 +94,11 @@ const FALLBACK_REPOS: GitHubRepo[] = [
 ];
 
 export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProps) {
-  const [profile, setProfile] = useState<GitHubProfile | null>(null);
-  const [repos, setRepos] = useState<GitHubRepo[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<GitHubProfile | null>(FALLBACK_PROFILE);
+  const [repos, setRepos] = useState<GitHubRepo[]>(FALLBACK_REPOS);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isUsingFallback, setIsUsingFallback] = useState(false);
+  const [isUsingFallback, setIsUsingFallback] = useState(true);
   
   // Tooltip tracking state for contributions grid
   const [hoveredDay, setHoveredDay] = useState<{ date: string; count: number; x: number; y: number; weekIndex: number } | null>(null);
@@ -239,20 +239,23 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
   };
 
   const fetchGitHubData = async () => {
-    setLoading(true);
     setError(null);
-    setIsUsingFallback(false);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 4500); // 4.5 seconds timeout
 
     try {
       // 1. Fetch Profile
-      const profileRes = await fetch('https://api.github.com/users/mubinroshan');
+      const profileRes = await fetch('https://api.github.com/users/mubinroshan', { signal: controller.signal });
       if (!profileRes.ok) {
         throw new Error(`Profile fetch error Status: ${profileRes.status}`);
       }
       const profileData = await profileRes.json();
 
       // 2. Fetch Repos
-      const reposRes = await fetch('https://api.github.com/users/mubinroshan/repos?sort=updated&per_page=10');
+      const reposRes = await fetch('https://api.github.com/users/mubinroshan/repos?sort=updated&per_page=10', { signal: controller.signal });
       if (!reposRes.ok) {
         throw new Error(`Repos fetch error Status: ${reposRes.status}`);
       }
@@ -273,23 +276,24 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
           updated_at: r.updated_at
         }));
 
-      setProfile({
-        avatar_url: profileData.avatar_url,
-        name: profileData.name || "Mubin Roshan",
-        login: profileData.login,
-        bio: profileData.bio || "Cybersecurity Analyst & Healthcare Data Analyst",
-        public_repos: profileData.public_repos,
-        followers: profileData.followers,
-        following: profileData.following
-      });
-      setRepos(formattedRepos.length > 0 ? formattedRepos : FALLBACK_REPOS.slice(0, 4));
+      if (formattedRepos.length > 0) {
+        setProfile({
+          avatar_url: profileData.avatar_url,
+          name: profileData.name || "Mubin Roshan",
+          login: profileData.login,
+          bio: profileData.bio || "Cybersecurity Analyst & Healthcare Data Analyst",
+          public_repos: profileData.public_repos,
+          followers: profileData.followers,
+          following: profileData.following
+        });
+        setRepos(formattedRepos);
+        setIsUsingFallback(false);
+      }
     } catch (err: any) {
-      console.warn("GitHub API limit exceeded or network error, applying fallback buffer:", err);
-      // Fallback fallback gracefully
-      setProfile(FALLBACK_PROFILE);
-      setRepos(FALLBACK_REPOS);
-      setIsUsingFallback(true);
+      console.warn("GitHub API live load failed (rate limited, aborted or custom proxy block). Keeping offline-first fallback dataset.", err);
+      // Keep existing states intact as they are initialized with the fallback values
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   };
@@ -325,32 +329,40 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
             className="grid grid-cols-1 md:grid-cols-12 gap-6"
           >
             {/* Left Profile Skeleton */}
-            <div className="md:col-span-4 rounded-3xl border border-white/5 bg-white/[0.01] p-6 space-y-6 animate-pulse">
+            <div className={`md:col-span-4 rounded-3xl border ${
+              isSaudiGreenMode 
+                ? 'border-white/5 bg-white/[0.01]' 
+                : 'border-[#0d5c56]/15 bg-[#faf6eb]'
+            } p-6 space-y-6 animate-pulse`}>
               <div className="flex flex-col items-center space-y-3">
-                <div className="w-20 h-20 rounded-full bg-white/5" />
-                <div className="h-4 bg-white/10 w-24 rounded" />
-                <div className="h-3 bg-white/5 w-16 rounded" />
+                <div className={`w-20 h-20 rounded-full ${isSaudiGreenMode ? 'bg-white/5' : 'bg-[#0d5c56]/10'}`} />
+                <div className={`h-4 ${isSaudiGreenMode ? 'bg-white/10' : 'bg-[#0d5c56]/20'} w-24 rounded`} />
+                <div className={`h-3 ${isSaudiGreenMode ? 'bg-white/5' : 'bg-[#0d5c56]/10'} w-16 rounded`} />
               </div>
-              <div className="h-12 bg-white/5 w-full rounded-xl" />
+              <div className={`h-12 ${isSaudiGreenMode ? 'bg-white/5' : 'bg-[#0d5c56]/10'} w-full rounded-xl`} />
               <div className="grid grid-cols-3 gap-2 pt-2">
-                <div className="h-10 bg-white/5 rounded-lg" />
-                <div className="h-10 bg-white/5 rounded-lg" />
-                <div className="h-10 bg-white/5 rounded-lg" />
+                <div className={`h-10 ${isSaudiGreenMode ? 'bg-white/5' : 'bg-[#0d5c56]/10'} rounded-lg`} />
+                <div className={`h-10 ${isSaudiGreenMode ? 'bg-white/5' : 'bg-[#0d5c56]/10'} rounded-lg`} />
+                <div className={`h-10 ${isSaudiGreenMode ? 'bg-white/5' : 'bg-[#0d5c56]/10'} rounded-lg`} />
               </div>
             </div>
 
             {/* Right Repos Skeleton */}
             <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[1, 2, 3, 4].map((n) => (
-                <div key={n} className="rounded-2xl border border-white/5 bg-white/[0.01] p-5 space-y-4 animate-pulse">
-                  <div className="h-4 bg-white/10 w-3/4 rounded" />
+                <div key={n} className={`rounded-2xl border ${
+                  isSaudiGreenMode 
+                    ? 'border-white/5 bg-white/[0.01]' 
+                    : 'border-[#0d5c56]/10 bg-[#faf6eb]'
+                } p-5 space-y-4 animate-pulse`}>
+                  <div className={`h-4 ${isSaudiGreenMode ? 'bg-white/10' : 'bg-[#0d5c56]/20'} w-3/4 rounded`} />
                   <div className="space-y-2">
-                    <div className="h-3 bg-white/5 w-full rounded" />
-                    <div className="h-3 bg-white/5 w-5/6 rounded" />
+                    <div className={`h-3 ${isSaudiGreenMode ? 'bg-white/5' : 'bg-[#0d5c56]/10'} w-full rounded`} />
+                    <div className={`h-3 ${isSaudiGreenMode ? 'bg-white/5' : 'bg-[#0d5c56]/10'} w-5/6 rounded`} />
                   </div>
                   <div className="flex justify-between pt-2">
-                    <div className="h-4 bg-[#0d5c56]/5 w-12 rounded" />
-                    <div className="h-4 bg-[#0d5c56]/5 w-16 rounded" />
+                    <div className={`h-4 ${isSaudiGreenMode ? 'bg-white/5' : 'bg-[#0d5c56]/10'} w-12 rounded`} />
+                    <div className={`h-4 ${isSaudiGreenMode ? 'bg-white/5' : 'bg-[#0d5c56]/10'} w-16 rounded`} />
                   </div>
                 </div>
               ))}

@@ -947,12 +947,12 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                 {/* Profile Photo and Quick Stats */}
                 <div className="flex items-start justify-between">
                   <div className="relative -mt-12">
-                    <div className="w-16 h-16 rounded-2xl border-2 border-[#FAF6EB]/90 shadow-lg bg-[#0d5c56]/20 backdrop-blur-md overflow-hidden shrink-0 flex items-center justify-center p-1">
+                    <div className="w-16 h-16 rounded-2xl border-2 border-[#FAF6EB]/90 shadow-lg bg-[#0d5c56]/20 backdrop-blur-md overflow-hidden shrink-0 flex items-center justify-center">
                       <img 
                         src={mrLogoTeal} 
                         alt="Mubin Roshan" 
                         referrerPolicy="no-referrer"
-                        className="w-full h-full object-contain pointer-events-none"
+                        className="w-full h-full object-cover pointer-events-none"
                       />
                     </div>
                     <div className="absolute -bottom-1 -right-1 bg-[#00a36c] text-white p-1 rounded-lg border border-white max-w-4 max-h-4 flex items-center justify-center">
@@ -965,7 +965,7 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                       isSaudiGreenMode ? 'bg-teal-500/10 text-teal-400' : 'bg-[#0d5c56]/10 text-[#0d5c56]'
                     }`}>
                       <Users className="w-3 w-3 shrink-0 text-[#00a36c]" />
-                      <span>500+ Contacts</span>
+                      <span>5000+ Connections</span>
                     </div>
                   </div>
                 </div>
@@ -973,15 +973,16 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                 {/* Typography profile values */}
                 <div className="space-y-1 text-left">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <h4 className={`text-base font-bold font-serif ${isSaudiGreenMode ? 'text-white' : 'text-teal-950'}`}>
-                      Mubin Roshan
+                    <h4 className={`text-base font-bold font-serif flex items-center gap-1 ${isSaudiGreenMode ? 'text-white' : 'text-teal-950'}`}>
+                      <span>Mubin Roshan</span>
+                      <CheckCircle2 className="w-[15px] h-[15px] text-sky-500 fill-sky-500 stroke-[2.5] text-white shrink-0 inline-block align-middle" title="Verified Account" />
                     </h4>
                     <span className="bg-blue-500 text-white text-[8px] font-bold tracking-widest uppercase px-1 rounded flex items-center justify-center shrink-0">
                       IN
                     </span>
                   </div>
-                  <p className={`text-xs font-sans leading-relaxed ${isSaudiGreenMode ? 'text-white/70' : 'text-teal-900/80'}`}>
-                    SecOps Analyst & Cybersecurity Expert • Yanbu National Hospital, Ministry of Health
+                  <p className={`text-xs font-sans leading-relaxed font-medium ${isSaudiGreenMode ? 'text-white/90' : 'text-[#0d5c56]'}`}>
+                    Cyber Security Aspirant | TBH | SOC | CEH V12 | NSE Certified 3 | Cisco | EC Council |
                   </p>
                   <p className="text-[10px] font-mono opacity-50 flex items-center gap-1">
                     <MapPin className="w-3 h-3 text-[#00a36c] shrink-0" />
@@ -996,10 +997,10 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                     onClick={() => setLinkedinConnected(!linkedinConnected)}
                     className={`flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-[11px] font-mono font-bold tracking-wider uppercase transition-all select-none cursor-pointer ${
                       linkedinConnected 
-                        ? 'bg-teal-500/20 border-teal-500/40 text-[#00a36c]'
+                        ? 'bg-teal-500/20 border-teal-500/40 text-[#00a36c] hover:text-[#00a36c]'
                         : isSaudiGreenMode 
-                          ? 'bg-[#00a36c]/80 border-[#00a36c] hover:bg-[#00a36c] text-white hover:shadow-md'
-                          : 'bg-[#0d5c56] border-[#0d5c56] hover:bg-[#09413c] text-[#FAF6EB] hover:shadow-md'
+                          ? 'bg-[#00a36c]/80 border-[#00a36c] hover:bg-[#00a36c] text-white !text-white hover:!text-white hover:shadow-md'
+                          : 'bg-[#0d5c56] border-[#0d5c56] hover:bg-[#09413c] text-white !text-white hover:!text-white hover:shadow-md'
                     }`}
                   >
                     {linkedinConnected ? (
@@ -1009,8 +1010,8 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                       </>
                     ) : (
                       <>
-                        <Plus className="w-3.5 h-3.5 stroke-[3]" />
-                        <span>Connect</span>
+                        <Plus className="w-3.5 h-3.5 stroke-[3] text-white !text-white" />
+                        <span className="text-white !text-white font-bold">Connect</span>
                       </>
                     )}
                   </button>
@@ -1039,22 +1040,30 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping"></span>
                   </div>
 
-                  {/* Micro Tabs */}
-                  <div className="flex rounded-lg overflow-hidden border border-white/5 p-1 bg-black/10">
-                    {linkedinPosts.map((post, idx) => (
-                      <button
-                        key={post.id}
-                        type="button"
-                        onClick={() => setSelectedPostTab(idx)}
-                        className={`flex-1 py-1 rounded-md text-[9px] font-mono font-bold transition-all cursor-pointer ${
-                          selectedPostTab === idx 
-                            ? 'bg-[#00a36c]/25 text-white shadow-sm' 
-                            : 'text-white/40 hover:text-white/70'
-                        }`}
-                      >
-                        {post.category}
-                      </button>
-                    ))}
+                  {/* Micro Tabs - Matches Full Card Width */}
+                  <div className="w-full">
+                    <div className={`flex rounded-lg overflow-hidden border p-0.5 ${
+                      isSaudiGreenMode 
+                        ? 'border-white/10 bg-black/25' 
+                        : 'border-[#0d5c56]/15 bg-black/5'
+                    }`}>
+                      {linkedinPosts.map((post, idx) => (
+                        <button
+                          key={post.id}
+                          type="button"
+                          onClick={() => setSelectedPostTab(idx)}
+                          className={`flex-1 py-0.5 sm:py-1 rounded-md text-[9px] xs:text-[10px] sm:text-xs font-mono font-bold whitespace-nowrap transition-all duration-300 cursor-pointer ${
+                            selectedPostTab === idx 
+                              ? 'bg-[#0d5c56] text-white shadow-sm font-bold' 
+                              : isSaudiGreenMode
+                                ? 'text-white/50 hover:text-white/85 hover:bg-white/5'
+                                : 'text-[#0d5c56]/60 hover:text-[#0d5c56] hover:bg-[#0d5c56]/5'
+                          }`}
+                        >
+                          {post.category}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Active Post Rendering Grid */}

@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import ProjectInsights from './ProjectInsights';
+import { DisplayCardsDemo } from '@/components/ui/demo';
+import Character3D from './Character3D';
 
 interface HomeViewProps {
   setActiveTab: (tab: TabID) => void;
@@ -111,70 +113,79 @@ export default function HomeView({
           </a>
         </div>
 
-        {/* Big clean bold typography matching Artistic Flair exactly */}
-        <div id="home-greeting-container" className="flex flex-col gap-1.5 pt-2 pb-5">
-          <span className="font-sans font-bold tracking-tighter text-2xl sm:text-3xl text-teal-400">
-            Hey {greeting}!
-          </span>
+        {/* Big clean bold typography matching Artistic Flair exactly, split into responsive cols */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
+          {/* Left Side: Headline & Bio Info & Search Bar */}
+          <div id="home-greeting-container" className="lg:col-span-7 flex flex-col gap-1.5 pb-5">
+            <span className="font-sans font-bold tracking-tighter text-2xl sm:text-3xl text-teal-400">
+              Hey {greeting}!
+            </span>
 
-          <span className="text-[#00a36c] font-mono text-[13px] tracking-widest uppercase font-bold">Cyber Security & Data Analyst</span>
-          
-          <motion.h1 
-            id="home-main-headline"
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-[56px] sm:text-[80px] md:text-[112px] font-bold tracking-tighter leading-[0.95] text-white"
-          >
-            Mubin<br className="hidden md:inline"/> Roshan
-          </motion.h1>
+            <span className="text-[#00a36c] font-mono text-[13px] tracking-widest uppercase font-bold">Cyber Security & Data Analyst</span>
+            
+            <motion.h1 
+              id="home-main-headline"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-[56px] sm:text-[80px] md:text-[112px] font-bold tracking-tighter leading-[0.95] text-white"
+            >
+              Mubin<br className="hidden md:inline"/> Roshan
+            </motion.h1>
 
-          <p className="mt-6 text-white/50 text-lg md:text-xl leading-relaxed max-w-xl font-light">
-            Protecting digital frontiers at <span className="text-white hover:text-[#00a36c] transition-colors">Yanbu National Hospital</span>. Bridging the gap between complex data streams and clinical security protocols.
-          </p>
+            <p className="mt-6 text-white/50 text-lg md:text-xl leading-relaxed max-w-xl font-light">
+              Protecting digital frontiers at <span className="text-white hover:text-[#00a36c] transition-colors">Yanbu National Hospital</span>. Bridging the gap between complex data streams and clinical security protocols.
+            </p>
 
-          {/* Interactive Search Bar across portfolio */}
-          <div className="pt-4 max-w-2xl relative">
-            <div className="relative group/search">
-              <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className={`h-5 w-5 transition-colors ${
-                  isSaudiGreenMode 
-                    ? 'text-gray-400 group-focus-within/search:text-[#00a36c]' 
-                    : 'text-[#0d5c56]/40 group-focus-within/search:text-[#00a36c]'
-                }`} />
-              </span>
-              <input 
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search projects & professional keywords (e.g., Security+, SQL, Python, HL7...)"
-                className={`w-full border rounded-2xl pl-12 pr-10 py-3.5 text-base focus:outline-none focus:ring-1 transition-all duration-300 font-sans shadow-lg ${
-                  isSaudiGreenMode
-                    ? 'bg-white/[0.02] border-white/10 group-hover/search:border-white/20 focus:border-[#00a36c] focus:ring-[#00a36c]/40 text-teal-200 placeholder-teal-600/50'
-                    : 'bg-white/80 border-[#0d5c56]/15 group-hover/search:border-[#0d5c56]/30 focus:border-[#00a36c] focus:ring-[#00a36c]/40 text-[#0d5c56] placeholder-teal-700/60'
-                }`}
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className={`absolute inset-y-0 right-0 pr-4 flex items-center transition-colors ${
-                    isSaudiGreenMode ? 'text-gray-400 hover:text-white' : 'text-[#0d5c56]/40 hover:text-[#0d5c56]'
+            {/* Interactive Search Bar across portfolio */}
+            <div className="pt-4 max-w-2xl relative">
+              <div className="relative group/search">
+                <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Search className={`h-5 w-5 transition-colors ${
+                    isSaudiGreenMode 
+                      ? 'text-gray-400 group-focus-within/search:text-[#00a36c]' 
+                      : 'text-[#0d5c56]/40 group-focus-within/search:text-[#00a36c]'
+                  }`} />
+                </span>
+                <input 
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search projects & professional keywords (e.g., Security+, SQL, Python, HL7...)"
+                  className={`w-full border rounded-2xl pl-12 pr-10 py-3.5 text-base focus:outline-none focus:ring-1 transition-all duration-300 font-sans shadow-lg ${
+                    isSaudiGreenMode
+                      ? 'bg-white/[0.02] border-white/10 group-hover/search:border-white/20 focus:border-[#00a36c] focus:ring-[#00a36c]/40 text-teal-200 placeholder-teal-600/50'
+                      : 'bg-white/80 border-[#0d5c56]/15 group-hover/search:border-[#0d5c56]/30 focus:border-[#00a36c] focus:ring-[#00a36c]/40 text-[#0d5c56] placeholder-teal-700/60'
                   }`}
-                >
-                  <X className="h-5 w-5" />
-                </button>
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className={`absolute inset-y-0 right-0 pr-4 flex items-center transition-colors ${
+                      isSaudiGreenMode ? 'text-gray-400 hover:text-white' : 'text-[#0d5c56]/40 hover:text-[#0d5c56]'
+                    }`}
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
+              {isSearching && (
+                <div className="flex items-center gap-2 mt-2.5 px-1 animate-fadeIn">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00a36c] animate-pulse"></span>
+                  <span className="text-xs font-mono text-[#00a36c]">
+                    Active Telemetry Filter: Found {totalResults} match{totalResults === 1 ? '' : 'es'} across portfolio
+                  </span>
+                </div>
               )}
             </div>
-            {isSearching && (
-              <div className="flex items-center gap-2 mt-2.5 px-1 animate-fadeIn">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00a36c] animate-pulse"></span>
-                <span className="text-xs font-mono text-[#00a36c]">
-                  Active Telemetry Filter: Found {totalResults} match{totalResults === 1 ? '' : 'es'} across portfolio
-                </span>
-              </div>
-            )}
+          </div>
+
+          {/* Right Side: Interactive 3D Spline Character (fits exactly on the right side on desktop) */}
+          <div className="lg:col-span-5 w-full">
+            <Character3D isSaudiGreenMode={isSaudiGreenMode} />
           </div>
         </div>
+
 
         {/* Credentials and Certifications Row (logo line simulation with auto-scroll) */}
         <div className="pt-4 border-t border-white/10 relative overflow-hidden select-none">
@@ -378,6 +389,11 @@ export default function HomeView({
       ) : (
         /* ================= STANDARD HERO GRID ================= */
         <>
+          {/* Interactive Stack Cards Column */}
+          <section className="py-4 flex justify-center w-full overflow-visible border-white/5 relative">
+            <DisplayCardsDemo />
+          </section>
+
           {/* 2. CURRENT PROJECTS GRID (Inspired by vjy.me card grid) */}
           <section className="space-y-6">
             <div className="flex items-end justify-between">

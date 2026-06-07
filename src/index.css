@@ -335,6 +335,35 @@ body {
   fill: none !important;
 }
 
+/* Ensure text and icons inside display cards are forced to be bright white or amber, even inside cream theme */
+.keep-bright-white,
+.theme-cream .keep-bright-white {
+  color: #ffffff !important;
+}
+
+.keep-bright-white-opacity,
+.theme-cream .keep-bright-white-opacity {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.keep-amber-star,
+.theme-cream .keep-amber-star {
+  color: #fbbf24 !important;
+  stroke: #fbbf24 !important;
+}
+
+.keep-emerald-icon,
+.theme-cream .keep-emerald-icon {
+  color: #10b981 !important;
+  stroke: #10b981 !important;
+}
+
+.keep-teal-icon,
+.theme-cream .keep-teal-icon {
+  color: #06b6d4 !important;
+  stroke: #06b6d4 !important;
+}
+
 /* Complete removal of the browser's default black focused box outlines on buttons, dropdowns & tabs */
 button, button:focus, button:active, button:focus-visible, 
 [role="button"], [role="button"]:focus, [role="button"]:focus-visible,

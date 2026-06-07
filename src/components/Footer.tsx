@@ -42,7 +42,7 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
       {/* Background Ambience decoration */}
       <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-[#00a36c]/10 blur-3xl rounded-full"></div>
 
-      <div className="max-w-5xl mx-auto px-4 space-y-8 relative">
+      <div className="max-w-[1360px] mx-auto px-4 lg:px-8 space-y-8 relative">
         
         {/* Centered Avatar and Calligraphy */}
         <div className="flex flex-col items-center gap-4">

@@ -69,7 +69,7 @@ export default function Header({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#0b0a0c]/85 backdrop-blur-md border-b border-white/[0.04]">
-      <div className="max-w-5xl mx-auto px-2 lg:px-4 py-2.5 lg:py-3 flex items-center justify-between gap-1.5 lg:gap-3 relative">
+      <div className="max-w-[1360px] mx-auto px-2 lg:px-8 py-2.5 lg:py-3 flex items-center justify-between gap-1.5 lg:gap-3 relative">
         
         {/* Mobile Menu Button - 3 bar icon at top left */}
         <button
