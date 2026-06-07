@@ -21,6 +21,7 @@ import { motion } from 'motion/react';
 import ProjectInsights from './ProjectInsights';
 import { DisplayCardsDemo } from '@/components/ui/demo';
 import Character3D from './Character3D';
+import ThreatBulletins from './ThreatBulletins';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -554,50 +555,7 @@ export default function HomeView({
               </button>
             </div>
 
-            <div className="space-y-4">
-              {STORIES_DATA.map((story) => (
-                <motion.div
-                  key={story.id}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  whileHover={{ scale: 1.02 }}
-                  tabIndex={0}
-                  onClick={() => setSelectedStory(story)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedStory(story); } }}
-                  className="group cursor-pointer p-6 rounded-2xl hover:bg-white/[0.03] border border-transparent hover:border-white/10 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
-                >
-                  <div className="space-y-2">
-                    {/* Meta details */}
-                    <div className="flex items-center gap-3 text-xs font-mono text-white/40">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5 text-white/30" />
-                        {story.date}
-                      </span>
-                      <span>•</span>
-                      <span className="text-[#00a36c] font-semibold uppercase">{story.category}</span>
-                    </div>
-                    {/* Serif Title */}
-                    <h3 className="text-xl font-serif text-white group-hover:text-emerald-300 transition-colors">
-                      {story.title}
-                    </h3>
-                    <p className="text-sm text-white/50 max-w-3xl line-clamp-2 leading-relaxed">
-                      {story.summary}
-                    </p>
-                  </div>
-
-                  {/* Right Arrow link */}
-                  <div className="flex items-center gap-2 self-start md:self-auto">
-                    <span className="text-xs font-mono text-white/40 group-hover:text-white/70 transition-colors bg-white/[0.02] px-2.5 py-1 rounded-md border border-white/10 animate-fadeIn">
-                      {getReadingTime(story.content)}
-                    </span>
-                    <div className="p-2 rounded-full bg-white/[0.02] border border-white/5 text-white/30 group-hover:text-[#00a36c] group-hover:bg-[#005639]/30 group-hover:border-brand-green/30 transition-all">
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            <ThreatBulletins isSaudiGreenMode={isSaudiGreenMode} />
           </section>
 
           {/* 4. CLINICAL BULLETIN SUBSTACK EMAIL BOX */}
