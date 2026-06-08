@@ -265,17 +265,17 @@ export default function StoryView({ selectedStory, setSelectedStory }: StoryView
             </div>
 
             {/* Newsletter reminder at end of post */}
-            <div className="mt-12 bg-[#121212]/50 border border-white/10 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="mt-12 bg-[#0B4F43] border border-[#0B4F43]/80 keep-bg-teal rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="space-y-0.5">
-                <div className="text-xs font-bold text-white font-mono flex items-center gap-1">
-                  <BookOpen className="w-4 h-4 text-[#00a36c]" />
+                <div className="text-xs font-bold text-white keep-bright-white font-mono flex items-center gap-1.5">
+                  <BookOpen className="w-4 h-4 text-white keep-bright-white" />
                   Mubin Roshan Bulletin Subscriptions
                 </div>
-                <p className="text-[11px] text-white/30">Stay up to speed with cybersecurity audits and ICU database workflows.</p>
+                <p className="text-[11px] text-white keep-bright-white">Stay up to speed with cybersecurity audits and ICU database workflows.</p>
               </div>
               <button 
                 onClick={() => setSelectedStory(null)}
-                className="px-4 py-2 border border-[#005639] hover:bg-[#005639]/30 text-[#00a36c] text-xs font-mono font-semibold rounded-xl transition-all"
+                className="px-5 py-2.5 bg-yellow-400 hover:bg-yellow-500 text-black keep-bg-yellow keep-text-black text-xs font-mono font-bold rounded-xl transition-all shadow-md active:scale-95 shrink-0"
               >
                 Sign Up Bulletins
               </button>

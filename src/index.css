@@ -348,6 +348,27 @@ body {
   color: rgba(255, 255, 255, 0.7) !important;
 }
 
+.keep-bg-teal,
+.theme-cream .keep-bg-teal {
+  background-color: #0B4F43 !important;
+  border-color: rgba(11, 79, 67, 0.8) !important;
+}
+
+.keep-bg-yellow,
+.theme-cream .keep-bg-yellow {
+  background-color: #facc15 !important;
+}
+
+.keep-bg-yellow:hover,
+.theme-cream .keep-bg-yellow:hover {
+  background-color: #eab308 !important;
+}
+
+.keep-text-black,
+.theme-cream .keep-text-black {
+  color: #000000 !important;
+}
+
 .keep-amber-star,
 .theme-cream .keep-amber-star {
   color: #fbbf24 !important;

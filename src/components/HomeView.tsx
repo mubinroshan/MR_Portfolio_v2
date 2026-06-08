@@ -141,8 +141,8 @@ export default function HomeView({
       >
         {/* Social Row Handles */}
         <motion.div variants={staggerItem} className="flex flex-wrap gap-x-4 gap-y-2 text-xs font-mono text-gray-400">
-          <a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-[#00a36c] flex items-center gap-1 transition-colors">
-            <span className="text-[#00a36c]/60">//</span> Twitter
+          <a href="https://x.com/mubinroshan" target="_blank" rel="noreferrer" className="hover:text-[#00a36c] flex items-center gap-1 transition-colors">
+            <span className="text-[#00a36c]/60">//</span> X (formerly Twitter)
           </a>
           <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-[#00a36c] flex items-center gap-1 transition-colors">
             <span className="text-[#00a36c]/60">//</span> LinkedIn

@@ -3,7 +3,6 @@ import { TabID } from '../types';
 import { AVATAR_URL } from '../data';
 import mrLogoTealRemovebg from '../assets/images/mr_logo_teal_removebg.png';
 import { 
-  Twitter, 
   Linkedin, 
   Instagram,
   Youtube, 
@@ -293,33 +292,67 @@ export default function Header({
 
         {/* Right: Quick actions */}
         <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-          <a 
-            href="https://www.linkedin.com/in/mubinroshan/" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            aria-label="LinkedIn Profile"
-            className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all hidden xl:flex"
-          >
-            <Linkedin className="w-4 h-4" />
-          </a>
-          <a 
-            href="https://www.instagram.com/mubin_richu" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            aria-label="Instagram Profile"
-            className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all hidden xl:flex"
-          >
-            <Instagram className="w-4 h-4" />
-          </a>
-          <a 
-            href="https://twitter.com" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            aria-label="Twitter Profile"
-            className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all hidden xl:flex"
-          >
-            <Twitter className="w-4 h-4" />
-          </a>
+          {/* LinkedIn Tooltip Container */}
+          <div className="relative group hidden xl:flex items-center justify-center">
+            <a 
+              href="https://www.linkedin.com/in/mubinroshan/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="LinkedIn Profile"
+              className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all"
+            >
+              <Linkedin className="w-4 h-4" />
+            </a>
+            <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 group-hover:mt-2.5 px-2.5 py-1 text-[10px] font-mono font-bold rounded-lg shadow-xl border pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-250 whitespace-nowrap z-50 ${
+              isSaudiGreenMode 
+                ? 'bg-[#FAF6EB] text-[#0d5c56] border-[#0d5c56]/20 shadow-[#0d5c56]/5' 
+                : 'bg-[#121212] text-white border-white/10'
+            }`}>
+              Connect professionally
+            </div>
+          </div>
+
+          {/* Instagram Tooltip Container */}
+          <div className="relative group hidden xl:flex items-center justify-center">
+            <a 
+              href="https://www.instagram.com/mubin_richu" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="Instagram Profile"
+              className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all"
+            >
+              <Instagram className="w-4 h-4" />
+            </a>
+            <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 group-hover:mt-2.5 px-2.5 py-1 text-[10px] font-mono font-bold rounded-lg shadow-xl border pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-250 whitespace-nowrap z-50 ${
+              isSaudiGreenMode 
+                ? 'bg-[#FAF6EB] text-[#0d5c56] border-[#0d5c56]/20 shadow-[#0d5c56]/5' 
+                : 'bg-[#121212] text-white border-white/10'
+            }`}>
+              Follow my updates
+            </div>
+          </div>
+
+          {/* X Tooltip Container */}
+          <div className="relative group hidden xl:flex items-center justify-center">
+            <a 
+              href="https://x.com/mubinroshan" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="X Profile"
+              className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+            </a>
+            <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 group-hover:mt-2.5 px-2.5 py-1 text-[10px] font-mono font-bold rounded-lg shadow-xl border pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-250 whitespace-nowrap z-50 ${
+              isSaudiGreenMode 
+                ? 'bg-[#FAF6EB] text-[#0d5c56] border-[#0d5c56]/20 shadow-[#0d5c56]/5' 
+                : 'bg-[#121212] text-white border-white/10'
+            }`}>
+              Follow on X
+            </div>
+          </div>
           
           {/* Professional Download Resume Button */}
           <button

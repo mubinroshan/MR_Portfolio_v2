@@ -1054,7 +1054,7 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                           onClick={() => setSelectedPostTab(idx)}
                           className={`flex-1 py-0.5 sm:py-1 rounded-md text-[9px] xs:text-[10px] sm:text-xs font-mono font-bold whitespace-nowrap transition-all duration-300 cursor-pointer ${
                             selectedPostTab === idx 
-                              ? 'bg-[#0d5c56] text-white shadow-sm font-bold' 
+                              ? 'bg-[#0d5c56] text-white keep-bright-white shadow-sm font-bold' 
                               : isSaudiGreenMode
                                 ? 'text-white/50 hover:text-white/85 hover:bg-white/5'
                                 : 'text-[#0d5c56]/60 hover:text-[#0d5c56] hover:bg-[#0d5c56]/5'
