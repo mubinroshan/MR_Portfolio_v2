@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { User, Mail, MapPin, MessageSquare, Send, ShieldCheck, RefreshCw, CheckCircle2, Linkedin, ExternalLink, ThumbsUp, Heart, Share2, Users, Plus, Check } from 'lucide-react';
 import NotificationToast from './NotificationToast';
+import { Component as ShatterButton } from '@/components/ui/shatter-button';
 import mubinAvatar from '../assets/images/mubin_avatar_1780675936140.png';
 import mrLogoTeal from '../assets/images/mr_logo_teal_removebg.png';
 
@@ -648,6 +649,7 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
   const [subDivision, setSubDivision] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [isMessageFocused, setIsMessageFocused] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [hasSubmittedSuccessfully, setHasSubmittedSuccessfully] = useState(false);
@@ -819,16 +821,19 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
 
   const handleIframeLoad = () => {
     if (submitInitiatedRef.current) {
-      setIsSubmitting(false);
-      setShowToast(true);
-      setHasSubmittedSuccessfully(true);
-      setName('');
-      setPlace('');
-      setSubDivision('');
-      setEmail('');
-      setMessage('');
-      submitInitiatedRef.current = false;
-      setTimeout(() => setShowToast(false), 4000);
+      // Delay showing the success confirmation popup until the shatter animation completes (1.2 seconds)
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setShowToast(true);
+        setHasSubmittedSuccessfully(true);
+        setName('');
+        setPlace('');
+        setSubDivision('');
+        setEmail('');
+        setMessage('');
+        submitInitiatedRef.current = false;
+        setTimeout(() => setShowToast(false), 4000);
+      }, 1200);
     }
   };
 
@@ -1423,13 +1428,24 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                 name="entry.2041270531"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
+                onFocus={() => setIsMessageFocused(true)}
+                onBlur={() => setIsMessageFocused(false)}
                 placeholder="Write clear operational requirements or inquiry text here..."
                 rows={4}
                 className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all resize-none ${
-                  errors.message ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
                   isSaudiGreenMode 
-                    ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
-                    : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
+                    ? 'bg-black/30 text-white placeholder-white/20' 
+                    : 'bg-white/50 text-teal-900 placeholder-teal-600/35'
+                } ${
+                  isMessageFocused
+                    ? message.length < 10
+                      ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 ring-2 ring-red-500/20'
+                      : 'border-emerald-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 ring-2 ring-emerald-500/20'
+                    : errors.message
+                    ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900'
+                    : isSaudiGreenMode 
+                      ? 'border-white/10 hover:border-teal-500/30' 
+                      : 'border-[#0d5c56]/20 hover:border-[#0d5c56]/40'
                 }`}
               />
               {errors.message && (
@@ -1445,15 +1461,24 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
             <input type="hidden" name="submissionTimestamp" value="-1" />
 
             {/* Submit Buttons */}
-            <button
+            <ShatterButton
               type="submit"
               disabled={isSubmitting}
-              className={`w-full group relative flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl border font-mono text-xs uppercase font-bold tracking-wider select-none outline-none focus:outline-none transition-all cursor-pointer text-white hover:text-white !text-white keep-text-white ${
-                isSubmitting ? 'bg-teal-850 border-teal-500/20 text-teal-400 cursor-not-allowed opacity-80' :
-                isSaudiGreenMode 
-                  ? 'bg-teal-600 border-[#00a36c]/40 hover:border-[#00a36c] hover:bg-teal-700 text-white hover:shadow-[0_4px_20px_rgba(0,163,108,0.2)]'
-                  : 'bg-[#0d5c56] border-[#0d5c56] hover:bg-[#09413c] text-white hover:shadow-lg font-bold'
-              }`}
+              shouldShatter={validate}
+              shatterColor={isSaudiGreenMode ? "#00a36c" : "#0d5c56"}
+              className="w-full group relative flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl border font-mono text-xs uppercase font-bold tracking-wider select-none outline-none focus:outline-none transition-all cursor-pointer text-white hover:text-white !text-white keep-text-white"
+              style={{
+                background: isSaudiGreenMode 
+                  ? 'linear-gradient(135deg, #0b504a 0%, #00a36c 100%)' 
+                  : 'linear-gradient(135deg, #0d5c56 0%, #09413c 100%)',
+                border: isSaudiGreenMode 
+                  ? '1px solid rgba(0, 163, 108, 0.4)' 
+                  : '1px solid rgba(13, 92, 86, 0.4)',
+                boxShadow: isSaudiGreenMode 
+                  ? '0 4px 20px rgba(0, 163, 108, 0.2)' 
+                  : '0 4px 20px rgba(13, 92, 86, 0.2)',
+                color: '#ffffff'
+              }}
             >
               {isSubmitting ? (
                 <>
@@ -1463,10 +1488,10 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
               ) : (
                 <>
                   <Send className="w-4 h-4 text-white keep-text-white group-hover:scale-115 transition-transform" />
-                  <span className="text-white keep-text-white font-bold">Your Message</span>
+                  <span className="text-white keep-text-white font-bold">SEND MESSAGE</span>
                 </>
               )}
-            </button>
+            </ShatterButton>
           </form>
         </div>
       </div>

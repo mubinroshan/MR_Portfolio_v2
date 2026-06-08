@@ -46,10 +46,8 @@ export function DisplayCardsDemo() {
   );
 }
 
+import { Component as ShatterButton } from "@/components/ui/shatter-button";
+
 export default function DemoOne() {
-  return (
-    <div className="w-full">
-      <CopyCode />
-    </div>
-  );
+  return <ShatterButton shatterColor="#00ffff" />;
 }

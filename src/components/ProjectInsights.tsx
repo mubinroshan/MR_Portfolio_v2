@@ -1,242 +1,283 @@
-import { useEffect, useRef, useState } from 'react';
-import * as d3 from 'd3';
-import { ShieldAlert, BookOpen, Layers } from 'lucide-react';
-import { motion } from 'motion/react';
+import { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Layers, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { BarChart, LineChart, CartesianGrid, XAxis, YAxis, Line } from 'recharts';
+import { cn } from '@/lib/utils';
+import {
+  ChartBar,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/ui/chart';
 
-interface InsightData {
-  domain: string;
-  completed: number;
+interface ProjectInsightsProps {
+  isSaudiGreenMode?: boolean;
 }
 
-const INSIGHTS_DATA: InsightData[] = [
-  { domain: 'Endpoint Security', completed: 4 },
-  { domain: 'Data Analytics', completed: 5 },
-  { domain: 'Cryptography', completed: 2 },
-  { domain: 'Compliance Audits', completed: 3 },
-  { domain: 'Network Defense', completed: 6 }
+const INSIGHTS_DATA = [
+  { domain: 'Endpoint Security', completed: 4, target: 7 },
+  { domain: 'Data Analytics', completed: 5, target: 8 },
+  { domain: 'Cryptography', completed: 2, target: 6 },
+  { domain: 'Compliance Audits', completed: 3, target: 6 },
+  { domain: 'Network Defense', completed: 6, target: 9 }
 ];
 
-export default function ProjectInsights() {
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [dimensions, setDimensions] = useState({ width: 600, height: 320 });
+const chartSlides = [
+  { id: "bar", label: "Bar chart visualization" },
+  { id: "line", label: "Line trend visualization" },
+] as const;
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const { width } = entry.contentRect;
-        setDimensions({
-          width: Math.max(width, 280),
-          height: 320
-        });
-      }
-    });
-    resizeObserver.observe(containerRef.current);
-    return () => resizeObserver.disconnect();
-  }, []);
+export default function ProjectInsights({ isSaudiGreenMode = false }: ProjectInsightsProps) {
+  const [slideIndex, setSlideIndex] = useState(0);
+  const activeSlide = chartSlides[slideIndex];
 
-  useEffect(() => {
-    if (!svgRef.current) return;
+  const goToSlide = (nextIndex: number) => {
+    setSlideIndex((nextIndex + chartSlides.length) % chartSlides.length);
+  };
 
-    // Clear previous elements
-    d3.select(svgRef.current).selectAll('*').remove();
+  const isCream = !isSaudiGreenMode;
 
-    const margin = { top: 40, right: 20, bottom: 50, left: 40 };
-    const width = dimensions.width - margin.left - margin.right;
-    const height = dimensions.height - margin.top - margin.bottom;
-
-    const svg = d3.select(svgRef.current)
-      .attr('width', dimensions.width)
-      .attr('height', dimensions.height)
-      .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
-
-    // X Scale
-    const x = d3.scaleBand()
-      .range([0, width])
-      .domain(INSIGHTS_DATA.map(d => d.domain))
-      .padding(0.42);
-
-    // X Axis
-    svg.append('g')
-      .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(x))
-      .selectAll('text')
-      .attr('class', 'font-mono text-[10px] fill-white/40')
-      .style('text-anchor', 'middle')
-      .attr('dy', '15px');
-
-    svg.select('.domain').attr('stroke', 'rgba(255,255,255,0.06)');
-    svg.selectAll('.tick line').attr('stroke', 'rgba(255,255,255,0.06)');
-
-    // Y Scale (up to max completed + 1 for perfect headroom)
-    const yValMax = d3.max(INSIGHTS_DATA, d => d.completed) || 6;
-    const y = d3.scaleLinear()
-      .domain([0, yValMax + 1])
-      .range([height, 0]);
-
-    // Y Axis (ticks step of 1)
-    svg.append('g')
-      .call(d3.axisLeft(y).ticks(yValMax + 1).tickFormat(d3.format('d')))
-      .selectAll('text')
-      .attr('class', 'font-mono text-[10px] fill-white/40');
-
-    svg.select('.domain').attr('stroke', 'rgba(255,255,255,0.06)');
-    svg.selectAll('.tick line').attr('stroke', 'rgba(255,255,255,0.06)');
-
-    // Horizontal Guidelines
-    svg.append('g')
-      .attr('class', 'grid-lines')
-      .style('stroke', 'rgba(255,255,255,0.04)')
-      .style('stroke-dasharray', '2,2')
-      .call(d3.axisLeft(y)
-        .ticks(yValMax + 1)
-        .tickSize(-width)
-        .tickFormat(() => '')
-      )
-      .select('.domain').remove();
-
-    // Definitions for Glowing linear gradients
-    const defs = svg.append('defs');
-    
-    const gradient = defs.append('linearGradient')
-      .attr('id', 'd3-teal-glow')
-      .attr('x1', '0%')
-      .attr('y1', '100%')
-      .attr('x2', '0%')
-      .attr('y2', '0%');
-
-    gradient.append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', '#004730');
-
-    gradient.append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', '#00d285');
-
-    // Grid Column groups for bars
-    const bars = svg.selectAll('.bar-group')
-      .data(INSIGHTS_DATA)
-      .enter()
-      .append('g')
-      .attr('class', 'bar-group');
-
-    // Adding backing rectangles to create hover background highlight slots
-    bars.append('rect')
-      .attr('x', d => (x(d.domain) || 0) - 6)
-      .attr('width', x.bandwidth() + 12)
-      .attr('y', 0)
-      .attr('height', height)
-      .attr('fill', 'rgba(255, 255, 255, 0.01)')
-      .attr('rx', 8)
-      .style('cursor', 'pointer')
-      .on('mouseover', function(event, d) {
-        d3.select(this).attr('fill', 'rgba(0, 163, 108, 0.03)');
-      })
-      .on('mouseout', function(event, d) {
-        d3.select(this).attr('fill', 'rgba(255, 255, 255, 0.01)');
-      });
-
-    // Render Neon Colored Bars with animation
-    bars.append('rect')
-      .attr('x', d => x(d.domain) || 0)
-      .attr('width', x.bandwidth())
-      .attr('y', height)
-      .attr('height', 0)
-      .attr('rx', 4)
-      .attr('ry', 4)
-      .attr('fill', 'url(#d3-teal-glow)')
-      .style('cursor', 'pointer')
-      .style('transition', 'fill 0.3s ease')
-      .on('mouseover', function(event, d) {
-        d3.select(this)
-          .attr('fill', '#00ffc4')
-          .style('filter', 'drop-shadow(0px 0px 8px rgba(0,255,196,0.5))');
-          
-        // Display animated details on hover
-        svg.append('text')
-          .attr('id', `tooltip-val-${d.domain.replace(/\s+/g, '')}`)
-          .attr('x', (x(d.domain) || 0) + x.bandwidth() / 2)
-          .attr('y', y(d.completed) - 14)
-          .attr('text-anchor', 'middle')
-          .attr('class', 'font-mono text-[10px] font-bold fill-[#00ffc4]')
-          .text(`${d.completed} Works`);
-      })
-      .on('mouseout', function(event, d) {
-        d3.select(this)
-          .attr('fill', 'url(#d3-teal-glow)')
-          .style('filter', 'none');
-          
-        svg.select(`#tooltip-val-${d.domain.replace(/\s+/g, '')}`).remove();
-      })
-      .transition()
-      .duration(850)
-      .delay((d, i) => i * 80)
-      .attr('y', d => y(d.completed))
-      .attr('height', d => height - y(d.completed));
-
-    // Value Labels on standard charts
-    bars.append('text')
-      .attr('class', 'font-mono text-[11px] fill-white/80 pointer-events-none text-center font-semibold')
-      .attr('x', d => (x(d.domain) || 0) + x.bandwidth() / 2)
-      .attr('y', height)
-      .attr('text-anchor', 'middle')
-      .transition()
-      .duration(850)
-      .delay((d, i) => i * 80)
-      .attr('y', d => y(d.completed) - 8)
-      .text(d => d.completed);
-
-  }, [dimensions]);
+  const chartConfig = useMemo(() => ({
+    completed: {
+      label: "Completed Projects",
+      color: isSaudiGreenMode ? "#00d285" : "#0d5c56",
+    },
+    target: {
+      label: "Target Scope",
+      color: isSaudiGreenMode ? "rgba(255, 255, 255, 0.15)" : "rgba(13, 92, 86, 0.22)",
+    },
+  }) satisfies ChartConfig, [isSaudiGreenMode]);
 
   return (
-    <div className="bg-white/[0.02] border border-white/10 rounded-3xl p-6 sm:p-8 space-y-6 relative overflow-hidden">
+    <div className={cn(
+      "border rounded-3xl p-6 sm:p-8 space-y-6 relative overflow-hidden transition-colors duration-300",
+      isCream 
+        ? "bg-transparent border-[#0d5c56]/15 text-[#0d5c56]" 
+        : "bg-white/[0.02] border-white/10 text-white"
+    )}>
       {/* Background radial soft light blur */}
-      <div className="absolute -bottom-16 -right-16 w-56 h-56 bg-teal-500/5 blur-3xl rounded-full select-none pointer-events-none"></div>
+      <div className={cn(
+        "absolute -bottom-16 -right-16 w-56 h-56 blur-3xl rounded-full select-none pointer-events-none transition-all",
+        isSaudiGreenMode ? "bg-teal-500/5" : "bg-teal-600/5"
+      )}></div>
       
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-5">
+      <div className={cn(
+        "flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-5",
+        isSaudiGreenMode ? "border-white/5" : "border-[#0d5c56]/10"
+      )}>
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono tracking-widest text-[#00a36c] uppercase font-bold">Secure Telemetry Analytics</span>
+            <span className={cn(
+              "text-[10px] font-mono tracking-widest uppercase font-bold",
+              isSaudiGreenMode ? "text-[#00a36c]" : "text-[#0d5c56]"
+            )}>
+              Secure Telemetry Analytics
+            </span>
             <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping"></span>
           </div>
-          <h3 className="text-xl font-serif text-white tracking-tight">Project Insights</h3>
-          <p className="text-xs text-white/40 leading-relaxed font-light">
-            Real-time D3 visualization displaying verified production security architecture assets across telemetry fields.
+          <h3 className={cn(
+            "text-xl font-serif tracking-tight",
+            isSaudiGreenMode ? "text-white" : "text-[#0d5c56]"
+          )}>
+            Project Insights
+          </h3>
+          <p className={cn(
+            "text-xs leading-relaxed font-light",
+            isSaudiGreenMode ? "text-white/40" : "text-[#0d5c56]/60"
+          )}>
+            Dynamic visualization displaying verified production security architecture assets across telemetry fields.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 bg-white/[0.02] border border-white/5 px-4 py-2.5 rounded-2xl font-mono text-xs text-white/50 w-fit shrink-0">
-          <Layers className="w-3.5 h-3.5 text-teal-400" />
+        <div className={cn(
+          "flex items-center gap-3 border px-4 py-2.5 rounded-2xl font-mono text-xs w-fit shrink-0 transition-all",
+          isSaudiGreenMode 
+            ? "bg-white/[0.02] border-white/5 text-white/50" 
+            : "bg-[#0d5c56]/5 border-[#0d5c56]/10 text-[#0d5c56]"
+        )}>
+          <Layers className={cn("w-3.5 h-3.5", isSaudiGreenMode ? "text-teal-400" : "text-[#0d5c56]")} />
           <span>Total completed: 20 domains config</span>
         </div>
       </div>
 
-      <div ref={containerRef} className="w-full relative bg-black/40 rounded-2xl border border-white/5 py-3 overflow-x-auto no-scrollbar">
-        <svg ref={svgRef} className="mx-auto block"></svg>
+      {/* Responsive Slide Canvas Container */}
+      <div className={cn(
+        "w-full relative rounded-2xl border py-5 px-2 overflow-hidden",
+        isSaudiGreenMode ? "bg-black/40 border-white/5" : "bg-white/40 border-[#0d5c56]/10"
+      )}>
+        <AnimatePresence initial={false} mode="wait">
+          <motion.div
+            key={activeSlide.id}
+            initial={{ opacity: 0, scale: 0.99, y: 3 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.99, y: -3 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full flex justify-center items-center"
+          >
+            {activeSlide.id === "bar" ? (
+              <ChartContainer className="w-full min-h-[16rem] max-h-[18rem]" config={chartConfig}>
+                <BarChart accessibilityLayer data={INSIGHTS_DATA}>
+                  <CartesianGrid 
+                    vertical={false} 
+                    stroke={isSaudiGreenMode ? "rgba(255,255,255,0.06)" : "rgba(13,92,86,0.08)"}
+                  />
+                  <XAxis
+                    axisLine={false}
+                    dataKey="domain"
+                    tickFormatter={(value) => value.split(' ')[0]}
+                    tickLine={false}
+                    tickMargin={10}
+                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 10, fontFamily: "monospace" }}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tickMargin={10}
+                    domain={[0, 10]}
+                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 10, fontFamily: "monospace" }}
+                  />
+                  <ChartTooltip
+                    content={<ChartTooltipContent indicator="dashed" />}
+                    cursor={false}
+                  />
+                  <ChartBar dataKey="completed" fill="var(--color-completed)" radius={4} seriesIndex={0} />
+                  <ChartBar dataKey="target" fill="var(--color-target)" radius={4} seriesIndex={1} />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <ChartContainer className="w-full min-h-[16rem] max-h-[18rem]" config={chartConfig}>
+                <LineChart accessibilityLayer data={INSIGHTS_DATA}>
+                  <CartesianGrid 
+                    vertical={false} 
+                    stroke={isSaudiGreenMode ? "rgba(255,255,255,0.06)" : "rgba(13,92,86,0.08)"}
+                  />
+                  <XAxis
+                    axisLine={false}
+                    dataKey="domain"
+                    tickFormatter={(value) => value.split(' ')[0]}
+                    tickLine={false}
+                    tickMargin={10}
+                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 10, fontFamily: "monospace" }}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tickMargin={10}
+                    domain={[0, 10]}
+                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 10, fontFamily: "monospace" }}
+                  />
+                  <ChartTooltip
+                    content={<ChartTooltipContent indicator="dot" />}
+                    cursor={false}
+                  />
+                  <Line 
+                    dataKey="completed" 
+                    type="monotone" 
+                    stroke="var(--color-completed)" 
+                    strokeWidth={3} 
+                    dot={{ fill: "var(--color-completed)", r: 4 }} 
+                    activeDot={{ r: 6 }}
+                  />
+                  <Line 
+                    dataKey="target" 
+                    type="monotone" 
+                    stroke="var(--color-target)" 
+                    strokeWidth={2} 
+                    strokeDasharray="4 4"
+                    dot={{ fill: "var(--color-target)", r: 3 }} 
+                    activeDot={{ r: 5 }}
+                  />
+                </LineChart>
+              </ChartContainer>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
+      {/* Control Navigation & Pagination Switcher */}
+      <div className={cn(
+        "flex w-full items-center justify-between gap-3 pt-4 border-t",
+        isSaudiGreenMode ? "border-white/5" : "border-[#0d5c56]/10"
+      )}>
+        <button
+          type="button"
+          aria-label="Previous chart"
+          className={cn(
+            "inline-flex size-9 items-center justify-center rounded-xl border transition-all cursor-pointer",
+            isSaudiGreenMode 
+              ? "border-white/10 text-white hover:bg-white/5" 
+              : "border-[#0d5c56]/20 text-[#0d5c56] hover:bg-[#0d5c56]/5"
+          )}
+          onClick={() => goToSlide(slideIndex - 1)}
+        >
+          <ChevronLeft className="size-4" />
+        </button>
+
+        <div className="flex items-center gap-2" role="tablist" aria-label="Project telemetry layouts">
+          {chartSlides.map((slide, index) => (
+            <button
+              key={slide.id}
+              type="button"
+              role="tab"
+              aria-label={slide.label}
+              aria-selected={index === slideIndex}
+              className={cn(
+                "rounded-full transition-all duration-300 cursor-pointer h-2.5",
+                index === slideIndex 
+                  ? `w-7 ${isSaudiGreenMode ? "bg-teal-400" : "bg-[#0d5c56]"}` 
+                  : `w-2.5 ${isSaudiGreenMode ? "bg-white/20 hover:bg-white/35" : "bg-[#0d5c56]/20 hover:bg-[#0d5c56]/35"}`
+              )}
+              onClick={() => goToSlide(index)}
+            />
+          ))}
+        </div>
+
+        <button
+          type="button"
+          aria-label="Next chart"
+          className={cn(
+            "inline-flex size-9 items-center justify-center rounded-xl border transition-all cursor-pointer",
+            isSaudiGreenMode 
+              ? "border-white/10 text-white hover:bg-white/5" 
+              : "border-[#0d5c56]/20 text-[#0d5c56] hover:bg-[#0d5c56]/5"
+          )}
+          onClick={() => goToSlide(slideIndex + 1)}
+        >
+          <ChevronRight className="size-4" />
+        </button>
+      </div>
+
+      {/* Static Highlights Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
-        <div className="bg-white/[0.01] border border-white/5 p-4 rounded-xl flex items-center gap-3">
+        <div className={cn(
+          "border p-4 rounded-xl flex items-center gap-3 transition-all",
+          isSaudiGreenMode ? "bg-white/[0.01] border-white/5" : "bg-[#0d5c56]/5 border-[#0d5c56]/10"
+        )}>
           <div className="w-2 h-2 rounded-full bg-teal-400"></div>
           <div className="space-y-0.5">
-            <div className="text-white font-medium">95.4% Success</div>
-            <div className="text-[10px] text-white/30">Incident drill closures</div>
+            <div className={cn("font-medium", isSaudiGreenMode ? "text-white" : "text-[#0d5c56]")}>95.4% Success</div>
+            <div className={isSaudiGreenMode ? "text-white/30" : "text-[#0d5c56]/60"}>Incident drill closures</div>
           </div>
         </div>
-        <div className="bg-white/[0.01] border border-white/5 p-4 rounded-xl flex items-center gap-3">
+        <div className={cn(
+          "border p-4 rounded-xl flex items-center gap-3 transition-all",
+          isSaudiGreenMode ? "bg-white/[0.01] border-white/5" : "bg-[#0d5c56]/5 border-[#0d5c56]/10"
+        )}>
           <div className="w-2 h-2 rounded-full bg-[#00a36c]"></div>
           <div className="space-y-0.5">
-            <div className="text-white font-medium">NCA Level-3</div>
-            <div className="text-[10px] text-white/30">Compliance standard model</div>
+            <div className={cn("font-medium", isSaudiGreenMode ? "text-white" : "text-[#0d5c56]")}>NCA Level-3</div>
+            <div className={isSaudiGreenMode ? "text-white/30" : "text-[#0d5c56]/60"}>Compliance standard model</div>
           </div>
         </div>
-        <div className="bg-white/[0.01] border border-white/5 p-4 rounded-xl flex items-center gap-3">
+        <div className={cn(
+          "border p-4 rounded-xl flex items-center gap-3 transition-all",
+          isSaudiGreenMode ? "bg-white/[0.01] border-white/5" : "bg-[#0d5c56]/5 border-[#0d5c56]/10"
+        )}>
           <div className="w-2 h-2 rounded-full bg-teal-600"></div>
           <div className="space-y-0.5">
-            <div className="text-white font-medium">Zero Leak</div>
-            <div className="text-[10px] text-white/30">Secure clinical transfers</div>
+            <div className={cn("font-medium", isSaudiGreenMode ? "text-white" : "text-[#0d5c56]")}>Zero Leak</div>
+            <div className={isSaudiGreenMode ? "text-white/30" : "text-[#0d5c56]/60"}>Secure clinical transfers</div>
           </div>
         </div>
       </div>

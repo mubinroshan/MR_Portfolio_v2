@@ -601,7 +601,7 @@ export default function HomeView({
 
           {/* 5. PROJECT INSIGHTS BAR CHART (D3) */}
           <section id="project-insights-chart-section" className="pt-2 animate-fadeIn">
-            <ProjectInsights />
+            <ProjectInsights isSaudiGreenMode={isSaudiGreenMode} />
           </section>
         </>
       )}
