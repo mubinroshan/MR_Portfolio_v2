@@ -638,11 +638,18 @@ export class TelemetryBatcher<T> {
                           />
                           
                           {/* Highly polished static note warning yellow card with AlertCircle warning icon */}
-                          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#FFFAEB] border border-[#FEF3C7] shadow-xl md:shadow-2xl rounded-xl py-2.5 px-4 flex items-center justify-center gap-2 select-none z-10 w-fit max-w-[90%] whitespace-nowrap">
+                          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#FFFAEB] border border-[#FEF3C7] shadow-xl md:shadow-2xl rounded-xl py-2 px-4 flex items-center gap-2 select-none z-10 w-[90%] sm:w-fit max-w-lg overflow-hidden">
                             <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" strokeWidth={2.5} />
-                            <span className="text-[10px] sm:text-xs font-semibold text-[#78350f] font-sans tracking-wide">
-                              Note: If the site refuses to load below due to security policies, click <strong className="text-amber-700 font-extrabold underline">Open External</strong> to read directly.
-                            </span>
+                            <div className="overflow-hidden w-full relative">
+                              <div className="animate-alert-scroll-continuous whitespace-nowrap text-[10px] sm:text-xs font-semibold text-[#78350f] font-sans tracking-wide">
+                                <span className="pr-12 inline-block">
+                                  Note: If the site refuses to load below due to security policies, click <strong className="text-amber-700 font-extrabold underline">Open External</strong> to read directly.
+                                </span>
+                                <span className="pr-12 inline-block">
+                                  Note: If the site refuses to load below due to security policies, click <strong className="text-amber-700 font-extrabold underline">Open External</strong> to read directly.
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </motion.div>

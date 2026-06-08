@@ -395,6 +395,36 @@ a, a:focus, a:focus-visible {
   animation-play-state: paused;
 }
 
+@keyframes alert-scroll {
+  0%, 15% {
+    transform: translateX(0);
+  }
+  50%, 65% {
+    transform: translateX(-58%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-alert-scroll {
+  animation: alert-scroll 12s ease-in-out infinite;
+}
+
+@keyframes alert-scroll-continuous {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-alert-scroll-continuous {
+  display: inline-flex;
+  animation: alert-scroll-continuous 18s linear infinite;
+}
+
 /* Gradient fades that adapt to Light/Cream Theme */
 .marquee-fade-left {
   background: linear-gradient(to right, #0a0a0a, transparent);

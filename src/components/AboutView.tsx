@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { handleDownloadResume } from '../utils';
-import GithubStats from './GithubStats';
 
 interface Skill {
   name: string;
@@ -418,10 +417,7 @@ export default function AboutView({ isSaudiGreenMode = true }: AboutViewProps) {
         </div>
       </section>
 
-      {/* 4. REAL-TIME GITHUB TELEMETRY */}
-      <section className="pt-6 border-t border-white/10">
-        <GithubStats isSaudiGreenMode={isSaudiGreenMode} />
-      </section>
+
 
     </motion.div>
   );
