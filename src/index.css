@@ -321,6 +321,21 @@ body {
   .mobile-nav-container .mobile-resource-link:hover * {
     color: #ffffff !important;
   }
+
+  /* Protect dark-themed footer text contrast in cream mode */
+  footer h2.footer-branding-title {
+    color: #FAF6EB !important;
+  }
+  footer p.footer-branding-subtext {
+    color: rgba(250, 246, 235, 0.75) !important;
+  }
+  footer .footer-button-text,
+  footer .footer-button-arrow {
+    color: #FAF6EB !important;
+  }
+  footer .text-white\/40 span {
+    color: rgba(255, 255, 255, 0.4) !important;
+  }
 }
 
 /* Ensure white text is retained in light mode for elements with .keep-text-white */
