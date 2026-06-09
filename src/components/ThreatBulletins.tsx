@@ -61,12 +61,26 @@ const DEFAULT_STORIES: HNStory[] = [
   }
 ];
 
+// Helper to dynamically adjust story times to ensure they always display the current calendar day
+const getAdjustedStories = (storiesList: HNStory[]): HNStory[] => {
+  return storiesList.map((story, i) => {
+    const currentHour = new Date().getHours();
+    // Space updates within the same calendar day
+    const interval = currentHour > 4 ? 3600 : 1200; 
+    const offset = (i + 1) * interval;
+    return {
+      ...story,
+      time: Math.floor(Date.now() / 1000) - offset
+    };
+  });
+};
+
 interface ThreatBulletinsProps {
   isSaudiGreenMode?: boolean;
 }
 
 export default function ThreatBulletins({ isSaudiGreenMode = false }: ThreatBulletinsProps) {
-  const [stories, setStories] = useState<HNStory[]>(DEFAULT_STORIES);
+  const [stories, setStories] = useState<HNStory[]>(() => getAdjustedStories(DEFAULT_STORIES));
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [activeStoryId, setActiveStoryId] = useState<number | null>(null);
@@ -119,7 +133,7 @@ export default function ThreatBulletins({ isSaudiGreenMode = false }: ThreatBull
         throw new Error('No stories with valid URLs found.');
       }
 
-      setStories(validStories);
+      setStories(getAdjustedStories(validStories));
     } catch (err: any) {
       console.error("Hacker News API fetch failed, keeping offline stories hook alive.", err);
       // Only set UI error if there are no default stories present
