@@ -135,10 +135,10 @@ export default function ThreatBulletins({ isSaudiGreenMode = false }: ThreatBull
 
       setStories(getAdjustedStories(validStories));
     } catch (err: any) {
-      console.error("Hacker News API fetch failed, keeping offline stories hook alive.", err);
-      // Only set UI error if there are no default stories present
-      if (stories.length === 0) {
-        setError(err.message || 'Unable to load live bulletins. Please check connection and try again.');
+      console.log("Hacker News API fetch info (keeping offline stories active):", err?.message || err);
+      // Ensure we keep the local offline default stories loaded
+      if (!stories || stories.length === 0) {
+        setStories(getAdjustedStories(DEFAULT_STORIES));
       }
     } finally {
       setLoading(false);

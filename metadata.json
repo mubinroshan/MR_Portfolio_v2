@@ -1,6 +1,8 @@
 {
   "name": "Mubin Roshan Portfolio",
-  "description": "Personal portfolio website of Mubin Roshan, Cybersecurity and Data Analyst at Yanbu National Hospital, featuring projects, professional timeline, and interactive dark-themed layout.",
+  "description": "Interactive cybersecurity and software engineering portfolio of Mubin Roshan, featuring interactive 3D visualizers, threat bulletins, and project insights.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
