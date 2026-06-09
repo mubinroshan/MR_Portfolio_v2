@@ -10,6 +10,7 @@ import ContactView from './components/ContactView';
 import Footer from './components/Footer';
 import ProjectDetailsModal from './components/ProjectDetailsModal';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabID>('home');
@@ -176,6 +177,9 @@ export default function App() {
           />
         )}
       </AnimatePresence>
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
 
     </div>
   );
