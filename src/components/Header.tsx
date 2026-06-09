@@ -16,7 +16,8 @@ import {
   Heart,
   FileDown,
   Menu,
-  X
+  X,
+  Github
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { handleDownloadResume } from '../utils';
@@ -309,6 +310,26 @@ export default function Header({
                 : 'bg-[#121212] text-white border-white/10'
             }`}>
               Connect professionally
+            </div>
+          </div>
+
+          {/* GitHub Tooltip Container */}
+          <div className="relative group hidden xl:flex items-center justify-center">
+            <a 
+              href="https://github.com/mubinroshan" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              aria-label="GitHub Profile"
+              className="p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-[#00a36c]/10 hover:border-[#00a36c]/30 border border-transparent transition-all"
+            >
+              <Github className="w-4 h-4" />
+            </a>
+            <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 group-hover:mt-2.5 px-2.5 py-1 text-[10px] font-mono font-bold rounded-lg shadow-xl border pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-250 whitespace-nowrap z-50 ${
+              isSaudiGreenMode 
+                ? 'bg-[#FAF6EB] text-[#0d5c56] border-[#0d5c56]/20 shadow-[#0d5c56]/5' 
+                : 'bg-[#121212] text-white border-white/10'
+            }`}>
+              View my repositories
             </div>
           </div>
 
