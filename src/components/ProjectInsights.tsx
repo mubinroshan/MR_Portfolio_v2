@@ -117,7 +117,7 @@ export default function ProjectInsights({ isSaudiGreenMode = false }: ProjectIns
           >
             {activeSlide.id === "bar" ? (
               <ChartContainer className="w-full min-h-[16rem] max-h-[18rem]" config={chartConfig}>
-                <BarChart accessibilityLayer data={INSIGHTS_DATA}>
+                <BarChart accessibilityLayer data={INSIGHTS_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
                   <CartesianGrid 
                     vertical={false} 
                     stroke={isSaudiGreenMode ? "rgba(255,255,255,0.06)" : "rgba(13,92,86,0.08)"}
@@ -128,14 +128,14 @@ export default function ProjectInsights({ isSaudiGreenMode = false }: ProjectIns
                     tickFormatter={(value) => value.split(' ')[0]}
                     tickLine={false}
                     tickMargin={10}
-                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 10, fontFamily: "monospace" }}
+                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 9, fontFamily: "monospace" }}
                   />
                   <YAxis
                     axisLine={false}
                     tickLine={false}
                     tickMargin={10}
                     domain={[0, 10]}
-                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 10, fontFamily: "monospace" }}
+                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 9, fontFamily: "monospace" }}
                   />
                   <ChartTooltip
                     content={<ChartTooltipContent indicator="dashed" />}
@@ -147,7 +147,7 @@ export default function ProjectInsights({ isSaudiGreenMode = false }: ProjectIns
               </ChartContainer>
             ) : (
               <ChartContainer className="w-full min-h-[16rem] max-h-[18rem]" config={chartConfig}>
-                <LineChart accessibilityLayer data={INSIGHTS_DATA}>
+                <LineChart accessibilityLayer data={INSIGHTS_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
                   <CartesianGrid 
                     vertical={false} 
                     stroke={isSaudiGreenMode ? "rgba(255,255,255,0.06)" : "rgba(13,92,86,0.08)"}
@@ -158,14 +158,14 @@ export default function ProjectInsights({ isSaudiGreenMode = false }: ProjectIns
                     tickFormatter={(value) => value.split(' ')[0]}
                     tickLine={false}
                     tickMargin={10}
-                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 10, fontFamily: "monospace" }}
+                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 9, fontFamily: "monospace" }}
                   />
                   <YAxis
                     axisLine={false}
                     tickLine={false}
                     tickMargin={10}
                     domain={[0, 10]}
-                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 10, fontFamily: "monospace" }}
+                    tick={{ fill: isSaudiGreenMode ? "rgba(255,255,255,0.4)" : "rgba(13,92,86,0.6)", fontSize: 9, fontFamily: "monospace" }}
                   />
                   <ChartTooltip
                     content={<ChartTooltipContent indicator="dot" />}

@@ -88,12 +88,20 @@ export default function HomeView({
 
   // Custom Certifications / Tech Badges list mimicking the logos row in the reference UI
   const credentials = [
-    { name: 'CompTIA Security+', category: 'Security' },
-    { name: 'Python Analytics', category: 'Data' },
-    { name: 'SQL Server', category: 'Database' },
-    { name: 'NCA ECC 1:2018', category: 'Compliance' },
-    { name: 'Tableau Desktop', category: 'BI' },
-    { name: 'HL7 Medical Standards', category: 'Healthcare' }
+    { name: 'NCA ECC-1:2018', category: 'COMPLIANCE' },
+    { name: 'NCA HCC-1:2021', category: 'HEALTHCARE' },
+    { name: 'CompTIA Security+', category: '' },
+    { name: 'HL7 Medical Standards', category: 'DATA INTEGRATION' },
+    { name: 'Vulnerability Assessment & Hardening', category: '' },
+    { name: 'NCA CSCC-1:2021', category: 'CRITICAL SYSTEMS' },
+    { name: 'SQL Server & Oracle Database Security', category: '' },
+    { name: 'FHIR Protocols', category: '' },
+    { name: 'SIEM Log Analysis & Threat Hunting', category: '' },
+    { name: 'Network Traffic Analysis', category: 'Wireshark' },
+    { name: 'NDMO Data Governance', category: '' },
+    { name: 'Linux Infrastructure Hardening', category: '' },
+    { name: 'Python & Bash Security Automation', category: '' },
+    { name: 'Incident Response & Threat Mitigation', category: '' }
   ];
 
   // Search logic
@@ -249,9 +257,11 @@ export default function HomeView({
                 <span className="text-xs font-mono font-medium text-white/40 group-hover:text-white/80 transition-colors uppercase tracking-wider">
                   {cred.name}
                 </span>
-                <span className="text-[9px] bg-white/[0.02] text-white/30 px-1.5 py-0.5 rounded border border-white/10 uppercase">
-                  {cred.category}
-                </span>
+                {cred.category && (
+                  <span className="text-[9px] bg-white/[0.02] text-white/30 px-1.5 py-0.5 rounded border border-white/10 uppercase">
+                    {cred.category}
+                  </span>
+                )}
               </div>
             ))}
             {/* Second Set of Credentials (Cloned for seamless wrapping) */}
@@ -265,9 +275,11 @@ export default function HomeView({
                 <span className="text-xs font-mono font-medium text-white/40 group-hover:text-white/80 transition-colors uppercase tracking-wider">
                   {cred.name}
                 </span>
-                <span className="text-[9px] bg-white/[0.02] text-white/30 px-1.5 py-0.5 rounded border border-white/10 uppercase">
-                  {cred.category}
-                </span>
+                {cred.category && (
+                  <span className="text-[9px] bg-white/[0.02] text-white/30 px-1.5 py-0.5 rounded border border-white/10 uppercase">
+                    {cred.category}
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -562,24 +574,46 @@ export default function HomeView({
           <section>
             <motion.div 
               whileHover={{ scale: 1.01 }}
-              className="relative rounded-3xl p-8 bg-white/[0.03] border border-white/10 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl"
+              className={`relative rounded-3xl p-8 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl border transition-all duration-300 ${
+                isSaudiGreenMode 
+                  ? "bg-white/[0.03] border-white/10" 
+                  : "bg-[#FAF6EB] border-[#0d5c56]/15 text-[#051616]"
+              }`}
             >
               {/* Neon Leak */}
-              <div className="absolute top-1/2 left-0 -translate-y-1/2 w-48 h-48 bg-[#005639]/10 blur-3xl rounded-full" />
+              <div className={`absolute top-1/2 left-0 -translate-y-1/2 w-48 h-48 blur-3xl rounded-full ${
+                isSaudiGreenMode ? "bg-[#005639]/10" : "bg-[#0d5c56]/5"
+              }`} />
               
               <div className="flex items-center gap-5 relative">
-                <div className="p-4 rounded-2xl bg-[#005639]/20 text-[#00a36c] border border-brand-green/30">
-                  <Shield className="w-8 h-8 animate-pulse text-[#00a36c]" />
+                <div className={`p-4 rounded-2xl border transition-colors ${
+                  isSaudiGreenMode 
+                    ? "bg-[#005639]/20 text-[#00a36c] border-brand-green/30" 
+                    : "bg-[#0d5c56]/5 text-[#0d5c56] border-[#0d5c56]/10"
+                }`}>
+                  <Shield className={`w-8 h-8 animate-pulse ${isSaudiGreenMode ? "text-[#00a36c]" : "text-[#0d5c56]"}`} />
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 bg-[#005639]/30 text-[#00a36c] rounded-lg">SUBSTACK BULLETIN</span>
-                    <span className="w-2 h-2 rounded-full bg-[#00a36c] animate-ping"></span>
+                    <span className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded-lg ${
+                      isSaudiGreenMode 
+                        ? "bg-[#005639]/30 text-[#00a36c]" 
+                        : "bg-[#0d5c56]/10 text-[#0d5c56]"
+                    }`}>
+                      SUBSTACK BULLETIN
+                    </span>
+                    <span className={`w-2 h-2 rounded-full animate-ping ${
+                      isSaudiGreenMode ? "bg-[#00a36c]" : "bg-[#0d5c56]"
+                    }`}></span>
                   </div>
-                  <h3 className="text-lg font-serif font-bold text-white leading-snug">
+                  <h3 className={`text-lg font-serif font-bold leading-snug ${
+                    isSaudiGreenMode ? "text-white" : "text-[#051616]"
+                  }`}>
                     Clinical CyberSec Bulletins
                   </h3>
-                  <p className="text-xs text-white/40 max-w-sm">
+                  <p className={`text-xs max-w-sm ${
+                    isSaudiGreenMode ? "text-white/40" : "text-[#051616]/70"
+                  }`}>
                     Join 1,200+ healthcare administrators receiving my analytical security vulnerability briefs.
                   </p>
                 </div>
@@ -588,10 +622,18 @@ export default function HomeView({
               <div className="w-full md:w-auto flex flex-col sm:flex-row gap-3 relative">
                 <input 
                   type="email" 
-                  placeholder="Enter clinical or personal email" 
-                  className="bg-black/40 border border-white/10 focus:border-brand-green/60 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none transition-colors w-full sm:w-64 font-mono"
+                  placeholder="Enter your mail" 
+                  className={`rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors w-full sm:w-64 font-mono border ${
+                    isSaudiGreenMode 
+                      ? "bg-black/40 border-white/10 text-white placeholder-gray-400 focus:border-[#00a36c]/60" 
+                      : "bg-white border-[#0d5c56]/15 text-[#051616] placeholder-gray-500 focus:border-[#0d5c56]/60"
+                  }`}
                 />
-                <button className="bg-[#005639] hover:bg-[#00704a] text-white keep-text-white px-5 py-3 rounded-xl text-sm font-semibold transition-all shadow-lg flex items-center justify-center gap-2 font-mono hover:scale-105 active:scale-95">
+                <button className={`px-5 py-3 rounded-xl text-sm font-semibold transition-all shadow-lg flex items-center justify-center gap-2 font-mono hover:scale-105 active:scale-95 cursor-pointer ${
+                  isSaudiGreenMode 
+                    ? "bg-[#005639] hover:bg-[#00704a] text-white keep-text-white" 
+                    : "bg-[#0d5c56] hover:bg-[#0c4e49] text-white keep-text-white"
+                }`}>
                   <span className="keep-text-white text-white">Secure Join</span>
                   <ArrowRight className="w-4 h-4 text-white keep-text-white" />
                 </button>

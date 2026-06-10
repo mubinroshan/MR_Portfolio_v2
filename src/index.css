@@ -423,7 +423,7 @@ a, a:focus, a:focus-visible {
 .animate-marquee {
   display: flex;
   gap: 2rem; /* matches gap-8 (2rem) */
-  animation: marquee 30s linear infinite;
+  animation: marquee 75s linear infinite;
   width: max-content;
 }
 
