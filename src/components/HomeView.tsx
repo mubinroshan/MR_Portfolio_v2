@@ -233,7 +233,7 @@ export default function HomeView({
 
 
         {/* Credentials and Certifications Row (logo line simulation with auto-scroll) */}
-        <div className="pt-4 border-t border-white/10 relative overflow-hidden select-none">
+        <div className="py-4 border-y border-white/10 relative overflow-hidden select-none">
           {/* Edge gradient overlays for smooth fade-out */}
           <div className="absolute inset-y-0 left-0 w-12 md:w-24 marquee-fade-left z-10 pointer-events-none"></div>
           <div className="absolute inset-y-0 right-0 w-12 md:w-24 marquee-fade-right z-10 pointer-events-none"></div>

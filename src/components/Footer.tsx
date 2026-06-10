@@ -177,7 +177,7 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
             
             {/* Left Column: Connect and Social links inside a same-size premium beige card */}
             <div className="flex flex-col text-left items-start lg:col-span-3 lg:justify-self-start w-full">
-              <div className="w-full lg:w-[285px] lg:mr-auto bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 lg:h-[390px] flex flex-col justify-start">
+              <div className="w-full lg:w-[285px] lg:mr-auto bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 lg:h-[420px] flex flex-col justify-start">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#051616] tracking-tight text-left">
                   Connect
                 </h3>
@@ -289,13 +289,27 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
                     </div>
                     <ArrowUpRight className="w-3.5 h-3.5 text-[#051616]/30 group-hover:text-[#00a36c] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
                   </a>
+                  <a 
+                    href="https://www.reddit.com/user/mubinroshan" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-sm font-sans text-[#051616]/85 hover:text-[#00a36c] transition-colors flex items-center justify-between group py-0.5"
+                  >
+                    <div className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-[#0d5c56]/85 group-hover:text-[#00a36c] transition-colors shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M24 11.5c0-1.65-1.35-3-3-3-.96 0-1.86.48-2.42 1.24-1.64-1-3.85-1.64-6.29-1.72l1.37-4.31 4.5 1c.02.83.69 1.5 1.54 1.5 1.1 0 2-.9 2-2s-.9-2-2-2c-.79 0-1.46.47-1.78 1.14l-5.11-1.14c-.21-.05-.43.08-.49.29l-1.63 5.1c-2.5.08-4.75.72-6.42 1.73C3.39 9.98 2.49 9.5 1.5 9.5c-1.65 0-3 1.35-3 3 0 1.12.61 2.1 1.53 2.6-.02.13-.03.27-.03.4 0 4.14 4.93 7.5 11 7.5s11-3.36 11-7.5c0-.13-.01-.27-.03-.4.92-.5 1.53-1.48 1.53-2.6zm-18 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm11 4.5c-1.83 1.83-5.17 1.83-7 0-.17-.17-.17-.45 0-.62s.45-.17.62 0c1.49 1.49 4.26 1.49 5.75 0c.17-.17.45-.17.62 0s.17.45 0 .62zm-1.5-4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                      </svg>
+                      <span className="font-medium">Reddit</span>
+                    </div>
+                    <ArrowUpRight className="w-3.5 h-3.5 text-[#051616]/30 group-hover:text-[#00a36c] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+                  </a>
                 </div>
               </div>
             </div>
 
             {/* Middle Column: Dynamic Site Navigation Index inside a same-size premium beige card */}
             <div className="flex flex-col text-left items-start w-full lg:col-span-3">
-              <div className="w-full lg:w-[285px] lg:mr-auto bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 lg:h-[390px] flex flex-col justify-start">
+              <div className="w-full lg:w-[285px] lg:mr-auto bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 lg:h-[420px] flex flex-col justify-start">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#051616] tracking-tight text-left">
                   Explore
                 </h3>
@@ -324,7 +338,7 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
                   Mubin Roshan
                 </h2>
                 <p className="footer-branding-subtext font-serif italic text-base sm:text-lg text-[#FAF6EB]/75">
-                  Where Security Meets Intelligence
+                  [ Analyst. Developer. SysAdmin ]
                 </p>
               </div>
 
