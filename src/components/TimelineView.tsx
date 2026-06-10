@@ -10,7 +10,9 @@ import {
   Clock,
   ArrowRight,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  X,
+  ZoomIn
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect, useRef } from 'react';
@@ -64,7 +66,7 @@ const TimelineSkeleton = () => {
   );
 };
 
-const TimelineCard = ({ item }: { item: TimelineItem }) => {
+const TimelineCard = ({ item, onImageClick }: { item: TimelineItem; onImageClick: (src: string, title: string) => void }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [mobileHeight, setMobileHeight] = useState<string | number>('auto');
@@ -128,6 +130,30 @@ const TimelineCard = ({ item }: { item: TimelineItem }) => {
       className="bg-white/[0.03] border border-white/10 rounded-3xl hover:border-teal-500/40 hover:bg-white/[0.05] p-8 sm:p-9 transition-all duration-300 shadow-xl outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black flex flex-col justify-center"
     >
       <div ref={contentRef} className="space-y-5 w-full">
+        {item.imageUrl && (
+          <div 
+            onClick={() => onImageClick(item.imageUrl!, item.title)}
+            className="w-full overflow-hidden rounded-2xl mb-4 border border-white/10 bg-black/30 flex items-center justify-center p-2 cursor-zoom-in relative group"
+            title="Click to view full certificate"
+          >
+            <img 
+              src={item.imageUrl} 
+              alt={item.title} 
+              className="w-full h-auto max-h-[350px] object-contain select-none pointer-events-none group-hover:scale-[1.02] transition-transform duration-300 rounded-lg"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                e.currentTarget.style.opacity = "0.35";
+              }}
+            />
+            {/* Hover overlay badge */}
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 rounded-2xl">
+              <div className="bg-teal-600/90 hover:bg-teal-500 text-white font-mono text-[10px] sm:text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                <ZoomIn className="w-3.5 h-3.5" />
+                <span>View Full Certificate</span>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Badge Category pill */}
         <div className="flex flex-wrap gap-2.5">
           <span className={`text-[10px] sm:text-xs uppercase tracking-wider px-3 py-1 rounded-md font-mono font-semibold border ${
@@ -170,7 +196,7 @@ const TimelineCard = ({ item }: { item: TimelineItem }) => {
   );
 };
 
-const MobileTimelineCard = ({ item }: { item: TimelineItem }) => {
+const MobileTimelineCard = ({ item, onImageClick }: { item: TimelineItem; onImageClick: (src: string, title: string) => void }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Split tags and count remaining ones if exist
@@ -180,6 +206,27 @@ const MobileTimelineCard = ({ item }: { item: TimelineItem }) => {
   return (
     <div className="bg-[#F5EFE1] dark:bg-white/[0.03] border border-[#0d5c56]/15 dark:border-white/10 rounded-2xl p-5 shadow-sm transition-all duration-300 w-full text-left">
       <div className="space-y-4 w-full">
+        {item.imageUrl && (
+          <div 
+            onClick={() => onImageClick(item.imageUrl!, item.title)}
+            className="w-full overflow-hidden rounded-xl mb-3 border border-[#0d5c56]/15 dark:border-white/10 bg-[#FAF6EB]/40 dark:bg-black/30 flex items-center justify-center p-1.5 animate-fade-in cursor-zoom-in relative group"
+            title="Tap to view full certificate"
+          >
+            <img 
+              src={item.imageUrl} 
+              alt={item.title} 
+              className="w-full h-auto max-h-[280px] object-contain select-none pointer-events-none rounded-lg group-hover:scale-[1.01] transition-transform duration-300"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                e.currentTarget.style.opacity = "0.35";
+              }}
+            />
+            {/* Quick interactive indicator on mobile */}
+            <div className="absolute bottom-2 right-2 p-1.5 rounded-full bg-black/60 shadow-md">
+              <ZoomIn className="w-3.5 h-3.5 text-white" />
+            </div>
+          </div>
+        )}
         {/* Row of tags */}
         <div className="flex flex-wrap items-center gap-1.5">
           {/* Category */}
@@ -259,12 +306,24 @@ const MobileTimelineCard = ({ item }: { item: TimelineItem }) => {
 export default function TimelineView() {
   const [filter, setFilter] = useState<'all' | 'career' | 'certification'>('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [previewImage, setPreviewImage] = useState<{ src: string; title: string } | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 900);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Escape key handler to close full-screen certificate preview
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setPreviewImage(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const filteredTimeline = TIMELINE_DATA.filter(item => {
@@ -387,7 +446,7 @@ export default function TimelineView() {
 
                       {/* 3. Card detail side */}
                       <div className="sm:w-[44%] pl-12 sm:pl-0 relative w-full">
-                        <TimelineCard item={item} />
+                        <TimelineCard item={item} onImageClick={(src, title) => setPreviewImage({ src, title })} />
                       </div>
                     </motion.div>
                   );
@@ -419,7 +478,7 @@ export default function TimelineView() {
                     </div>
 
                     {/* Light-theme and Dark-theme adaptive Collapsible mobile card */}
-                    <MobileTimelineCard item={item} />
+                    <MobileTimelineCard item={item} onImageClick={(src, title) => setPreviewImage({ src, title })} />
                   </motion.div>
                 ))}
               </div>
@@ -427,6 +486,96 @@ export default function TimelineView() {
           )}
         </div>
       </div>
+
+      {/* FULL-SCREEN CERTIFICATE PREVIEW MODAL */}
+      <AnimatePresence>
+        {previewImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-[#041614] backdrop-blur-md overflow-y-auto"
+            onClick={() => setPreviewImage(null)}
+          >
+            {/* Background design patterns and elegant lines */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+              {/* Rich radial gradient glow */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(20,110,103,0.18)_0%,rgba(4,22,20,0.98)_100%)]" />
+              
+              {/* Technical cyber grids */}
+              <div className="absolute inset-0 opacity-40 bg-[linear-gradient(rgba(13,92,86,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(13,92,86,0.12)_1px,transparent_1px)] bg-[size:40px_40px]" />
+              
+              {/* Glowing decorative circles & orbital paths */}
+              <div className="absolute -top-[10%] -left-[10%] w-[50vw] h-[50vw] rounded-full border border-teal-500/10" />
+              <div className="absolute -top-[10%] -left-[10%] w-[70vw] h-[70vw] rounded-full border border-teal-500/5" />
+              <div className="absolute -bottom-[15%] -right-[15%] w-[60vw] h-[60vw] rounded-full border border-teal-500/10" />
+              <div className="absolute -bottom-[15%] -right-[15%] w-[40vw] h-[40vw] rounded-full border border-teal-500/5" />
+              
+              {/* Tech aesthetic framing crosshair lines */}
+              <div className="absolute top-8 left-8 w-16 h-[2px] bg-teal-500/20" />
+              <div className="absolute top-8 left-8 w-[2px] h-16 bg-teal-500/20" />
+              
+              <div className="absolute top-8 right-8 w-16 h-[2px] bg-teal-500/20" />
+              <div className="absolute top-8 right-8 w-[2px] h-16 bg-teal-500/20" />
+              
+              <div className="absolute bottom-8 left-8 w-16 h-[2px] bg-teal-500/20" />
+              <div className="absolute bottom-8 left-8 w-[2px] h-16 bg-teal-500/20" />
+              
+              <div className="absolute bottom-8 right-8 w-16 h-[2px] bg-teal-500/20" />
+              <div className="absolute bottom-8 right-8 w-[2px] h-16 bg-teal-500/20" />
+            </div>
+
+            {/* Centering wrapper that handles heights gracefully */}
+            <div className="min-h-full w-full flex items-center justify-center p-4 sm:p-6 md:p-8 relative z-10">
+              {/* Modal Inner Container */}
+              <motion.div
+                initial={{ scale: 0.95, y: 15 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 15 }}
+                transition={{ type: "spring", damping: 25, stiffness: 350 }}
+                className="relative max-w-4xl w-full flex flex-col items-center justify-center gap-6 text-center animate-fade-in"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Main Certificate Card - Image on top, Title underneath inside a beige styled card */}
+                <div className="w-full bg-[#FAF6EB] border border-[#0d5c56]/20 rounded-2xl shadow-2xl p-3 sm:p-5 flex flex-col gap-4">
+                  {/* Certificate Image Frame */}
+                  <div className="relative w-full max-h-[50vh] flex justify-center items-center overflow-auto bg-black/5 rounded-xl p-1 border border-[#0d5c56]/10">
+                    <img
+                      src={previewImage.src}
+                      alt={previewImage.title}
+                      className="max-w-full max-h-[45vh] object-contain rounded-lg select-none shadow-sm"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+
+                  {/* Card description details under the image */}
+                  <div className="bg-[#F5EFE1] rounded-xl p-4 border border-[#0d5c56]/15 text-center">
+                    <span className="text-[10px] sm:text-xs font-mono font-bold text-[#0d5c56]/80 tracking-widest uppercase mb-1 block">
+                      CISCO SECURITY CERTIFIED
+                    </span>
+                    <h2 className="text-base sm:text-lg md:text-xl font-serif text-[#051616] font-extrabold tracking-tight select-none uppercase">
+                      {previewImage.title}
+                    </h2>
+                    <p className="text-[10px] sm:text-xs text-[#051616]/60 font-mono mt-1">Verified Professional Security Credential</p>
+                  </div>
+                </div>
+
+                {/* Close Button UI - Styled with System Beige BG and Teal text/icon */}
+                <div className="flex items-center gap-4">
+                  <button
+                    id="close-preview-btn"
+                    onClick={() => setPreviewImage(null)}
+                    className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#FAF6EB] hover:bg-[#ebdcb9] border border-[#0d5c56]/25 text-[#0d5c56] hover:text-[#0c4e49] font-mono text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95 shadow-md"
+                  >
+                    <X className="w-4 h-4 text-[#0d5c56]" />
+                    <span>Close View</span>
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

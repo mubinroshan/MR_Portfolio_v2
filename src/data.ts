@@ -138,6 +138,20 @@ export const TIMELINE_DATA: TimelineItem[] = [
     ]
   },
   {
+    id: 'time-cisco_ceh',
+    date: 'Oct 23, 2023',
+    category: 'certification',
+    tags: ['cisco', 'security', 'hacking', 'credential'],
+    title: 'Cisco Certified Ethical Hacker',
+    description: 'Obtained the Cisco Certified Ethical Hacker certification, validating skillsets in defensive network architecture, advanced vulnerability assessments, and penetration testing methodologies to protect vital infrastructures.',
+    details: [
+      'Mastered threat vector identification, perimeter defense controls, and continuous system logging inspection protocols.',
+      'Completed rigorous training on scanning, enumeration, system hacking, and mitigating lateral network attacks.',
+      'Validated hands-on capacity to construct zero-trust configurations surrounding sensitive healthcare servers.'
+    ],
+    imageUrl: '/cisco_cert.png'
+  },
+  {
     id: 'time-5',
     date: 'Feb 2023 - Jul 2024',
     category: 'career',
