@@ -513,15 +513,15 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
 
       // 8. Draw QR Code and Scan To Verify inside a small card style (Bottom Left)
       const qrX = 73;
-      const qrY = 554;
+      const qrY = 536;
       const qrWidth = 68;
       const qrHeight = 68;
 
       // Draw rounded rectangle card for QR Code
       const cardX = qrX - 12;
-      const cardY = qrY - 10;
+      const cardY = 530;
       const cardW = 235;
-      const cardH = 88;
+      const cardH = 80;
       const cardR = 12;
 
       ctx.save();
@@ -570,46 +570,103 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
       ctx.font = "9px 'JetBrains Mono', monospace";
       ctx.fillText("mubin.roshan/verify", qrX + qrWidth + 16, qrY + 38);
 
-      // 9. Draw Middle Metadata Column
-      const metaX = 567; // 54% of 1050
-      const metaY = 297;
+      // 9. Draw Middle Metadata Column (Now moved to top-right column)
+      const metaX = 770; 
+      const metaY = 120;
 
       const drawMetaItem = (label: string, value: string, yPos: number) => {
         ctx.fillStyle = '#9CA3AF'; // gray-400
         ctx.font = "bold 9px 'Poppins', 'Inter', sans-serif";
-        ctx.fillText(label, metaX + 36, yPos);
+        ctx.fillText(label, metaX + 28, yPos);
 
         ctx.fillStyle = '#0C6A63';
         ctx.font = "bold 15px 'Poppins', 'Inter', sans-serif";
-        ctx.fillText(value, metaX + 36, yPos + 16);
+        ctx.fillText(value, metaX + 28, yPos + 16);
+      };
+
+      const drawShieldIcon = (x: number, y: number) => {
+        ctx.save();
+        ctx.strokeStyle = '#0C6A63';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x, y - 9);
+        ctx.lineTo(x + 7, y - 6);
+        ctx.lineTo(x + 7, y);
+        ctx.quadraticCurveTo(x + 7, y + 5, x, y + 9);
+        ctx.quadraticCurveTo(x - 7, y + 5, x - 7, y);
+        ctx.lineTo(x - 7, y - 6);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x - 3, y);
+        ctx.lineTo(x - 1, y + 2.5);
+        ctx.lineTo(x + 4, y - 2.5);
+        ctx.stroke();
+        ctx.restore();
+      };
+
+      const drawClockIcon = (x: number, y: number) => {
+        ctx.save();
+        ctx.strokeStyle = '#0C6A63';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y - 4.5);
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + 3.5, y);
+        ctx.stroke();
+        ctx.restore();
+      };
+
+      const drawAwardIcon = (x: number, y: number) => {
+        ctx.save();
+        ctx.strokeStyle = '#0C6A63';
+        ctx.lineWidth = 1.5;
+        
+        ctx.beginPath();
+        ctx.moveTo(x - 3, y + 2);
+        ctx.lineTo(x - 5, y + 9);
+        ctx.lineTo(x - 1, y + 6.5);
+        ctx.lineTo(x + 3, y + 9);
+        ctx.lineTo(x + 1, y + 2);
+        ctx.stroke();
+
+        ctx.fillStyle = '#FAF6EB';
+        ctx.beginPath();
+        ctx.arc(x, y - 2, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.arc(x, y - 2, 2.5, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
       };
 
       // Score
       drawMetaItem("SCORE", `${score} / 10`, metaY);
-      ctx.strokeStyle = '#0C6A63';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.arc(metaX + 12, metaY + 12, 10, 0, Math.PI * 2);
-      ctx.stroke();
+      drawShieldIcon(metaX + 12, metaY + 10);
 
       // Date
       const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
       drawMetaItem("DATE", dateStr, metaY + 55);
-      ctx.beginPath();
-      ctx.arc(metaX + 12, metaY + 12 + 55, 10, 0, Math.PI * 2);
-      ctx.stroke();
+      drawClockIcon(metaX + 12, metaY + 55 + 10);
 
       // Certificate ID
       drawMetaItem("CERTIFICATE ID", certificateId, metaY + 110);
-      ctx.beginPath();
-      ctx.arc(metaX + 12, metaY + 12 + 110, 10, 0, Math.PI * 2);
-      ctx.stroke();
+      drawAwardIcon(metaX + 12, metaY + 110 + 10);
 
       // 10. Bottom Middle Text
       ctx.fillStyle = '#6B7280'; // gray-500
       ctx.font = "11px 'Poppins', 'Inter', sans-serif";
-      ctx.fillText("Recognizing your commitment to cybersecurity", 420, 574);
-      ctx.fillText("excellence and continuous learning.", 420, 592);
+      ctx.textAlign = 'center';
+      ctx.fillText("Recognizing your commitment to cybersecurity", 525, 574);
+      ctx.fillText("excellence and continuous learning.", 525, 592);
 
       // 11. Draw Signature (Right Column) - Increased size
       const sigX = 840;
@@ -1431,7 +1488,7 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                   </div>
 
                   {/* 6. QR Code Verification (Bottom Left) inside a small card style */}
-                  <div className="absolute left-[7%] bottom-[5%] flex items-center gap-[1.5cqw] bg-[#F5EFE1] border border-teal-900/15 p-[0.8cqw] px-[1.2cqw] rounded-xl shadow-sm">
+                  <div className="absolute left-[7%] bottom-[8%] flex items-center gap-[1.5cqw] bg-[#F5EFE1] border border-teal-900/15 p-[0.8cqw] px-[1.2cqw] rounded-xl shadow-sm">
                     <img 
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`https://mubinroshan.com/verify/${certificateId}`)}`}
                       alt="Verification QR Code"
@@ -1445,7 +1502,7 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                   </div>
 
                   {/* 7. Metadata Column (Score, Date, Certificate ID) */}
-                  <div className="absolute left-[54%] top-[45%] text-left space-y-[2.2cqw] w-[22%] font-poppins">
+                  <div className="absolute right-[7%] top-[16%] text-left space-y-[1.8cqw] w-[20%] font-poppins">
                     {/* Score */}
                     <div className="flex items-center gap-[1.2cqw]">
                       <ShieldCheck className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
@@ -1475,14 +1532,14 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                   </div>
 
                   {/* 8. Bottom Middle Slogan */}
-                  <div className="absolute left-[38%] bottom-[7%] w-[35%] text-left">
+                  <div className="absolute left-[30%] right-[30%] bottom-[8%] text-center">
                     <p className="font-sans text-gray-500 leading-normal" style={{ fontSize: '1.0cqw' }}>
                       Recognizing your commitment to cybersecurity excellence and continuous learning.
                     </p>
                   </div>
 
                   {/* 9. Signature Block (Right Column) */}
-                  <div className="absolute right-[7%] top-[55%] w-[20%] text-center flex flex-col items-center justify-center">
+                  <div className="absolute right-[7%] top-[53%] w-[20%] text-center flex flex-col items-center justify-center">
                     <img 
                       src="/mubin_signature.png" 
                       alt="Mubin Roshan Signature" 
