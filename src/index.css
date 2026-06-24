@@ -358,6 +358,16 @@ body {
   color: #ffffff !important;
 }
 
+/* Ensure text and icons can be kept as bright cream #FAF6EB, even inside cream theme */
+.keep-text-cream,
+.theme-cream .keep-text-cream,
+.theme-cream button .keep-text-cream,
+.theme-cream button .keep-text-cream *,
+.theme-cream .keep-text-cream * {
+  color: #FAF6EB !important;
+  stroke: #FAF6EB !important;
+}
+
 .keep-bright-white-opacity,
 .theme-cream .keep-bright-white-opacity {
   color: rgba(255, 255, 255, 0.7) !important;

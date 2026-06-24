@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Mail, MapPin, MessageSquare, Send, ShieldCheck, RefreshCw, CheckCircle2, Linkedin, ExternalLink, ThumbsUp, Heart, Share2, Users, Plus, Check, AlertTriangle } from 'lucide-react';
+import { User, Mail, MapPin, MessageSquare, Send, ShieldCheck, RefreshCw, CheckCircle2, Linkedin, ExternalLink, ThumbsUp, Heart, Share2, Users, Plus, Check, AlertTriangle, Sparkle, Briefcase } from 'lucide-react';
 import NotificationToast from './NotificationToast';
 import { Component as ShatterButton } from '@/components/ui/shatter-button';
 import mubinAvatar from '../assets/images/mubin_avatar_1780675936140.png';
@@ -806,7 +806,7 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
     if (!message.trim()) {
       newErrors.message = 'Transmission content block required';
     } else if (message.trim().length < 10) {
-      newErrors.message = 'Message block too brief (Min 10 chars)';
+      newErrors.message = 'Message block too short (Min 10 chars)';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -1427,10 +1427,11 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                 }}
                 placeholder="Enter contact email address for feedback"
                 className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
-                  errors.email ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
-                  isSaudiGreenMode 
-                    ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
-                    : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
+                  errors.email 
+                    ? `border-red-500/80 bg-red-950/10 ${isSaudiGreenMode ? 'text-red-400 placeholder-red-900/40' : 'text-red-600 placeholder-red-400'} font-semibold` 
+                    : isSaudiGreenMode 
+                      ? 'bg-black/30 border-white/10 hover:border-teal-500/30 focus:border-teal-400 text-white placeholder-white/20' 
+                      : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
                 }`}
               />
               {errors.email && (
@@ -1466,29 +1467,61 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
               <textarea 
                 name="entry.2041270531"
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setMessage(val);
+                  if (errors.message) {
+                    if (!val.trim()) {
+                      setErrors(prev => ({ ...prev, message: 'Transmission content block required' }));
+                    } else if (val.trim().length < 10) {
+                      setErrors(prev => ({ ...prev, message: 'Message block too short (Min 10 chars)' }));
+                    } else {
+                      setErrors(prev => {
+                        const copy = { ...prev };
+                        delete copy.message;
+                        return copy;
+                      });
+                    }
+                  }
+                }}
                 onFocus={() => setIsMessageFocused(true)}
                 onBlur={() => setIsMessageFocused(false)}
                 placeholder="Write clear operational requirements or inquiry text here..."
                 rows={4}
                 className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all resize-none ${
-                  isSaudiGreenMode 
-                    ? 'bg-black/30 text-white placeholder-white/20' 
-                    : 'bg-white/50 text-teal-900 placeholder-teal-600/35'
-                } ${
-                  isMessageFocused
-                    ? message.length < 10
-                      ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30 ring-2 ring-red-500/20'
-                      : 'border-emerald-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 ring-2 ring-emerald-500/20'
-                    : errors.message
-                    ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900'
+                  errors.message || (isMessageFocused && message.length < 10)
+                    ? `border-red-500 bg-red-500/5 ${isSaudiGreenMode ? 'text-red-400 placeholder-red-900/40' : 'text-red-600 placeholder-red-400'} font-semibold`
                     : isSaudiGreenMode 
-                      ? 'border-white/10 hover:border-teal-500/30' 
-                      : 'border-[#0d5c56]/20 hover:border-[#0d5c56]/40'
+                      ? 'bg-black/30 text-white border-white/10 hover:border-teal-500/30 focus:border-teal-400 placeholder-white/20' 
+                      : 'bg-white/50 text-teal-900 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] placeholder-teal-600/35'
+                } ${
+                  isMessageFocused && !(errors.message || message.length < 10)
+                    ? 'border-emerald-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30 ring-2 ring-emerald-500/20'
+                    : isMessageFocused
+                    ? 'focus:ring-2 focus:ring-red-500/30 ring-2 ring-red-500/20'
+                    : ''
                 }`}
               />
               {errors.message && (
-                <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.message}</motion.p>
+                <motion.div 
+                  initial={{ opacity: 0, y: -4 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  className={`p-3.5 rounded-xl border flex items-start gap-2.5 text-xs font-mono shadow-sm ${
+                    isSaudiGreenMode 
+                      ? 'bg-red-950/30 border-red-500/25 text-red-200' 
+                      : 'bg-red-50 border-red-200 text-red-900'
+                  }`}
+                >
+                  <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5 text-left">
+                    <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
+                      [Validation Warning]
+                    </span>
+                    <p className="leading-relaxed font-sans font-medium text-xs">
+                      {errors.message}
+                    </p>
+                  </div>
+                </motion.div>
               )}
             </div>
 
@@ -1554,49 +1587,134 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 25 }}
               transition={{ type: 'spring', damping: 25, stiffness: 280 }}
-              className={`relative w-full max-w-md p-6 sm:p-8 rounded-3xl border z-10 text-center space-y-6 shadow-2xl ${
+              className={`relative w-full max-w-md p-8 sm:p-10 rounded-[32px] border z-10 text-center space-y-6 shadow-2xl overflow-hidden ${
                 isSaudiGreenMode 
                   ? 'bg-[#121212] border-emerald-500/30 text-white' 
-                  : 'bg-[#FAF6EB] border-[#0d5c56]/30 text-[#0d5c56]'
+                  : 'bg-[#FAF6EB] border-[#e4decb] text-[#0d5c56]'
               }`}
             >
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto ${
-                isSaudiGreenMode 
-                  ? 'bg-emerald-500/10 text-emerald-400' 
-                  : 'bg-[#0d5c56]/10 text-[#0d5c56]'
-              }`}>
-                <CheckCircle2 className="w-10 h-10" />
+              {/* Concentric Circle and Sparkles Container */}
+              <div className="relative flex items-center justify-center mx-auto w-32 h-32 select-none">
+                {/* Outer Ring with very soft pulse glow */}
+                <motion.div 
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className={`absolute inset-0 rounded-full border ${
+                    isSaudiGreenMode 
+                      ? 'bg-emerald-500/5 border-emerald-500/10' 
+                      : 'bg-[#0d5c56]/5 border-[#0d5c56]/5'
+                  }`}
+                />
+                
+                {/* Middle Ring */}
+                <div className={`absolute w-24 h-24 rounded-full border ${
+                  isSaudiGreenMode 
+                    ? 'bg-emerald-500/10 border-emerald-500/20' 
+                    : 'bg-[#0d5c56]/10 border-[#0d5c56]/10'
+                }`} />
+                
+                {/* Inner Main Circle with check */}
+                <div className={`absolute w-16 h-16 rounded-full border-[3px] flex items-center justify-center shadow-lg ${
+                  isSaudiGreenMode 
+                    ? 'bg-[#121212] border-emerald-400 text-emerald-400 shadow-emerald-500/10' 
+                    : 'bg-[#FAF6EB] border-[#0d5c56] text-[#0d5c56] shadow-[#0d5c56]/15'
+                }`}>
+                  <Check className="w-8 h-8 stroke-[3.5]" />
+                </div>
+
+                {/* Sparkling Star Decoration - Top Left */}
+                <motion.div 
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 0.7 }}
+                  transition={{ delay: 0.3, duration: 0.4 }}
+                  className={`absolute top-2 left-3 ${isSaudiGreenMode ? 'text-emerald-400' : 'text-[#0d5c56]/50'}`}
+                >
+                  <Sparkle className="w-4 h-4 fill-current" />
+                </motion.div>
+
+                {/* Sparkling Star Decoration - Bottom Left (tiny dot) */}
+                <motion.div 
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 0.5 }}
+                  transition={{ delay: 0.45, duration: 0.4 }}
+                  className={`absolute bottom-6 left-1 w-1.5 h-1.5 rounded-full ${isSaudiGreenMode ? 'bg-emerald-400/60' : 'bg-[#0d5c56]/40'}`}
+                />
+
+                {/* Sparkling Star Decoration - Top Right (tiny dot) */}
+                <motion.div 
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 0.5 }}
+                  transition={{ delay: 0.5, duration: 0.4 }}
+                  className={`absolute top-1 right-8 w-1.5 h-1.5 rounded-full ${isSaudiGreenMode ? 'bg-emerald-400/60' : 'bg-[#0d5c56]/40'}`}
+                />
+
+                {/* Sparkling Star Decoration - Middle Right (tiny dot) */}
+                <motion.div 
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 0.5 }}
+                  transition={{ delay: 0.6, duration: 0.4 }}
+                  className={`absolute bottom-10 -right-1 w-1.5 h-1.5 rounded-full ${isSaudiGreenMode ? 'bg-emerald-400/60' : 'bg-[#0d5c56]/40'}`}
+                />
+
+                {/* Sparkling Star Decoration - Bottom Right (star) */}
+                <motion.div 
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 0.7 }}
+                  transition={{ delay: 0.4, duration: 0.4 }}
+                  className={`absolute bottom-5 right-2 ${isSaudiGreenMode ? 'text-emerald-400' : 'text-[#0d5c56]/50'}`}
+                >
+                  <Sparkle className="w-5 h-5 fill-current" />
+                </motion.div>
               </div>
 
-              <div className="space-y-2">
-                <h3 className={`text-2xl font-serif font-extrabold tracking-tight ${
+              {/* Title & Body content */}
+              <div className="space-y-4 relative z-10">
+                <h3 className={`text-[25px] font-sans font-bold tracking-tight ${
                   isSaudiGreenMode ? 'text-white' : 'text-[#0d5c56]'
                 }`}>
-                  Message Sent Successfully
+                  Message Received Successfully
                 </h3>
-                <p className={`text-xs font-mono uppercase tracking-widest font-bold ${
-                  isSaudiGreenMode ? 'text-emerald-400' : 'text-amber-600'
-                }`}>
-                  Confirmation Complete
-                </p>
-                <p className={`text-sm leading-relaxed ${
-                  isSaudiGreenMode ? 'text-white/60' : 'text-[#1a6f68]'
-                }`}>
-                  Thank you! Your message has been successfully registered in Mubin's database. Expected response times are under 24 hours.
-                </p>
+                
+                {/* Thin elegant horizontal line under title */}
+                <div className={`w-14 h-[2px] mx-auto rounded-full ${isSaudiGreenMode ? 'bg-emerald-500/20' : 'bg-[#0d5c56]/15'}`} />
+
+                <div className="space-y-2">
+                  <p className={`text-base font-semibold ${
+                    isSaudiGreenMode ? 'text-emerald-400' : 'text-[#0d5c56]'
+                  }`}>
+                    Thank you for reaching out.
+                  </p>
+                  <p className={`text-[13.5px] leading-relaxed max-w-sm mx-auto font-sans font-medium ${
+                    isSaudiGreenMode ? 'text-white/60' : 'text-[#1a6f68]/80'
+                  }`}>
+                    Your message has been successfully submitted and added to my inbox. I will review your inquiry and respond as soon as possible, typically within 24–48 hours.
+                  </p>
+                </div>
               </div>
 
-              <button 
-                id="btn-close-confirmation"
-                onClick={resetForm}
-                className={`w-full py-3.5 rounded-xl border text-xs font-mono font-bold tracking-widest uppercase transition-all cursor-pointer outline-none focus:outline-none ${
-                  isSaudiGreenMode 
-                    ? 'bg-[#005639] hover:bg-emerald-800 border-emerald-500/20 text-white' 
-                    : 'bg-[#0d5c56] hover:bg-[#09413c] border-[#0d5c56] text-[#FAF6EB]'
-                }`}
-              >
-                Close
-              </button>
+              {/* Action Button */}
+              <div className="pt-2 relative z-10">
+                <button 
+                  id="btn-close-confirmation"
+                  onClick={resetForm}
+                  className={`w-full py-4 rounded-2xl border text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer outline-none focus:outline-none flex items-center justify-center gap-2.5 shadow-md ${
+                    isSaudiGreenMode 
+                      ? 'bg-[#005639] hover:bg-emerald-800 border-emerald-500/20 text-white shadow-emerald-950/50' 
+                      : 'bg-[#0d5c56] hover:bg-[#09413c] border-[#0d5c56] text-[#FAF6EB] shadow-[#0d5c56]/10'
+                  }`}
+                >
+                  <Briefcase className="w-4 h-4 shrink-0 text-[#FAF6EB] keep-text-cream" />
+                  <span className="text-[#FAF6EB] keep-text-cream">Return to Portfolio</span>
+                </button>
+              </div>
+
+              {/* Decorative Soft layered Wave SVG Graphics at the bottom */}
+              <svg className={`absolute bottom-0 left-0 w-full h-24 ${isSaudiGreenMode ? 'text-emerald-950/10' : 'text-[#ede7d9]'} pointer-events-none rounded-b-[32px]`} viewBox="0 0 1440 200" preserveAspectRatio="none">
+                <path fill="currentColor" d="M0,96C240,160,480,160,720,120C960,80,1200,0,1440,40L1440,200L0,200Z"></path>
+              </svg>
+              <svg className={`absolute bottom-0 left-0 w-full h-16 ${isSaudiGreenMode ? 'text-emerald-900/15' : 'text-[#e4decb]'} pointer-events-none rounded-b-[32px]`} viewBox="0 0 1440 200" preserveAspectRatio="none">
+                <path fill="currentColor" d="M0,120C240,60,480,140,720,100C960,60,1200,100,1440,40L1440,200L0,200Z"></path>
+              </svg>
             </motion.div>
           </div>
         )}
