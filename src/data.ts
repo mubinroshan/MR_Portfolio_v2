@@ -90,6 +90,23 @@ export const PROJECTS_DATA: Project[] = [
 
 export const TIMELINE_DATA: TimelineItem[] = [
   {
+    id: 'time-tryhackme_pt1',
+    date: 'June 20, 2026',
+    category: 'certification',
+    tags: [
+      'tryhackme',
+      'pt1',
+      'penetrationtesting',
+      'ethicalhacking',
+      'cybersecurity',
+      'redteam',
+      'vulnerabilityassessment'
+    ],
+    title: 'TryHackMe Certified Junior Penetration Tester (PT1)',
+    description: 'Obtained the TryHackMe Certified Junior Penetration Tester (PT1) certification, demonstrating practical skills in penetration testing, vulnerability assessment, web application security, network reconnaissance, privilege escalation, and cybersecurity methodologies. Validates the ability to identify, analyze, and report security vulnerabilities using industry-standard tools and techniques while following ethical hacking best practices.',
+    imageUrl: '/Tryhackme_Certificate.png'
+  },
+  {
     id: 'time-1',
     date: 'Jan 2025 - Present',
     category: 'career',
@@ -150,6 +167,23 @@ export const TIMELINE_DATA: TimelineItem[] = [
       'Validated hands-on capacity to construct zero-trust configurations surrounding sensitive healthcare servers.'
     ],
     imageUrl: '/cisco_cert.png'
+  },
+  {
+    id: 'time-iso27001',
+    date: 'Oct 21, 2023',
+    category: 'certification',
+    tags: [
+      'iso27001',
+      'iso270012022',
+      'informationsecurity',
+      'cybersecurity',
+      'isms',
+      'riskmanagement',
+      'compliance'
+    ],
+    title: 'ISO/IEC 27001:2022 Information Security Associate™',
+    description: 'Successfully earned the ISO/IEC 27001:2022 Information Security Associate™ certification from SkillFront, demonstrating foundational knowledge of Information Security Management Systems (ISMS), information security governance, risk assessment, risk treatment, compliance requirements, security controls, and the implementation of ISO/IEC 27001:2022 standards. This certification validates the ability to support organizational information security initiatives and contribute to maintaining confidentiality, integrity, and availability of information assets.',
+    imageUrl: '/SkillFront ISO 27001 Certification-1.png'
   },
   {
     id: 'time-5',

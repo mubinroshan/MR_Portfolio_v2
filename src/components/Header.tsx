@@ -108,10 +108,6 @@ export default function Header({
           />
           <div className="hidden min-[480px]:block shrink-0">
             <span className="font-serif font-bold text-xs xs:text-sm sm:text-base lg:text-lg xl:text-xl tracking-normal text-white group-hover:text-teal-400 transition-colors whitespace-nowrap">mubin.roshan</span>
-            <div className="text-[9px] sm:text-[10px] text-gray-500 font-mono flex items-center gap-1 sm:gap-1.5 mt-0.5 whitespace-nowrap">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping shrink-0"></span>
-              SecOps // Active
-            </div>
           </div>
         </div>
 

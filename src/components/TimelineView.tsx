@@ -551,7 +551,9 @@ export default function TimelineView() {
                   {/* Card description details under the image */}
                   <div className="bg-[#F5EFE1] rounded-xl p-4 border border-[#0d5c56]/15 text-center">
                     <span className="text-[10px] sm:text-xs font-mono font-bold text-[#0d5c56]/80 tracking-widest uppercase mb-1 block">
-                      CISCO SECURITY CERTIFIED
+                      {previewImage.title.toLowerCase().includes('cisco') ? 'CISCO SECURITY CERTIFIED' : 
+                       previewImage.title.toLowerCase().includes('tryhackme') ? 'TRYHACKME SECURITY CERTIFIED' : 
+                       'VERIFIED SECURITY CERTIFICATION'}
                     </span>
                     <h2 className="text-base sm:text-lg md:text-xl font-serif text-[#051616] font-extrabold tracking-tight select-none uppercase">
                       {previewImage.title}
