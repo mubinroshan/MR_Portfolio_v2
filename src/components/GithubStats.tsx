@@ -103,7 +103,7 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
   // Tooltip tracking state for contributions grid
   const [hoveredDay, setHoveredDay] = useState<{ date: string; count: number; x: number; y: number; weekIndex: number } | null>(null);
 
-  // Generate deterministic contribution data totaling exactly 265
+  // Generate deterministic contribution data totaling exactly 1362
   const contributionData = React.useMemo(() => {
     const days: { date: string; count: number; level: number }[] = [];
     let totalCalculated = 0;
@@ -113,43 +113,51 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
     
     for (let i = 0; i < 371; i++) {
       const curDate = new Date(baseDate.getTime() + i * 24 * 60 * 60 * 1000);
+      const dayOfWeek = curDate.getDay(); // 0 is Sunday, 6 is Saturday
       const month = curDate.getMonth(); // 0 is Jan, 11 is Dec
       
       let count = 0;
       let level = 0;
       
-      // Seed high activities in January, February, March, April and May as requested
-      if (month === 0) { // Jan
-        const r = Math.sin(i * 0.4) * 0.5 + 0.5;
-        if (r > 0.42) {
-          count = Math.floor(r * 9);
-          level = count > 7 ? 4 : count > 5 ? 3 : count > 2 ? 2 : 1;
-        }
-      } else if (month === 1) { // Feb
-        const r = Math.cos(i * 0.6) * 0.5 + 0.5;
-        if (r > 0.55) {
-          count = Math.floor(r * 8);
-          level = count > 6 ? 4 : count > 4 ? 3 : count > 2 ? 2 : 1;
-        }
-      } else if (month === 2) { // Mar
-        const r = Math.sin(i * 0.35) * 0.5 + 0.5;
-        if (r > 0.5) {
-          count = Math.floor(r * 6);
-          level = count > 4 ? 3 : count > 2 ? 2 : 1;
-        }
-      } else if (month === 4 || month === 5) { // May or June
-        const r = Math.cos(i * 0.45) * 0.5 + 0.5;
-        if (r > 0.72) {
-          count = Math.floor(r * 7);
-          level = count > 5 ? 4 : count > 3 ? 3 : 2;
-        }
+      // We want a dense, highly active graph with varied levels
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+      
+      // Determine base count using deterministic cycles and random-looking variation
+      const cycle1 = Math.sin(i * 0.15) * 1.5;
+      const cycle2 = Math.cos(i * 0.08) * 1.2;
+      const base = 2.8 + cycle1 + cycle2;
+      
+      if (isWeekend) {
+        // Weekends have fewer commits, but still some activity for a full-looking grid
+        count = Math.floor(Math.max(0, base * 0.5 + (Math.sin(i * 1.1) * 0.8)));
       } else {
-        // Sparse backdrop noise
-        const noise = Math.sin(i * 1.5) * Math.cos(i * 2.1);
-        if (noise > 0.88) {
-          count = 1 + Math.floor((noise - 0.88) * 8);
-          level = count > 3 ? 2 : 1;
-        }
+        // Weekdays are highly active
+        count = Math.floor(Math.max(1, base + 1.2 + (Math.sin(i * 1.8) * 2.0)));
+      }
+      
+      // Seasonal/monthly peaks (higher in Jan, Feb, Mar, May, Oct)
+      if (month === 0 || month === 1 || month === 2 || month === 4 || month === 9) {
+        count += Math.floor((Math.sin(i * 0.5) * 0.5 + 0.5) * 4);
+      }
+      
+      // Occasional heavy push days (Level 4 spikes)
+      if (i % 11 === 0 && !isWeekend) {
+        count += 4;
+      }
+      
+      if (count < 0) count = 0;
+      
+      // Assign levels based on count ranges
+      if (count === 0) {
+        level = 0;
+      } else if (count <= 2) {
+        level = 1;
+      } else if (count <= 4) {
+        level = 2;
+      } else if (count <= 7) {
+        level = 3;
+      } else {
+        level = 4;
       }
       
       days.push({
@@ -160,28 +168,31 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
       totalCalculated += count;
     }
     
-    // Adjust total sum to exactly 265
-    let diff = 265 - totalCalculated;
+    // Adjust total sum to exactly 1362
+    let diff = 1362 - totalCalculated;
     if (diff !== 0) {
       let limitCounter = 0;
-      while (diff !== 0 && limitCounter < 1000) {
+      while (diff !== 0 && limitCounter < 5000) {
         limitCounter++;
         // Distribute changes around active regions
-        const idx = Math.floor(Math.sin(limitCounter * 12.3) * 180 + 190) % 371;
+        const idx = Math.floor(Math.abs(Math.sin(limitCounter * 12.357)) * 371) % 371;
         if (diff > 0) {
           days[idx].count += 1;
-          if (days[idx].level === 0) days[idx].level = 1;
-          else if (days[idx].level < 4 && days[idx].count > days[idx].level * 2) {
-            days[idx].level += 1;
-          }
+          const c = days[idx].count;
+          if (c <= 2) days[idx].level = 1;
+          else if (c <= 4) days[idx].level = 2;
+          else if (c <= 7) days[idx].level = 3;
+          else days[idx].level = 4;
           diff--;
         } else {
           if (days[idx].count > 0) {
             days[idx].count -= 1;
-            if (days[idx].count === 0) days[idx].level = 0;
-            else if (days[idx].level > 1 && days[idx].count < days[idx].level * 1.5) {
-              days[idx].level -= 1;
-            }
+            const c = days[idx].count;
+            if (c === 0) days[idx].level = 0;
+            else if (c <= 2) days[idx].level = 1;
+            else if (c <= 4) days[idx].level = 2;
+            else if (c <= 7) days[idx].level = 3;
+            else days[idx].level = 4;
             diff++;
           }
         }
@@ -396,8 +407,8 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
                       className="w-20 h-20 rounded-full border-2 border-[#00a36c]/40 object-cover"
                       referrerPolicy="no-referrer"
                     />
-                    <div className="absolute bottom-0 right-0 p-1 bg-[#005639] rounded-full border border-teal-400">
-                      <Github className="w-3 h-3 text-white" />
+                    <div className="absolute bottom-0 right-0 p-1.5 bg-[#00a36c] rounded-full border border-[#faf6eb] shadow-md flex items-center justify-center">
+                      <Github className="w-3 h-3 text-[#faf6eb] fill-[#faf6eb]" />
                     </div>
                   </div>
 
@@ -544,7 +555,7 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
                   <div className="space-y-0.5">
                     <span className="text-xl font-semibold tracking-tight font-sans">
-                      265 contributions
+                      1,362 contributions
                     </span>
                     <span className={`text-xs ml-1.5 ${isSaudiGreenMode ? 'text-white/40 font-mono' : 'text-[#0d5c56]/60 font-mono'}`}>
                       in the last year
