@@ -9,11 +9,12 @@ import { Shield, ShieldAlert, Cpu, Orbit, Sparkles } from 'lucide-react'
 // Simple check for WebGL context and software drivers
 const checkWebGLSupport = (): { supported: boolean; reason?: string } => {
   if (typeof window === 'undefined') return { supported: false, reason: 'SSR' }
+  let gl: WebGLRenderingContext | null = null
   try {
     const canvas = document.createElement('canvas')
-    const gl = (canvas.getContext('webgl2') || 
-                canvas.getContext('webgl') || 
-                canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null
+    gl = (canvas.getContext('webgl2') || 
+          canvas.getContext('webgl') || 
+          canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null
     
     if (!gl) {
       return { supported: false, reason: 'No WebGL context initialized.' }
@@ -22,6 +23,8 @@ const checkWebGLSupport = (): { supported: boolean; reason?: string } => {
     // Check shader precision capability
     const precision = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT)
     if (!precision || precision.precision === 0) {
+      const loseContextExt = gl.getExtension('WEBGL_lose_context')
+      if (loseContextExt) loseContextExt.loseContext()
       return { supported: false, reason: 'Lacks float precision required for detailed physical materials.' }
     }
 
@@ -37,14 +40,28 @@ const checkWebGLSupport = (): { supported: boolean; reason?: string } => {
         rendererLower.includes('llvmpipe') || 
         rendererLower.includes('mesa') && !rendererLower.includes('amd') && !rendererLower.includes('intel')
       ) {
+        const loseContextExt = gl.getExtension('WEBGL_lose_context')
+        if (loseContextExt) loseContextExt.loseContext()
         return { 
           supported: false, 
           reason: `Software Renderer detected (${renderer}). Accelerated GPU is recommended for high-fidelity 3D physics shaders.` 
         }
       }
     }
+
+    // Release the context to avoid hitting the browser's WebGL context limit during fast updates
+    const loseContextExt = gl.getExtension('WEBGL_lose_context')
+    if (loseContextExt) {
+      loseContextExt.loseContext()
+    }
     return { supported: true }
   } catch (e) {
+    if (gl) {
+      try {
+        const loseContextExt = (gl as WebGLRenderingContext).getExtension('WEBGL_lose_context')
+        if (loseContextExt) loseContextExt.loseContext()
+      } catch (_) {}
+    }
     return { supported: false, reason: 'WebGL initialization threw exception' }
   }
 }
@@ -69,7 +86,10 @@ class SplineErrorBoundary extends React.Component<
 
   componentDidCatch(error: any, errorInfo: any) {
     console.warn("Spline 3D Shader/Renderer failure caught safely in ErrorBoundary:", error, errorInfo)
-    this.props.onError()
+    // Defer the parent state modification to prevent updating during parent render/commit phases
+    setTimeout(() => {
+      this.props.onError()
+    }, 0)
   }
 
   render() {
@@ -109,6 +129,17 @@ export default function Character3D({ isSaudiGreenMode = false }: Character3DPro
     setWebglStatus(status)
     if (!status.supported) {
       console.info("Hardware accelerated GPU WebGL is disabled or absent. Activating modern Interactive Sentinel core fallback. Reason:", status.reason)
+    }
+
+    // Capture browser-level WebGL context creation failures before they cause unhandled React errors
+    const handleWebGLCreationError = (e: Event) => {
+      console.warn("WebGL Context Creation Error caught globally:", e)
+      setForceFallback(true)
+    }
+
+    window.addEventListener('webglcontextcreationerror', handleWebGLCreationError)
+    return () => {
+      window.removeEventListener('webglcontextcreationerror', handleWebGLCreationError)
     }
   }, [])
 

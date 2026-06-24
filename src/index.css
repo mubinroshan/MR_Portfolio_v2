@@ -1,15 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Google Sans", "Product Sans", "Outfit", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Google Sans", "Product Sans", "Outfit", "Playfair Display", Georgia, serif;
   --font-mono: "Google Sans", "Product Sans", "Outfit", "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-poppins: "Poppins", "Outfit", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
   
   --color-brand-green: #005639;
   --color-brand-green-light: #00a36c;
   --color-dark-bg: #0a0a0a;
   --color-card-bg: #121212;
+}
+
+.certificate-title-hollow {
+  font-family: 'Montserrat', sans-serif !important;
+  -webkit-text-stroke: 0.15cqw #004d40 !important;
+  color: transparent !important;
+  letter-spacing: 0.08em !important;
+}
+
+.font-poppins {
+  font-family: "Poppins", "Outfit", sans-serif !important;
 }
 
 /* 1. GLOBAL FONT OVERRIDE: Google Sans across the webpage everywhere for all headers, subtext, and contents */

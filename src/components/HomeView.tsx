@@ -184,7 +184,7 @@ export default function HomeView({
             </motion.h1>
 
             <motion.p variants={staggerItem} className="mt-6 text-white/50 text-lg md:text-xl leading-relaxed max-w-xl font-light">
-              Protecting digital frontiers at <span className="text-white hover:text-[#00a36c] transition-colors">Yanbu National Hospital</span>. Bridging the gap between complex data streams and clinical security protocols.
+              Protecting digital frontiers at <a href="https://www.ynh.com.sa/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#00a36c] hover:underline transition-colors">Yanbu National Hospital</a>. Bridging the gap between complex data streams and clinical security protocols.
             </motion.p>
 
             {/* Interactive Search Bar across portfolio */}

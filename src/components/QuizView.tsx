@@ -25,7 +25,11 @@ import {
   Clock,
   Sparkles,
   Lock,
-  ChevronLeft
+  ChevronLeft,
+  Target,
+  Star,
+  IdCard,
+  AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -192,11 +196,13 @@ interface QuizViewProps {
 
 export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) {
   const [userName, setUserName] = useState('');
+  const [nameError, setNameError] = useState('');
   const [step, setStep] = useState<'intro' | 'quiz' | 'completed'>('intro');
   const [answers, setAnswers] = useState<Record<number, 'A' | 'B' | 'C' | 'D'>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [bookmarkedQuestions, setBookmarkedQuestions] = useState<Record<number, boolean>>({});
   const [score, setScore] = useState<number | null>(null);
+  const [certificateId, setCertificateId] = useState('');
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
   
@@ -246,7 +252,11 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
 
   const handleStartQuiz = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userName.trim()) return;
+    if (!userName.trim()) {
+      setNameError('Please fill out this field.');
+      return;
+    }
+    setNameError('');
     setStep('quiz');
     setCurrentQuestionIndex(0);
   };
@@ -288,10 +298,16 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
       }
     });
     setScore(correctCount);
+
+    // Generate a unique, stable certificate ID
+    const year = 2026;
+    const randomNum = Math.floor(100000 + Math.random() * 900000); // 6 digits
+    setCertificateId(`MR-${year}-${randomNum}`);
+
     setStep('completed');
   };
 
-  // Canvas drawing logic for Certificate Download (Matching the fifth reference image)
+  // Canvas drawing logic for Certificate Download (Matching the real certificate template)
   const handleDownloadCertificate = () => {
     if (score === null) return;
     const canvas = canvasRef.current;
@@ -299,227 +315,355 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const today = new Date().toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    const verifyUrl = `https://mubinroshan.com/verify/${certificateId}`;
+    const logoImg = new Image();
+    logoImg.crossOrigin = "anonymous";
+    const qrImg = new Image();
+    qrImg.crossOrigin = "anonymous";
+    const sigImg = new Image();
+    sigImg.crossOrigin = "anonymous";
+    const patternImg = new Image();
+    patternImg.crossOrigin = "anonymous";
 
-    canvas.width = 1120;
-    canvas.height = 790;
+    let imagesLoaded = 0;
+    const totalImages = 4;
 
-    // Background: elegant ivory/cream gradient
-    const bgGrad = ctx.createLinearGradient(0, 0, 1120, 790);
-    if (isSaudiGreenMode) {
-      bgGrad.addColorStop(0, '#060f0c');
-      bgGrad.addColorStop(1, '#0c1a15');
-    } else {
-      bgGrad.addColorStop(0, '#fafaf7');
-      bgGrad.addColorStop(1, '#f5f2e8');
-    }
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, 1120, 790);
-
-    // Subtle background pattern - horizontal security lines
-    ctx.strokeStyle = isSaudiGreenMode ? 'rgba(52, 211, 153, 0.02)' : 'rgba(13, 92, 86, 0.015)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < 790; i += 10) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(1120, i);
-      ctx.stroke();
-    }
-
-    // Outer Teal Border (Frame) with double line
-    ctx.strokeStyle = isSaudiGreenMode ? '#00a36c' : '#0d5c56';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(25, 25, 1070, 740);
-
-    ctx.strokeStyle = isSaudiGreenMode ? 'rgba(52, 211, 153, 0.3)' : 'rgba(13, 92, 86, 0.25)';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(31, 31, 1058, 728);
-
-    // Corner flourishes / ornaments
-    const drawCornerOrnament = (x: number, y: number, xDir: number, yDir: number) => {
-      ctx.strokeStyle = isSaudiGreenMode ? '#00a36c' : '#0d5c56';
-      ctx.lineWidth = 2;
-      
-      // Horizontal and vertical crossing lines
-      ctx.beginPath();
-      ctx.moveTo(x, y + yDir * 25);
-      ctx.lineTo(x, y);
-      ctx.lineTo(x + xDir * 25, y);
-      ctx.stroke();
-
-      // Small nested decorative dot or box
-      ctx.fillStyle = isSaudiGreenMode ? '#00a36c' : '#0d5c56';
-      ctx.fillRect(x + xDir * 8 - 2, y + yDir * 8 - 2, 4, 4);
+    const checkAndDraw = () => {
+      imagesLoaded++;
+      if (imagesLoaded === totalImages) {
+        drawCertificateOnCanvas();
+      }
     };
-    drawCornerOrnament(38, 38, 1, 1);
-    drawCornerOrnament(1082, 38, -1, 1);
-    drawCornerOrnament(38, 752, 1, -1);
-    drawCornerOrnament(1082, 752, -1, -1);
 
-    // Diagonal top-right ribbon (Matching reference image)
-    ctx.save();
-    ctx.fillStyle = isSaudiGreenMode ? '#00a36c' : '#0d5c56';
-    ctx.beginPath();
-    ctx.moveTo(1020, 25);
-    ctx.lineTo(1095, 25);
-    ctx.lineTo(1095, 100);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
+    logoImg.onload = checkAndDraw;
+    logoImg.onerror = () => {
+      console.error("Failed to load logo image");
+      checkAndDraw();
+    };
 
-    // TOP LEFT: Logo & Authority info
-    // 1. Draw elegant geometric chevrons/shield crest
-    ctx.save();
-    ctx.translate(75, 75);
-    ctx.strokeStyle = isSaudiGreenMode ? '#34d399' : '#0d5c56';
-    ctx.fillStyle = isSaudiGreenMode ? 'rgba(52, 211, 153, 0.08)' : 'rgba(13, 92, 86, 0.04)';
-    ctx.lineWidth = 2.5;
-    
-    // Abstract geometric crest form of 'MR' badge
-    ctx.beginPath();
-    ctx.moveTo(0, 15);
-    ctx.lineTo(15, 0);
-    ctx.lineTo(30, 15);
-    ctx.lineTo(30, 35);
-    ctx.lineTo(15, 45);
-    ctx.lineTo(0, 35);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+    qrImg.onload = checkAndDraw;
+    qrImg.onerror = () => {
+      console.error("Failed to load QR code image");
+      checkAndDraw();
+    };
 
-    // Inner stylized lines
-    ctx.beginPath();
-    ctx.moveTo(5, 20);
-    ctx.lineTo(15, 30);
-    ctx.lineTo(25, 20);
-    ctx.moveTo(15, 30);
-    ctx.lineTo(15, 42);
-    ctx.stroke();
-    ctx.restore();
+    sigImg.onload = checkAndDraw;
+    sigImg.onerror = () => {
+      console.error("Failed to load signature image");
+      checkAndDraw();
+    };
 
-    // 2. Authority Title text
-    ctx.textAlign = 'left';
-    ctx.fillStyle = isSaudiGreenMode ? '#ffffff' : '#0d5c56';
-    ctx.font = "bold 14px 'Inter', sans-serif";
-    ctx.fillText("MUBIN ROSHAN", 120, 92);
-    ctx.fillStyle = isSaudiGreenMode ? '#94a3b8' : '#52796f';
-    ctx.font = "500 10px 'JetBrains Mono', monospace";
-    ctx.fillText("Cyber Security Analyst", 120, 108);
-    ctx.fillText("SQL Database Administrator", 120, 120);
+    patternImg.onload = checkAndDraw;
+    patternImg.onerror = () => {
+      console.error("Failed to load pattern image");
+      checkAndDraw();
+    };
 
-    // TOP RIGHT: Certificate ID (Replicating "MR-CSRQ-2025-0522-0187")
-    ctx.textAlign = 'right';
-    ctx.fillStyle = isSaudiGreenMode ? '#94a3b8' : '#52796f';
-    ctx.font = "500 10px 'JetBrains Mono', monospace";
-    ctx.fillText("Certificate ID", 1010, 92);
-    ctx.fillStyle = isSaudiGreenMode ? '#ffffff' : '#111827';
-    ctx.font = "bold 11px 'JetBrains Mono', monospace";
-    ctx.fillText(`MR-CSRQ-2026-0624-01${10 + (score || 0)}`, 1010, 108);
+    // Load resources
+    logoImg.src = '/favicon.png';
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(verifyUrl)}`;
+    sigImg.src = '/mubin_signature.png';
+    patternImg.src = '/cert_patterns.png';
 
-    // CENTER: "CERTIFICATE OF ACHIEVEMENT"
-    ctx.textAlign = 'center';
-    ctx.fillStyle = isSaudiGreenMode ? '#34d399' : '#0d5c56';
-    ctx.font = "bold 42px 'Playfair Display', 'Georgia', serif";
-    ctx.letterSpacing = '5px';
-    ctx.fillText("CERTIFICATE", 560, 230);
+    const drawCertificateOnCanvas = () => {
+      canvas.width = 1050;
+      canvas.height = 660;
 
-    // "OF ACHIEVEMENT" with beautiful horizontal lines
-    ctx.fillStyle = isSaudiGreenMode ? '#94a3b8' : '#475569';
-    ctx.font = "500 12px 'JetBrains Mono', monospace";
-    ctx.letterSpacing = '3px';
-    const subTitle = "OF ACHIEVEMENT";
-    ctx.fillText(subTitle, 560, 262);
+      // 1. Draw Cream Background
+      ctx.fillStyle = '#FAF6EB';
+      ctx.fillRect(0, 0, 1050, 660);
 
-    const subTextWidth = ctx.measureText(subTitle).width;
-    ctx.strokeStyle = isSaudiGreenMode ? 'rgba(52, 211, 153, 0.3)' : 'rgba(13, 92, 86, 0.25)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(560 - subTextWidth/2 - 40, 258);
-    ctx.lineTo(560 - subTextWidth/2 - 10, 258);
-    ctx.moveTo(560 + subTextWidth/2 + 10, 258);
-    ctx.lineTo(560 + subTextWidth/2 + 40, 258);
-    ctx.stroke();
+      // 2. Draw Pattern Borders on Top Header and Bottom Footer (Height 35px)
+      if (patternImg.complete && patternImg.naturalWidth > 0) {
+        // Draw top header pattern band
+        ctx.drawImage(patternImg, 0, 0, 1050, 35);
+        // Draw bottom footer pattern band
+        ctx.drawImage(patternImg, 0, 625, 1050, 35);
+      } else {
+        // Fallback simple solid color bands if image is missing
+        ctx.fillStyle = '#0C6A63';
+        ctx.fillRect(0, 0, 1050, 35);
+        ctx.fillRect(0, 625, 1050, 35);
+      }
 
-    // "This is to certify that"
-    ctx.fillStyle = isSaudiGreenMode ? '#94a3b8' : '#64748b';
-    ctx.font = "italic 15px 'Georgia', serif";
-    ctx.fillText("This is to certify that", 560, 320);
+      // 3. Draw Logo Image and Text (Top-Left)
+      const logoX = 73; // 7% of 1050
+      const logoY = 46; // 7% of 660
+      const logoSize = 84;
+      if (logoImg.complete && logoImg.naturalWidth > 0) {
+        ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+      }
 
-    // Recipient Name (Large, elegant serif / playfair, beautiful italic signature script vibe)
-    ctx.fillStyle = isSaudiGreenMode ? '#ffffff' : '#0d5c56';
-    ctx.font = "italic 44px 'Playfair Display', 'Georgia', serif";
-    ctx.fillText(userName, 560, 385);
+      // Logo text
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle = '#0C6A63';
+      ctx.font = "bold 21px 'Poppins', 'Inter', sans-serif";
+      ctx.fillText("MUBIN ROSHAN ACADEMY", logoX + logoSize + 16, logoY + 16);
 
-    // Decorative line below name
-    ctx.strokeStyle = isSaudiGreenMode ? 'rgba(52, 211, 153, 0.35)' : 'rgba(13, 92, 86, 0.25)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(320, 405);
-    ctx.lineTo(800, 405);
-    ctx.stroke();
+      ctx.fillStyle = '#6B7280'; // gray-500
+      ctx.font = "bold 11px 'JetBrains Mono', monospace";
+      ctx.fillText("INSPIRE. EMPOWER. EXCEL.", logoX + logoSize + 16, logoY + 44);
 
-    // Description paragraph
-    ctx.fillStyle = isSaudiGreenMode ? '#94a3b8' : '#475569';
-    ctx.font = "13px 'Inter', sans-serif";
-    ctx.fillText("has successfully completed the", 560, 440);
+      // 4. Draw Title "CERTIFICATE OF ACHIEVEMENT" (Left-aligned)
+      const titleX = 73;
+      const titleY = 165;
+      
+      ctx.strokeStyle = '#004d40';
+      ctx.lineWidth = 2.0;
+      ctx.font = "bold 59px 'Montserrat', sans-serif";
+      ctx.strokeText("CERTIFICATE", titleX, titleY);
 
-    ctx.fillStyle = isSaudiGreenMode ? '#34d399' : '#0d5c56';
-    ctx.font = "bold 17px 'Inter', sans-serif";
-    ctx.fillText("Cyber Security Readiness Quiz", 560, 470);
+      ctx.fillStyle = '#0C6A63';
+      ctx.font = "extrabold 22px 'Poppins', 'Inter', sans-serif";
+      ctx.fillText("OF ACHIEVEMENT", titleX, titleY + 65);
 
-    ctx.fillStyle = isSaudiGreenMode ? '#94a3b8' : '#475569';
-    ctx.font = "13.5px 'Inter', sans-serif";
-    ctx.fillText("demonstrating knowledge in cybersecurity, SQL database administration,", 560, 500);
-    ctx.fillText("and healthcare security practices.", 560, 520);
+      // 5. Draw "This is to certify that"
+      const certY = 297;
+      ctx.fillStyle = '#4B5563'; // gray-600
+      ctx.font = "italic 17px Georgia, serif";
+      ctx.fillText("This is to certify that", titleX, certY);
 
-    // BOTTOM SECTION
-    // Bottom Left: Score & Date
-    ctx.textAlign = 'left';
-    ctx.fillStyle = isSaudiGreenMode ? '#94a3b8' : '#64748b';
-    ctx.font = "500 10px 'JetBrains Mono', monospace";
-    ctx.fillText("Score", 120, 620);
-    ctx.fillStyle = isSaudiGreenMode ? '#ffffff' : '#111827';
-    ctx.font = "bold 18px 'Inter', sans-serif";
-    ctx.fillText(`${score} / 10`, 120, 646);
+      // 6. Draw Name with conditional underline length & center centering for TEST
+      const nameY = 330;
+      const nameUpper = (userName || 'PARTICIPANT').toUpperCase();
+      const isTest = nameUpper === 'TEST';
+      
+      ctx.fillStyle = '#0C6A63';
+      ctx.font = "bold 44px 'Poppins', 'Inter', sans-serif";
+      const textWidth = ctx.measureText(nameUpper).width;
 
-    ctx.fillStyle = isSaudiGreenMode ? '#94a3b8' : '#64748b';
-    ctx.font = "500 10px 'JetBrains Mono', monospace";
-    ctx.fillText("Date", 230, 620);
-    ctx.fillStyle = isSaudiGreenMode ? '#ffffff' : '#111827';
-    ctx.font = "bold 15px 'Inter', sans-serif";
-    ctx.fillText(today, 230, 646);
+      if (isTest) {
+        // Centered name and line
+        const centerNameX = 73 + 262.5; // Center of the 525px left column width
+        ctx.textAlign = 'center';
+        ctx.fillText(nameUpper, centerNameX, nameY);
 
-    // Bottom Right: Verification Signature & Author Titles
-    ctx.textAlign = 'right';
-    ctx.strokeStyle = isSaudiGreenMode ? 'rgba(52, 211, 153, 0.35)' : 'rgba(13, 92, 86, 0.25)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(800, 610);
-    ctx.lineTo(1000, 610);
-    ctx.stroke();
+        // Underline only a little wider than the word "TEST"
+        const lineLen = textWidth + 40;
+        ctx.strokeStyle = '#D1D5DB'; // gray-300
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(centerNameX - lineLen / 2, nameY + 60);
+        ctx.lineTo(centerNameX + lineLen / 2, nameY + 60);
+        ctx.stroke();
 
-    // Hand-drawn cursive style signature
-    ctx.fillStyle = isSaudiGreenMode ? '#34d399' : '#0d5c56';
-    ctx.font = "italic 22px 'Playfair Display', 'Georgia', serif";
-    ctx.fillText("Mubin Roshan", 950, 600);
+        // Draw Shield Check icon centered on this underline
+        ctx.fillStyle = '#FAF6EB';
+        ctx.fillRect(centerNameX - 16, nameY + 48, 32, 24);
+        
+        ctx.strokeStyle = '#0C6A63';
+        ctx.lineWidth = 2;
+        ctx.fillStyle = '#0C6A63';
+        ctx.beginPath();
+        ctx.moveTo(centerNameX, nameY + 52);
+        ctx.lineTo(centerNameX + 8, nameY + 55);
+        ctx.lineTo(centerNameX + 8, nameY + 61);
+        ctx.quadraticCurveTo(centerNameX + 8, nameY + 66, centerNameX, nameY + 69);
+        ctx.quadraticCurveTo(centerNameX - 8, nameY + 66, centerNameX - 8, nameY + 61);
+        ctx.lineTo(centerNameX - 8, nameY + 55);
+        ctx.closePath();
+        ctx.stroke();
+      } else {
+        // Left-aligned name with underline ending exactly at the end of the name
+        ctx.textAlign = 'left';
+        ctx.fillText(nameUpper, titleX, nameY);
 
-    ctx.fillStyle = isSaudiGreenMode ? '#ffffff' : '#0d5c56';
-    ctx.font = "bold 13px 'Inter', sans-serif";
-    ctx.fillText("Mubin Roshan", 1000, 630);
-    ctx.fillStyle = isSaudiGreenMode ? '#94a3b8' : '#52796f';
-    ctx.font = "500 10px 'JetBrains Mono', monospace";
-    ctx.fillText("Cyber Security Analyst", 1000, 646);
-    ctx.fillText("SQL Database Administrator", 1000, 658);
+        ctx.strokeStyle = '#D1D5DB'; // gray-300
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(titleX, nameY + 60);
+        ctx.lineTo(titleX + textWidth, nameY + 60);
+        ctx.stroke();
 
-    const dataUrl = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.download = `${userName.trim().replace(/\s+/g, '_')}_cybersecurity_certificate.png`;
-    link.href = dataUrl;
-    link.click();
+        // Draw Shield Check icon centered on this underline
+        const badgeX = titleX + textWidth / 2;
+        ctx.fillStyle = '#FAF6EB';
+        ctx.fillRect(badgeX - 16, nameY + 48, 32, 24);
+        
+        ctx.strokeStyle = '#0C6A63';
+        ctx.lineWidth = 2;
+        ctx.fillStyle = '#0C6A63';
+        ctx.beginPath();
+        ctx.moveTo(badgeX, nameY + 52);
+        ctx.lineTo(badgeX + 8, nameY + 55);
+        ctx.lineTo(badgeX + 8, nameY + 61);
+        ctx.quadraticCurveTo(badgeX + 8, nameY + 66, badgeX, nameY + 69);
+        ctx.quadraticCurveTo(badgeX - 8, nameY + 66, badgeX - 8, nameY + 61);
+        ctx.lineTo(badgeX - 8, nameY + 55);
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      // 7. Draw Course Information
+      const courseY = 416;
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#4B5563'; // gray-600
+      ctx.font = "14px 'Poppins', 'Inter', sans-serif";
+      ctx.fillText("has successfully completed the", titleX, courseY);
+
+      ctx.fillStyle = '#0C6A63';
+      ctx.font = "bold 19px 'Poppins', 'Inter', sans-serif";
+      ctx.fillText("CYBER SECURITY READINESS ASSESSMENT", titleX, courseY + 24);
+
+      ctx.fillStyle = '#6B7280'; // gray-500
+      ctx.font = "12px 'Poppins', 'Inter', sans-serif";
+      ctx.fillText("demonstrating knowledge in cybersecurity, SQL database administration,", titleX, courseY + 50);
+      ctx.fillText("and healthcare security practices.", titleX, courseY + 68);
+
+      // 8. Draw QR Code and Scan To Verify inside a small card style (Bottom Left)
+      const qrX = 73;
+      const qrY = 554;
+      const qrWidth = 68;
+      const qrHeight = 68;
+
+      // Draw rounded rectangle card for QR Code
+      const cardX = qrX - 12;
+      const cardY = qrY - 10;
+      const cardW = 235;
+      const cardH = 88;
+      const cardR = 12;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(cardX + cardR, cardY);
+      ctx.lineTo(cardX + cardW - cardR, cardY);
+      ctx.quadraticCurveTo(cardX + cardW, cardY, cardX + cardW, cardY + cardR);
+      ctx.lineTo(cardX + cardW, cardY + cardH - cardR);
+      ctx.quadraticCurveTo(cardX + cardW, cardY + cardH, cardX + cardW - cardR, cardY + cardH);
+      ctx.lineTo(cardX + cardR, cardY + cardH);
+      ctx.quadraticCurveTo(cardX, cardY + cardH, cardX, cardY + cardH - cardR);
+      ctx.lineTo(cardX, cardY + cardR);
+      ctx.quadraticCurveTo(cardX, cardY, cardX + cardR, cardY);
+      ctx.closePath();
+      
+      // Card background fill (matches theme cream card #F5EFE1)
+      ctx.fillStyle = '#F5EFE1';
+      ctx.fill();
+      
+      // Card border stroke (light teal outline)
+      ctx.strokeStyle = 'rgba(12, 106, 99, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      if (qrImg.complete && qrImg.naturalWidth > 0) {
+        // Multiply blends white QR background into the soft F5EFE1 card background
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.drawImage(qrImg, qrX, qrY, qrWidth, qrHeight);
+      } else {
+        ctx.fillStyle = '#0C6A63';
+        ctx.fillRect(qrX, qrY, qrWidth, qrHeight);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(qrX + 4, qrY + 4, qrWidth - 8, qrHeight - 8);
+      }
+      ctx.restore();
+
+      // QR Verify text
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#0C6A63'; // Rich brand green for contrast inside card
+      ctx.font = "bold 10px 'JetBrains Mono', monospace";
+      ctx.fillText("SCAN TO VERIFY", qrX + qrWidth + 16, qrY + 20);
+
+      ctx.fillStyle = '#6B7280'; // gray-500
+      ctx.font = "9px 'JetBrains Mono', monospace";
+      ctx.fillText("mubin.roshan/verify", qrX + qrWidth + 16, qrY + 38);
+
+      // 9. Draw Middle Metadata Column
+      const metaX = 567; // 54% of 1050
+      const metaY = 297;
+
+      const drawMetaItem = (label: string, value: string, yPos: number) => {
+        ctx.fillStyle = '#9CA3AF'; // gray-400
+        ctx.font = "bold 9px 'Poppins', 'Inter', sans-serif";
+        ctx.fillText(label, metaX + 36, yPos);
+
+        ctx.fillStyle = '#0C6A63';
+        ctx.font = "bold 15px 'Poppins', 'Inter', sans-serif";
+        ctx.fillText(value, metaX + 36, yPos + 16);
+      };
+
+      // Score
+      drawMetaItem("SCORE", `${score} / 10`, metaY);
+      ctx.strokeStyle = '#0C6A63';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(metaX + 12, metaY + 12, 10, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Date
+      const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      drawMetaItem("DATE", dateStr, metaY + 55);
+      ctx.beginPath();
+      ctx.arc(metaX + 12, metaY + 12 + 55, 10, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Certificate ID
+      drawMetaItem("CERTIFICATE ID", certificateId, metaY + 110);
+      ctx.beginPath();
+      ctx.arc(metaX + 12, metaY + 12 + 110, 10, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 10. Bottom Middle Text
+      ctx.fillStyle = '#6B7280'; // gray-500
+      ctx.font = "11px 'Poppins', 'Inter', sans-serif";
+      ctx.fillText("Recognizing your commitment to cybersecurity", 420, 574);
+      ctx.fillText("excellence and continuous learning.", 420, 592);
+
+      // 11. Draw Signature (Right Column) - Increased size
+      const sigX = 840;
+      const sigY = 363;
+      
+      ctx.textAlign = 'center';
+      if (sigImg.complete && sigImg.naturalWidth > 0) {
+        // Increased from 160x55 to 220x75
+        ctx.drawImage(sigImg, sigX - 110, sigY - 60, 220, 75);
+      } else {
+        ctx.fillStyle = '#0C6A63';
+        ctx.font = "italic 32px Georgia, serif";
+        ctx.fillText("Mubin Roshan", sigX, sigY);
+      }
+
+      ctx.strokeStyle = '#9CA3AF'; // gray-400
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(sigX - 100, sigY + 10);
+      ctx.lineTo(sigX + 100, sigY + 10);
+      ctx.stroke();
+
+      ctx.fillStyle = '#0C6A63';
+      ctx.font = "bold 11px 'Poppins', 'Inter', sans-serif";
+      ctx.fillText("MUBIN ROSHAN", sigX, sigY + 26);
+
+      ctx.fillStyle = '#6B7280'; // gray-500
+      ctx.font = "10px 'Poppins', 'Inter', sans-serif";
+      ctx.fillText("Cyber Security Analyst", sigX, sigY + 42);
+      ctx.fillText("SQL Database Administrator", sigX, sigY + 56);
+
+      // 12. Draw Stamp Logo on Bottom Right
+      const stampX = 840;
+      const stampY = 544;
+      const stampSize = 84;
+      if (logoImg.complete && logoImg.naturalWidth > 0) {
+        ctx.drawImage(logoImg, stampX - stampSize / 2, stampY, stampSize, stampSize);
+      }
+
+      // 13. Trigger Download
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `${userName.trim().replace(/\s+/g, '_')}_cybersecurity_certificate.png`;
+      link.href = dataUrl;
+      link.click();
+    };
+
+    // Fallback: If images load fails, trigger draw anyway
+    setTimeout(() => {
+      if (imagesLoaded < totalImages) {
+        console.warn("Falling back to draw due to resource timeout");
+        drawCertificateOnCanvas();
+      }
+    }, 1200);
   };
 
   const handleShareOnLinkedIn = () => {
@@ -597,7 +741,7 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                 </span>
               </div>
 
-              <form onSubmit={handleStartQuiz} className="w-full max-w-md space-y-4 pt-4">
+              <form onSubmit={handleStartQuiz} noValidate className="w-full max-w-md space-y-4 pt-4">
                 <div className="text-left space-y-1.5">
                   <label htmlFor="user-name-input" className="text-xs font-mono font-bold uppercase tracking-wider block">
                     Full Name for Certificate
@@ -609,17 +753,44 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                     <input
                       id="user-name-input"
                       type="text"
-                      required
                       placeholder="Enter your full name..."
                       value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
+                      onChange={(e) => {
+                        setUserName(e.target.value);
+                        if (e.target.value.trim()) {
+                          setNameError('');
+                        }
+                      }}
                       className={`w-full py-3 pl-10 pr-4 text-sm rounded-xl focus:outline-none focus:ring-2 transition-all font-sans ${
-                        isSaudiGreenMode 
-                          ? 'bg-[#18161b] border border-white/10 text-white placeholder-gray-500 focus:ring-emerald-500/50' 
-                          : 'bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:ring-teal-500/50'
+                        nameError 
+                          ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900 focus:ring-red-500/30'
+                          : isSaudiGreenMode 
+                            ? 'bg-[#18161b] border border-white/10 text-white placeholder-gray-500 focus:ring-emerald-500/50' 
+                            : 'bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:ring-teal-500/50'
                       }`}
                     />
                   </div>
+                  {nameError && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: -4 }} 
+                      animate={{ opacity: 1, y: 0 }} 
+                      className={`p-3.5 rounded-xl border flex items-start gap-2.5 text-xs font-mono shadow-sm ${
+                        isSaudiGreenMode 
+                          ? 'bg-[#121115] border-red-500/20 text-red-300' 
+                          : 'bg-red-50 border-red-200 text-red-800'
+                      }`}
+                    >
+                      <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                      <div className="space-y-0.5 text-left">
+                        <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
+                          [Validation Warning]
+                        </span>
+                        <p className="leading-relaxed font-sans font-medium text-xs">
+                          {nameError}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
@@ -724,20 +895,47 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                 </div>
 
                 {/* 2. Your Progress */}
-                <div className={`p-5 rounded-2xl border bg-[#0d5c56] border-[#0a4641] shadow-sm text-[#fdfbf7]`}>
-                  <div className="border-b border-[#fdfbf7]/15 pb-3 mb-4">
-                    <h3 className="text-xs font-bold font-mono tracking-wider uppercase text-[#fdfbf7]/90">Your Progress</h3>
+                <div className={`p-5 rounded-2xl border bg-[#0d5c56] border-[#0a4641] shadow-sm text-[#fdfbf7] keep-text-cream`}>
+                  <div className="flex items-center justify-between border-b border-white/20 pb-3 mb-4">
+                    <h3 className="text-xs font-bold font-mono tracking-wider uppercase keep-text-cream" style={{ color: '#FAF6EB' }}>YOUR PROGRESS</h3>
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   </div>
-                  <div className="space-y-3">
-                    <div className="w-full bg-[#fdfbf7]/20 h-2 rounded-full overflow-hidden">
-                      <div 
-                        className="bg-[#fdfbf7] h-full transition-all duration-500"
-                        style={{ width: `${((currentQuestionIndex + 1) / QUESTIONS.length) * 100}%` }}
-                      />
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-[11px] text-[#FAF6EB]/60 font-mono tracking-tight leading-none">
+                        You are on track to complete the assessment
+                      </p>
                     </div>
-                    <div className="flex items-center justify-between text-xs font-mono text-[#fdfbf7]/90">
-                      <span>Question {currentQuestionIndex + 1} of 10</span>
-                      <span className="font-bold text-[#fdfbf7]">{Math.round(((currentQuestionIndex + 1) / QUESTIONS.length) * 100)}%</span>
+
+                    <div className="flex items-baseline gap-2.5">
+                      <span className="text-3xl font-extrabold font-mono tracking-tight text-[#FAF6EB]">
+                        {Math.round(((currentQuestionIndex + 1) / QUESTIONS.length) * 100)}%
+                      </span>
+                      <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#0a4641] border border-white/10 text-[10px] font-bold text-emerald-300 font-mono">
+                        <span className="text-emerald-400">↑</span>
+                        <span>Q{currentQuestionIndex + 1} of 10</span>
+                      </div>
+                      <span className="text-[10px] text-white/40 font-mono">vs. total</span>
+                    </div>
+
+                    {/* Segmented Progress Bar */}
+                    <div className="flex gap-[2px] h-7 w-full bg-[#083531] p-1 rounded-lg border border-white/5">
+                      {Array.from({ length: 24 }).map((_, idx) => {
+                        const totalSegments = 24;
+                        const filledSegments = Math.round(((currentQuestionIndex + 1) / QUESTIONS.length) * totalSegments);
+                        const isFilled = idx < filledSegments;
+                        return (
+                          <div
+                            key={idx}
+                            className={`h-full flex-1 transition-all duration-300 first:rounded-l-[4px] last:rounded-r-[4px] ${
+                              isFilled 
+                                ? 'bg-emerald-400 shadow-[0_0_4px_rgba(52,211,153,0.3)]' 
+                                : 'bg-[#0a4641]'
+                            }`}
+                          />
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -954,88 +1152,186 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
           return (
             <motion.div
               key="completed"
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              className="space-y-8 animate-fade-in"
+              exit={{ opacity: 0, y: -12 }}
+              className="space-y-6 animate-fade-in"
             >
-              {/* Score summary block */}
-              <div className={`p-6 sm:p-10 rounded-3xl border shadow-xl text-center space-y-6 relative overflow-hidden ${
-                isSaudiGreenMode 
-                  ? 'bg-[#121115] border-emerald-500/20 shadow-emerald-950/20' 
-                  : 'bg-white border-teal-100 shadow-teal-900/5'
-              }`}>
-                {/* Visual decoration line */}
-                <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-teal-500 via-emerald-500 to-amber-500" />
+              {/* Score summary block (Assessment Completed Card Redesigned to exactly match reference with optimized compact heights) */}
+              <div className="relative w-full overflow-hidden rounded-[28px] border border-gray-200/60 shadow-lg bg-[#FAF6EB] p-5 sm:p-7 flex flex-col items-center">
                 
-                <div className="flex flex-col items-center space-y-3">
-                  <div className={`p-4 rounded-full ${
-                    isSaudiGreenMode ? 'bg-[#005639]/20 border border-emerald-500/20' : 'bg-teal-50 border border-teal-100'
-                  }`}>
-                    <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+                {/* Top Border line (Teal on left, orange/amber on right) */}
+                <div className="absolute top-0 inset-x-0 h-[5px] flex">
+                  <div className="w-4/5 bg-[#0C6A63] rounded-tl-[28px]" />
+                  <div className="w-1/5 bg-amber-500 rounded-tr-[28px]" />
+                </div>
+
+                {/* Left corner wave background patterns */}
+                <svg className="absolute bottom-0 left-0 w-[45%] h-[55%] pointer-events-none z-0 opacity-80" viewBox="0 0 350 250" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                  <path d="M0,130 C90,150 130,90 200,170 C240,210 180,250 0,250 Z" fill="url(#left-grad)" />
+                  <path d="M0,160 C60,170 100,140 160,200 C200,240 150,250 0,250 Z" fill="url(#left-grad-2)" opacity="0.4" />
+                  <path d="M0,110 C70,120 110,70 180,140" stroke="#0C6A63" strokeWidth="0.75" strokeDasharray="1,3" opacity="0.3" />
+                  <path d="M0,120 C75,130 115,80 185,150" stroke="#0C6A63" strokeWidth="0.75" strokeDasharray="1,3" opacity="0.2" />
+                  <defs>
+                    <linearGradient id="left-grad" x1="0" y1="130" x2="200" y2="250" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#8BD8CE" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#0C6A63" stopOpacity="0.1" />
+                    </linearGradient>
+                    <linearGradient id="left-grad-2" x1="0" y1="160" x2="160" y2="250" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#CBEBE6" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#1E8077" stopOpacity="0.1" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+
+                {/* Right corner wave background patterns */}
+                <svg className="absolute bottom-0 right-0 w-[55%] h-[65%] pointer-events-none z-0 opacity-90" viewBox="0 0 450 300" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                  <path d="M120,300 C200,230 280,120 450,140 L450,300 Z" fill="url(#right-grad-1)" />
+                  <path d="M160,300 C240,240 310,160 450,180 L450,300 Z" fill="url(#right-grad-2)" />
+                  <path d="M70,300 C150,220 250,110 450,120" stroke="#0C6A63" strokeWidth="1" strokeDasharray="2,3" opacity="0.25" />
+                  <path d="M90,300 C170,230 270,130 450,140" stroke="#0C6A63" strokeWidth="1" strokeDasharray="2,3" opacity="0.2" />
+                  <path d="M110,300 C190,240 290,150 450,160" stroke="#0C6A63" strokeWidth="0.75" strokeDasharray="1,2" opacity="0.15" />
+                  
+                  <defs>
+                    <linearGradient id="right-grad-1" x1="120" y1="300" x2="450" y2="140" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#4FB3A9" stopOpacity="0.35" />
+                      <stop offset="100%" stopColor="#0C6A63" stopOpacity="0.45" />
+                    </linearGradient>
+                    <linearGradient id="right-grad-2" x1="160" y1="300" x2="450" y2="180" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#0C6A63" stopOpacity="0.45" />
+                      <stop offset="100%" stopColor="#023B37" stopOpacity="0.5" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+
+                {/* Shield and Lock watermark on right wave */}
+                <div className="absolute right-[8%] bottom-[20%] text-[#0C6A63]/10 pointer-events-none z-0 hidden md:block">
+                  <div className="relative flex items-center justify-center w-24 h-24 rounded-full border border-[#0C6A63]/10">
+                    <Shield className="w-12 h-12 stroke-[1]" />
+                    <Lock className="w-5 h-5 absolute stroke-[1.2] top-[38%]" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold uppercase tracking-wider font-mono text-emerald-500">
+                </div>
+
+                {/* 1. Top Checkmark Icon Container */}
+                <div className="relative flex items-center justify-center mt-1 z-10">
+                  {/* Subtle golden/green sparkling dots surrounding checkmark circle */}
+                  <div className="absolute -top-1.5 -left-3 w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  <div className="absolute top-4 -right-4 w-1 h-1 rounded-full bg-emerald-500" />
+                  <div className="absolute -bottom-2.5 right-4 w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  <div className="absolute bottom-5 -left-5 w-1 h-1 rounded-full bg-emerald-500" />
+                  <div className="absolute -top-3 right-8 w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  
+                  <div className="w-16 h-16 rounded-full bg-[#EBF5F3] flex items-center justify-center relative shadow-sm">
+                    <div className="w-12 h-12 rounded-full border-[3px] border-[#0C6A63] flex items-center justify-center bg-white shadow-sm">
+                      <Check className="w-6 h-6 text-[#0C6A63] stroke-[3.5]" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Main Completed Heading and Description */}
+                <div className="text-center space-y-1 mt-2.5 relative z-10 max-w-xl">
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-[#0C6A63] font-sans tracking-tight">
                     Assessment Completed
                   </h2>
+                  <p className="text-xs sm:text-sm text-gray-500 leading-normal">
+                    Great job! You have successfully completed the
+                  </p>
+                  <p className="text-sm sm:text-base text-[#0C6A63] font-bold">
+                    Cyber Security Readiness Assessment.
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto pt-2">
-                  <div className={`p-4 rounded-2xl border flex flex-col justify-center ${
-                    isSaudiGreenMode ? 'bg-[#18161b] border-white/5' : 'bg-gray-50 border-gray-100'
-                  }`}>
-                    <span className="text-[10px] font-mono uppercase text-gray-500 tracking-wider">Score</span>
-                    <span className="text-2xl sm:text-3.5xl font-bold mt-1 text-teal-400">
-                      {score} / 10
-                    </span>
+                {/* 3. Small Center Shield Divider */}
+                <div className="flex items-center justify-center gap-3 w-full max-w-[180px] mx-auto my-3 relative z-10">
+                  <div className="h-[1px] bg-gray-200/80 flex-grow" />
+                  <Shield className="w-3.5 h-3.5 text-gray-400 stroke-[1.5]" />
+                  <div className="h-[1px] bg-gray-200/80 flex-grow" />
+                </div>
+
+                {/* 4. White Stat Board Cards (Score, Rank, Certificate Status, Certificate ID in a single line on desktop) */}
+                <div className="bg-white shadow-[0_12px_40px_rgba(12,106,99,0.05)] rounded-[20px] border border-gray-100 p-3 sm:p-4 grid grid-cols-2 md:flex md:flex-row md:items-center md:divide-x md:divide-gray-100 relative z-10 max-w-3xl w-full mx-auto mb-5">
+                  {/* Score item */}
+                  <div className="flex flex-col items-center text-center p-2.5 md:flex-1">
+                    <div className="w-10 h-10 rounded-full bg-[#E6F4F1] flex items-center justify-center mb-1.5 shadow-sm">
+                      <Target className="w-4.5 h-4.5 text-[#0C6A63] stroke-[2]" />
+                    </div>
+                    <span className="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider">Score</span>
+                    <span className="text-base sm:text-lg font-extrabold text-[#0C6A63] mt-0.5">{score} / 10</span>
                   </div>
 
-                  <div className={`p-4 rounded-2xl border flex flex-col justify-center items-center ${
-                    isSaudiGreenMode ? 'bg-[#18161b] border-white/5' : 'bg-gray-50 border-gray-100'
-                  }`}>
-                    <span className="text-[10px] font-mono uppercase text-gray-500 mb-1 tracking-wider">Rank</span>
-                    <span className="flex items-center gap-1.5">
-                      {results.icon}
-                      <span className={`text-base sm:text-lg font-bold font-sans tracking-tight ${results.colorClass}`}>
-                        {results.rank}
-                      </span>
-                    </span>
+                  {/* Rank item */}
+                  <div className="flex flex-col items-center text-center p-2.5 md:flex-1">
+                    <div className="w-10 h-10 rounded-full bg-[#EEF1FF] flex items-center justify-center mb-1.5 shadow-sm">
+                      <Star className="w-4.5 h-4.5 text-blue-500 stroke-[2]" />
+                    </div>
+                    <span className="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider">Rank</span>
+                    <span className="text-xs sm:text-xs font-extrabold text-[#0C6A63] mt-1 leading-snug">{results.rank}</span>
                   </div>
 
-                  <div className={`p-4 rounded-2xl border flex flex-col justify-center ${
-                    isSaudiGreenMode ? 'bg-[#18161b] border-white/5' : 'bg-gray-50 border-gray-100'
-                  }`}>
-                    <span className="text-[10px] font-mono uppercase text-gray-500 tracking-wider">Certificate Status</span>
-                    <span className="text-sm sm:text-base font-bold mt-1 text-amber-500">
-                      Available for Download
-                    </span>
+                  {/* Certificate Status item */}
+                  <div className="flex flex-col items-center text-center p-2.5 md:flex-1">
+                    <div className="w-10 h-10 rounded-full bg-[#EBF7F5] flex items-center justify-center mb-1.5 shadow-sm">
+                      <Award className="w-4.5 h-4.5 text-[#0C6A63] stroke-[2]" />
+                    </div>
+                    <span className="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider">Certificate Status</span>
+                    <span className="text-xs sm:text-xs font-extrabold text-[#0C6A63] mt-1 leading-snug">Available for Download</span>
+                  </div>
+
+                  {/* Certificate ID item */}
+                  <div className="flex flex-col items-center text-center p-2.5 md:flex-1">
+                    <div className="w-10 h-10 rounded-full bg-[#EAF6F4] flex items-center justify-center mb-1.5 shadow-sm">
+                      <IdCard className="w-4.5 h-4.5 text-[#0C6A63] stroke-[2]" />
+                    </div>
+                    <span className="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wider">Certificate ID</span>
+                    <span className="text-xs sm:text-xs font-extrabold text-[#0C6A63] mt-1 leading-snug">{certificateId}</span>
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 max-w-lg mx-auto">
-                  <button
-                    onClick={handleDownloadCertificate}
-                    className={`w-full py-4 rounded-xl text-sm font-bold tracking-wide transition-all shadow focus:outline-none flex items-center justify-center gap-2 keep-text-cream ${
-                      isSaudiGreenMode 
-                        ? 'bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400' 
-                        : 'bg-[#0d5c56] hover:bg-[#0b4d48]'
-                    }`}
-                  >
-                    <Download className="w-4 h-4 keep-text-cream" />
-                    <span className="keep-text-cream">Download Certificate</span>
-                  </button>
+                {/* 5. Bottom Action Controls Footer Row */}
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-200/50 relative z-10 w-full max-w-3xl">
+                  {/* Left Certificate ID capsule */}
+                  <div className="flex items-center gap-3 bg-white/60 backdrop-blur-sm px-4 py-2 rounded-2xl border border-gray-200/50 shadow-sm shrink-0 w-full md:w-auto justify-center md:justify-start">
+                    <div className="w-8 h-8 rounded-full bg-[#EBF5F3] flex items-center justify-center border border-[#0C6A63]/10 shadow-sm">
+                      <ShieldCheck className="w-4 h-4 text-[#0C6A63]" />
+                    </div>
+                    <div className="text-left font-mono">
+                      <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider block">Certificate ID</span>
+                      <span className="text-xs font-extrabold text-[#0C6A63] tracking-wider">{certificateId}</span>
+                    </div>
+                    <div className="hidden md:block w-[1.5px] h-7 bg-gray-200/70 ml-2" />
+                  </div>
 
-                  <button
-                    onClick={handleShareOnLinkedIn}
-                    className={`w-full py-4 rounded-xl text-sm font-bold tracking-wide transition-all border focus:outline-none flex items-center justify-center gap-2 ${
-                      isSaudiGreenMode 
-                        ? 'bg-transparent border-emerald-500/30 hover:bg-emerald-500/10 text-emerald-300' 
-                        : 'bg-transparent border-teal-600 hover:bg-teal-50 text-teal-800'
-                    }`}
-                  >
-                    <Share2 className="w-4 h-4" />
-                    <span>Share on LinkedIn</span>
-                  </button>
+                  {/* Right Download & Share actions */}
+                  <div className="flex flex-col sm:flex-row gap-2.5 w-full md:w-auto">
+                    <button
+                      onClick={handleDownloadCertificate}
+                      className="w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all shadow hover:shadow-lg focus:outline-none flex items-center justify-center gap-2 bg-[#0C6A63] text-white hover:bg-[#09524c] keep-text-white"
+                      style={{ color: '#ffffff' }}
+                    >
+                      <Download className="w-4 h-4 text-white keep-text-white" style={{ stroke: '#ffffff' }} />
+                      <span className="keep-text-white text-white" style={{ color: '#ffffff' }}>Download Certificate</span>
+                    </button>
+
+                    <button
+                      onClick={handleShareOnLinkedIn}
+                      className="w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all border border-[#0C6A63]/50 text-[#0C6A63] hover:bg-[#0C6A63]/5 focus:outline-none flex items-center justify-center gap-2 bg-white shadow-sm"
+                    >
+                      <Share2 className="w-4 h-4 text-[#0C6A63]" />
+                      <span>Share on LinkedIn</span>
+                    </button>
+                  </div>
                 </div>
+
+                {/* 6. Very bottom Lock Secure Message */}
+                <div className="flex items-center justify-center gap-3 w-full max-w-[400px] mx-auto pt-3 relative z-10">
+                  <div className="h-[1px] bg-gray-200/60 flex-grow" />
+                  <div className="flex items-center gap-1.5 text-gray-400 text-[9px] font-mono shrink-0">
+                    <Lock className="w-3 h-3 text-gray-400 shrink-0" />
+                    <span>Your certificate is securely generated and verified.</span>
+                  </div>
+                  <div className="h-[1px] bg-gray-200/60 flex-grow" />
+                </div>
+
               </div>
 
               {/* Certificate Preview visual box */}
@@ -1044,51 +1340,171 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                   Certificate of Completion Preview
                 </h3>
                 
-                <div className={`p-6 sm:p-12 rounded-3xl border relative text-center space-y-8 select-none border-dashed ${
-                  isSaudiGreenMode 
-                    ? 'bg-[#110f14] border-emerald-500/20 text-white' 
-                    : 'bg-[#fafafa] border-teal-500/25 text-gray-900 shadow-sm'
-                }`}>
-                  <div className={`absolute inset-4 border rounded-2xl pointer-events-none ${
-                    isSaudiGreenMode ? 'border-emerald-500/20' : 'border-teal-500/15'
-                  }`} />
-                  
-                  <div className="space-y-1.5 relative z-10">
-                    <span className="text-[10px] font-mono tracking-[4px] text-emerald-500 uppercase font-bold">
-                      Cybersecurity Readiness Assessment
-                    </span>
-                    <h2 className="text-2xl sm:text-4xl font-serif font-extrabold tracking-tight border-b border-white/5 pb-4 max-w-xl mx-auto">
-                      CERTIFICATE OF COMPLETION
-                    </h2>
-                  </div>
+                <div 
+                  className="relative w-full aspect-[1050/660] max-w-3xl mx-auto overflow-hidden rounded-2xl shadow-xl border border-teal-500/20 select-none bg-[#FAF6EB]"
+                  style={{ containerType: 'inline-size' }}
+                >
+                  {/* Top and Bottom Pattern Borders */}
+                  <img 
+                    src="/cert_patterns.png" 
+                    alt="Top Border Pattern" 
+                    className="absolute top-0 left-0 w-full h-[3.3cqw] object-cover pointer-events-none" 
+                  />
+                  <img 
+                    src="/cert_patterns.png" 
+                    alt="Bottom Border Pattern" 
+                    className="absolute bottom-0 left-0 w-full h-[3.3cqw] object-cover pointer-events-none" 
+                  />
 
-                  <div className="space-y-4 max-w-xl mx-auto relative z-10">
-                    <p className="text-xs sm:text-sm italic text-gray-400">
-                      This is proudly presented to
-                    </p>
-                    <p className="text-2xl sm:text-3xl font-bold text-teal-400 font-sans tracking-tight">
-                      {userName}
-                    </p>
-                    <p className="text-xs sm:text-sm text-gray-400 leading-relaxed max-w-md mx-auto">
-                      {results.description}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-6 max-w-md mx-auto pt-6 text-xs font-mono relative z-10">
-                    <div className="text-center">
-                      <span className="text-gray-400 block border-b border-white/10 pb-1 px-4">
-                        {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                      </span>
-                      <span className="text-[10px] text-gray-500 mt-1 block">DATE ISSUED</span>
-                    </div>
-
-                    <div className="text-center">
-                      <span className="text-emerald-400 italic block border-b border-white/10 pb-1 px-4 font-serif">
-                        Mubin Roshan
-                      </span>
-                      <span className="text-[10px] text-gray-500 mt-1 block">VERIFIED SIGNATURE</span>
+                  {/* 1. Top-Left Logo and Subtitle */}
+                  <div className="absolute left-[7%] top-[7%] flex items-center gap-[1.5cqw]">
+                    <img src="/favicon.png" alt="Logo" className="w-[8cqw] h-[8cqw] object-contain" />
+                    <div className="text-left">
+                      <h4 className="font-poppins font-bold text-[#0C6A63] tracking-wider leading-tight" style={{ fontSize: '2.0cqw' }}>
+                        MUBIN ROSHAN ACADEMY
+                      </h4>
+                      <p className="font-mono text-gray-500 font-medium tracking-[0.15em] leading-none mt-0.5" style={{ fontSize: '1.0cqw' }}>
+                        INSPIRE. EMPOWER. EXCEL.
+                      </p>
                     </div>
                   </div>
+
+                  {/* 2. Certificate Title */}
+                  <div className="absolute left-[7%] top-[25%] text-left">
+                    <h1 className="certificate-title-hollow font-bold tracking-[0.08em] leading-none" style={{ fontSize: '5.6cqw' }}>
+                      CERTIFICATE
+                    </h1>
+                    <p className="font-poppins font-extrabold tracking-[0.05em] text-[#0C6A63] leading-none mt-1" style={{ fontSize: '2.1cqw' }}>
+                      OF ACHIEVEMENT
+                    </p>
+                  </div>
+
+                  {/* 3. "This is to certify that" */}
+                  <div className="absolute left-[7%] top-[45%] text-left">
+                    <p className="font-serif italic text-gray-600 leading-none" style={{ fontSize: '1.6cqw' }}>
+                      This is to certify that
+                    </p>
+                  </div>
+
+                  {/* 4. Recipient Name */}
+                  <div className={`absolute top-[50%] left-[7%] w-[50%] ${
+                    (userName || 'PARTICIPANT').toUpperCase() === 'TEST' ? 'text-center flex flex-col items-center' : 'text-left'
+                  }`}>
+                    {(userName || 'PARTICIPANT').toUpperCase() === 'TEST' ? (
+                      <div className="inline-flex flex-col items-center">
+                        <h2 className="font-poppins font-bold text-[#0C6A63] leading-none uppercase" style={{ fontSize: '4.2cqw', letterSpacing: '0.02cqw' }}>
+                          TEST
+                        </h2>
+                        {/* Underline only slightly wider than TEST */}
+                        <div className="relative w-[12cqw] h-[1px] bg-gray-300 mt-[1cqw] flex items-center justify-center">
+                          <div className="bg-[#FAF6EB] px-[0.5cqw] absolute">
+                            <ShieldCheck className="text-[#0C6A63] fill-[#FAF6EB]" style={{ width: '2cqw', height: '2cqw' }} />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="inline-flex flex-col items-start relative max-w-full">
+                        <h2 className="font-poppins font-bold text-[#0C6A63] leading-none uppercase truncate max-w-[25cqw]" style={{ fontSize: '4.2cqw', letterSpacing: '0.02cqw' }}>
+                          {userName || 'PARTICIPANT'}
+                        </h2>
+                        {/* Underline only extends to the end of the name */}
+                        <div className="absolute left-0 right-0 bottom-[-1cqw] h-[1px] bg-gray-300 flex items-center justify-center">
+                          <div className="bg-[#FAF6EB] px-[0.5cqw]">
+                            <ShieldCheck className="text-[#0C6A63] fill-[#FAF6EB]" style={{ width: '2cqw', height: '2cqw' }} />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 5. Course Complete and Details */}
+                  <div className="absolute left-[7%] top-[63%] w-[45%] text-left space-y-[0.8cqw]">
+                    <p className="font-sans text-gray-600 leading-tight" style={{ fontSize: '1.3cqw' }}>
+                      has successfully completed the
+                    </p>
+                    <h3 className="font-poppins font-bold text-[#0C6A63] leading-tight uppercase" style={{ fontSize: '1.8cqw' }}>
+                      CYBER SECURITY READINESS ASSESSMENT
+                    </h3>
+                    <p className="font-sans text-gray-500 leading-normal" style={{ fontSize: '1.1cqw' }}>
+                      demonstrating knowledge in cybersecurity, SQL database administration, and healthcare security practices.
+                    </p>
+                  </div>
+
+                  {/* 6. QR Code Verification (Bottom Left) inside a small card style */}
+                  <div className="absolute left-[7%] bottom-[5%] flex items-center gap-[1.5cqw] bg-[#F5EFE1] border border-teal-900/15 p-[0.8cqw] px-[1.2cqw] rounded-xl shadow-sm">
+                    <img 
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`https://mubinroshan.com/verify/${certificateId}`)}`}
+                      alt="Verification QR Code"
+                      className="object-contain mix-blend-multiply"
+                      style={{ width: '6.5cqw', height: '6.5cqw' }}
+                    />
+                    <div className="text-left font-mono">
+                      <p className="font-bold text-[#0C6A63] uppercase tracking-wider leading-none" style={{ fontSize: '0.9cqw' }}>SCAN TO VERIFY</p>
+                      <p className="text-gray-500 mt-[0.3cqw] leading-none" style={{ fontSize: '0.8cqw' }}>mubin.roshan/verify</p>
+                    </div>
+                  </div>
+
+                  {/* 7. Metadata Column (Score, Date, Certificate ID) */}
+                  <div className="absolute left-[54%] top-[45%] text-left space-y-[2.2cqw] w-[22%] font-poppins">
+                    {/* Score */}
+                    <div className="flex items-center gap-[1.2cqw]">
+                      <ShieldCheck className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
+                      <div>
+                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>SCORE</p>
+                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none" style={{ fontSize: '1.4cqw' }}>{score} / 10</p>
+                      </div>
+                    </div>
+                    {/* Date */}
+                    <div className="flex items-center gap-[1.2cqw]">
+                      <Clock className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
+                      <div>
+                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>DATE</p>
+                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none" style={{ fontSize: '1.4cqw' }}>
+                          {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                        </p>
+                      </div>
+                    </div>
+                    {/* Certificate ID */}
+                    <div className="flex items-center gap-[1.2cqw]">
+                      <Award className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
+                      <div>
+                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>CERTIFICATE ID</p>
+                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none truncate" style={{ fontSize: '1.4cqw' }}>{certificateId}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 8. Bottom Middle Slogan */}
+                  <div className="absolute left-[38%] bottom-[7%] w-[35%] text-left">
+                    <p className="font-sans text-gray-500 leading-normal" style={{ fontSize: '1.0cqw' }}>
+                      Recognizing your commitment to cybersecurity excellence and continuous learning.
+                    </p>
+                  </div>
+
+                  {/* 9. Signature Block (Right Column) */}
+                  <div className="absolute right-[7%] top-[55%] w-[20%] text-center flex flex-col items-center justify-center">
+                    <img 
+                      src="/mubin_signature.png" 
+                      alt="Mubin Roshan Signature" 
+                      className="w-[18cqw] h-[5cqw] object-contain select-none mb-[-0.2cqw] mt-[-1cqw]" 
+                    />
+                    <div className="w-full h-[1px] bg-gray-400 my-[1cqw]" />
+                    <p className="font-poppins font-bold text-[#0C6A63] uppercase tracking-wider leading-none" style={{ fontSize: '1.1cqw' }}>
+                      MUBIN ROSHAN
+                    </p>
+                    <p className="font-sans text-gray-500 leading-tight mt-[0.5cqw]" style={{ fontSize: '0.9cqw' }}>
+                      Cyber Security Analyst
+                    </p>
+                    <p className="font-sans text-gray-500 leading-tight" style={{ fontSize: '0.9cqw' }}>
+                      SQL Database Administrator
+                    </p>
+                  </div>
+
+                  {/* 10. Stamp Logo (Bottom Right) */}
+                  <div className="absolute right-[7%] bottom-[7%] flex items-center justify-end">
+                    <img src="/favicon.png" alt="Stamp Logo" className="w-[8cqw] h-[8cqw] object-contain opacity-95 hover:scale-105 transition-transform" />
+                  </div>
+
                 </div>
               </div>
 
@@ -1156,6 +1572,7 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                   onClick={() => {
                     setAnswers({});
                     setScore(null);
+                    setCertificateId('');
                     setStep('intro');
                     setCurrentQuestionIndex(0);
                   }}

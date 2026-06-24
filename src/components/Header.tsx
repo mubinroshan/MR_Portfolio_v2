@@ -64,8 +64,8 @@ export default function Header({
 
   const moreLinks = [
     { label: 'Technical Stack', icon: <Terminal className="w-4 h-4 text-emerald-600" />, action: () => { setActiveTab('about'); setDropdownOpen(false); } },
-    { label: 'NCA ECC Guidelines', icon: <FileCheck2 className="w-4 h-4 text-emerald-600" />, action: () => { setActiveTab('story'); setDropdownOpen(false); } },
-    { label: 'Yanbu Hospital Portal', icon: <ShieldAlert className="w-4 h-4 text-teal-600" />, href: 'https://www.moh.gov.sa', external: true },
+    { label: 'NCA ECC Guidelines', icon: <FileCheck2 className="w-4 h-4 text-emerald-600" />, href: 'https://nca.gov.sa/en/', external: true },
+    { label: 'Yanbu National Portal', icon: <ShieldAlert className="w-4 h-4 text-teal-600" />, href: 'https://www.ynh.com.sa/', external: true },
     { label: 'Take Quiz', icon: <Award className="w-4 h-4 text-amber-500 animate-pulse" />, action: () => { setActiveTab('quiz'); setDropdownOpen(false); } }
   ];
 
