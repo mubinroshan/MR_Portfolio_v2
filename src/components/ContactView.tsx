@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Mail, MapPin, MessageSquare, Send, ShieldCheck, RefreshCw, CheckCircle2, Linkedin, ExternalLink, ThumbsUp, Heart, Share2, Users, Plus, Check } from 'lucide-react';
+import { User, Mail, MapPin, MessageSquare, Send, ShieldCheck, RefreshCw, CheckCircle2, Linkedin, ExternalLink, ThumbsUp, Heart, Share2, Users, Plus, Check, AlertTriangle } from 'lucide-react';
 import NotificationToast from './NotificationToast';
 import { Component as ShatterButton } from '@/components/ui/shatter-button';
 import mubinAvatar from '../assets/images/mubin_avatar_1780675936140.png';
@@ -798,6 +798,8 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
     }
     if (!email.trim()) {
       newErrors.email = 'Secure response email required';
+    } else if (!email.includes('@')) {
+      newErrors.email = `Please include an '@' in the email address. '${email}' is missing an '@'.`;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = 'Invalid security email format';
     }
@@ -1170,6 +1172,7 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
             target="hidden_iframe"
             method="POST"
             onSubmit={handleSubmit}
+            noValidate
             className={`p-6 sm:p-8 rounded-3xl border ${
               isSaudiGreenMode 
                 ? 'bg-white/[0.02] border-white/10' 
@@ -1403,7 +1406,25 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                 type="email"
                 name="entry.193799992"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setEmail(val);
+                  if (errors.email) {
+                    if (!val.trim()) {
+                      setErrors(prev => ({ ...prev, email: 'Secure response email required' }));
+                    } else if (!val.includes('@')) {
+                      setErrors(prev => ({ ...prev, email: `Please include an '@' in the email address. '${val}' is missing an '@'.` }));
+                    } else if (!/\S+@\S+\.\S+/.test(val)) {
+                      setErrors(prev => ({ ...prev, email: 'Invalid security email format' }));
+                    } else {
+                      setErrors(prev => {
+                        const copy = { ...prev };
+                        delete copy.email;
+                        return copy;
+                      });
+                    }
+                  }
+                }}
                 placeholder="Enter contact email address for feedback"
                 className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all ${
                   errors.email ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900' :
@@ -1413,7 +1434,25 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                 }`}
               />
               {errors.email && (
-                <motion.p initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-mono text-red-400 pl-1">{errors.email}</motion.p>
+                <motion.div 
+                  initial={{ opacity: 0, y: -4 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  className={`p-3.5 rounded-xl border flex items-start gap-2.5 text-xs font-mono shadow-sm ${
+                    isSaudiGreenMode 
+                      ? 'bg-red-950/30 border-red-500/25 text-red-200' 
+                      : 'bg-red-50 border-red-200 text-red-900'
+                  }`}
+                >
+                  <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5 text-left">
+                    <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
+                      [Validation Warning]
+                    </span>
+                    <p className="leading-relaxed font-sans font-medium text-xs">
+                      {errors.email}
+                    </p>
+                  </div>
+                </motion.div>
               )}
             </div>
 
