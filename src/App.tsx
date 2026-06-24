@@ -268,13 +268,13 @@ export default function App() {
                       setShowQuizOnboarding(false);
                       handleTabChange('quiz');
                     }}
-                    className={`w-full py-3 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md flex items-center justify-center gap-1.5 ${
+                    className={`w-full py-3 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md flex items-center justify-center gap-1.5 keep-text-cream ${
                       isSaudiGreenMode 
-                        ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white hover:from-emerald-500 hover:to-teal-400' 
-                        : 'bg-teal-600 hover:bg-teal-700 text-white'
+                        ? 'bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400' 
+                        : 'bg-teal-600 hover:bg-teal-700'
                     }`}
                   >
-                    <span>Take the Quiz Now</span>
+                    <span className="keep-text-cream">Take the Quiz Now</span>
                   </button>
                   <button
                     onClick={() => {
