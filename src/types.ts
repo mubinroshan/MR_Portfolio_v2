@@ -1,4 +1,4 @@
-export type TabID = 'home' | 'timeline' | 'work' | 'about' | 'story' | 'contact';
+export type TabID = 'home' | 'timeline' | 'work' | 'about' | 'story' | 'contact' | 'quiz';
 
 export interface Project {
   id: string;
