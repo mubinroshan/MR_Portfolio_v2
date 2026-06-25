@@ -499,3 +499,20 @@ a, a:focus, a:focus-visible {
   background: linear-gradient(to left, #FAF6EB, transparent) !important;
 }
 
+/* Print Prevention & DLP styling */
+@media print {
+  body, #root, #cybersecurity-quiz-section, .min-h-screen {
+    display: none !important;
+  }
+  html::after {
+    content: "SECURITY POLICY INFRINGEMENT: Unauthorized Printing of Assessment Content is Blocked.";
+    font-family: monospace;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ef4444;
+    text-align: center;
+    margin-top: 100px;
+    display: block !important;
+  }
+}
+

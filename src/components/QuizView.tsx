@@ -29,7 +29,10 @@ import {
   Target,
   Star,
   IdCard,
-  AlertTriangle
+  AlertTriangle,
+  Rocket,
+  Info,
+  HelpCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -205,6 +208,7 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
   const [certificateId, setCertificateId] = useState('');
   const [showShareModal, setShowShareModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isBlurredActive, setIsBlurredActive] = useState(false);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -212,6 +216,72 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [step, currentQuestionIndex]);
+
+  // Anti-screenshot, anti-tampering listeners for intro and quiz steps
+  useEffect(() => {
+    if (step !== 'intro' && step !== 'quiz') {
+      setIsBlurredActive(false);
+      return;
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // macOS Screen Capture shortcut keys (Cmd + Shift + 3, 4, 5)
+      const isMacScreenshot = e.metaKey && e.shiftKey && ['3', '4', '5'].includes(e.key);
+      // Windows / generic Screen Capture shortcut keys (PrtScn, Win + Shift + S)
+      const isWinScreenshot = e.key === 'PrintScreen' || (e.metaKey && e.shiftKey && (e.key === 's' || e.key === 'S'));
+      const isGenericScreenshot = e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S');
+      
+      if (isMacScreenshot || isWinScreenshot || isGenericScreenshot) {
+        e.preventDefault();
+        setIsBlurredActive(true);
+        // auto-restore after 3 seconds of showing the block
+        const timer = setTimeout(() => {
+          setIsBlurredActive(false);
+        }, 3000);
+        return () => clearTimeout(timer);
+      }
+    };
+
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
+    const handleCopy = (e: ClipboardEvent) => {
+      e.preventDefault();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsBlurredActive(true);
+      } else {
+        setIsBlurredActive(false);
+      }
+    };
+
+    const handleBlur = () => {
+      setIsBlurredActive(true);
+    };
+
+    const handleFocus = () => {
+      setIsBlurredActive(false);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('contextmenu', handleContextMenu);
+    window.addEventListener('copy', handleCopy);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('contextmenu', handleContextMenu);
+      window.removeEventListener('copy', handleCopy);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [step]);
 
   // Determine Rank and Description (Strictly no emojis)
   const getResults = (scoreValue: number) => {
@@ -254,6 +324,10 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
     e.preventDefault();
     if (!userName.trim()) {
       setNameError('Please fill out this field.');
+      return;
+    }
+    if (userName.length > 20) {
+      setNameError('Maximum 20 characters allowed.');
       return;
     }
     setNameError('');
@@ -315,7 +389,7 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const verifyUrl = `https://mubinroshan.com/verify/${certificateId}`;
+    const verifyUrl = 'https://mubinroshan.com';
     const logoImg = new Image();
     logoImg.crossOrigin = "anonymous";
     const qrImg = new Image();
@@ -391,7 +465,18 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
       const logoY = 46; // 7% of 660
       const logoSize = 84;
       if (logoImg.complete && logoImg.naturalWidth > 0) {
-        ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize);
+        const imgRatio = logoImg.naturalWidth / logoImg.naturalHeight;
+        let drawW = logoSize;
+        let drawH = logoSize;
+        if (imgRatio > 1) {
+          drawH = logoSize / imgRatio;
+        } else {
+          drawW = logoSize * imgRatio;
+        }
+        // Center the logo inside the logoSize x logoSize box
+        const drawX = logoX + (logoSize - drawW) / 2;
+        const drawY = logoY + (logoSize - drawH) / 2;
+        ctx.drawImage(logoImg, drawX, drawY, drawW, drawH);
       }
 
       // Logo text
@@ -430,7 +515,13 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
       const isTest = nameUpper === 'TEST';
       
       ctx.fillStyle = '#0C6A63';
-      ctx.font = "bold 44px 'Poppins', 'Inter', sans-serif";
+      let fontSize = 44;
+      if (nameUpper.length > 18) {
+        fontSize = 30;
+      } else if (nameUpper.length > 13) {
+        fontSize = 36;
+      }
+      ctx.font = `bold ${fontSize}px 'Poppins', 'Inter', sans-serif`;
       const textWidth = ctx.measureText(nameUpper).width;
 
       if (isTest) {
@@ -568,7 +659,7 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
 
       ctx.fillStyle = '#6B7280'; // gray-500
       ctx.font = "9px 'JetBrains Mono', monospace";
-      ctx.fillText("mubin.roshan/verify", qrX + qrWidth + 16, qrY + 38);
+      ctx.fillText("mubinroshan.com", qrX + qrWidth + 16, qrY + 38);
 
       // 9. Draw Middle Metadata Column (Now moved to top-right column)
       const metaX = 770; 
@@ -703,7 +794,18 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
       const stampY = 544;
       const stampSize = 84;
       if (logoImg.complete && logoImg.naturalWidth > 0) {
-        ctx.drawImage(logoImg, stampX - stampSize / 2, stampY, stampSize, stampSize);
+        const imgRatio = logoImg.naturalWidth / logoImg.naturalHeight;
+        let drawW = stampSize;
+        let drawH = stampSize;
+        if (imgRatio > 1) {
+          drawH = stampSize / imgRatio;
+        } else {
+          drawW = stampSize * imgRatio;
+        }
+        // Center the logo inside the stampSize x stampSize box
+        const drawX = (stampX - stampSize / 2) + (stampSize - drawW) / 2;
+        const drawY = stampY + (stampSize - drawH) / 2;
+        ctx.drawImage(logoImg, drawX, drawY, drawW, drawH);
       }
 
       // 13. Trigger Download
@@ -765,116 +867,368 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
             exit={{ opacity: 0, y: -15 }}
             className={`p-6 sm:p-10 rounded-3xl border shadow-xl ${
               isSaudiGreenMode 
-                ? 'bg-[#121115] border-emerald-500/20 shadow-emerald-950/20' 
-                : 'bg-white border-teal-100 shadow-teal-900/5'
+                ? 'bg-[#121115] border-emerald-500/20 shadow-emerald-950/20 text-white' 
+                : 'bg-white border-teal-100 shadow-teal-900/5 text-gray-900'
             }`}
           >
-            <div className="flex flex-col items-center text-center space-y-6">
-              <div className={`p-4 rounded-full ${
-                isSaudiGreenMode ? 'bg-[#005639]/30 text-emerald-400' : 'bg-teal-50 text-teal-700'
-              }`}>
-                <ShieldCheck className="w-12 h-12" />
-              </div>
-              
-              <div className="space-y-3">
-                <h1 className="text-2xl sm:text-4xl font-bold tracking-tight font-sans">
-                  Ready to Test Your Cybersecurity Skills?
-                </h1>
-                <p className={`text-sm sm:text-base max-w-2xl mx-auto leading-relaxed ${
-                  isSaudiGreenMode ? 'text-gray-400' : 'text-gray-600'
-                }`}>
-                  Take the Cyber Security Readiness Assessment and evaluate your knowledge across ethical hacking, network security, threat detection, and cybersecurity fundamentals.
-                </p>
-              </div>
-
-              <div className={`flex items-center gap-3 px-5 py-3.5 rounded-xl border max-w-lg w-full justify-center ${
-                isSaudiGreenMode 
-                  ? 'bg-[#005639]/10 border-emerald-500/20 text-emerald-300' 
-                  : 'bg-amber-50/50 border-amber-200 text-amber-800'
-              }`}>
-                <Award className="w-5 h-5 shrink-0 text-amber-500" />
-                <span className="text-xs sm:text-sm font-medium">
-                  Receive a personalized certificate upon successful completion.
-                </span>
-              </div>
-
-              <form onSubmit={handleStartQuiz} noValidate className="w-full max-w-md space-y-4 pt-4">
-                <div className="text-left space-y-1.5">
-                  <label htmlFor="user-name-input" className="text-xs font-mono font-bold uppercase tracking-wider block">
-                    Full Name for Certificate
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
-                      <User className="w-4 h-4" />
-                    </span>
-                    <input
-                      id="user-name-input"
-                      type="text"
-                      placeholder="Enter your full name..."
-                      value={userName}
-                      onChange={(e) => {
-                        setUserName(e.target.value);
-                        if (e.target.value.trim()) {
-                          setNameError('');
-                        }
-                      }}
-                      className={`w-full py-3 pl-10 pr-4 text-sm rounded-xl focus:outline-none focus:ring-2 transition-all font-sans ${
-                        nameError 
-                          ? 'border-red-500/60 bg-red-950/10 text-red-100 placeholder-red-900 focus:ring-red-500/30'
-                          : isSaudiGreenMode 
-                            ? 'bg-[#18161b] border border-white/10 text-white placeholder-gray-500 focus:ring-emerald-500/50' 
-                            : 'bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 focus:ring-teal-500/50'
-                      }`}
-                    />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+              {/* Left Column (Inputs, badges, buttons) */}
+              <div className="lg:col-span-7 space-y-6 text-left">
+                {/* 1. Shield icon */}
+                <div className="flex justify-start">
+                  <div className={`p-3.5 rounded-2xl border ${
+                    isSaudiGreenMode ? 'bg-[#005639]/30 border-emerald-500/20 text-emerald-400' : 'bg-teal-50 border-teal-100 text-[#0C6A63]'
+                  }`}>
+                    <ShieldCheck className="w-10 h-10 animate-pulse" />
                   </div>
-                  {nameError && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: -4 }} 
-                      animate={{ opacity: 1, y: 0 }} 
-                      className={`p-3.5 rounded-xl border flex items-start gap-2.5 text-xs font-mono shadow-sm ${
-                        isSaudiGreenMode 
-                          ? 'bg-[#121115] border-red-500/20 text-red-300' 
-                          : 'bg-red-50 border-red-200 text-red-800'
+                </div>
+
+                {/* 2. Headline Details */}
+                <div className="space-y-4">
+                  <p className="text-xs font-mono font-bold tracking-widest text-[#0C6A63] uppercase leading-none">
+                    CYBER SECURITY READINESS ASSESSMENT
+                  </p>
+                  <h1 className={`text-3xl sm:text-4.5xl font-extrabold tracking-tight font-sans leading-tight ${
+                    isSaudiGreenMode ? 'text-white' : 'text-slate-900'
+                  }`}>
+                    Test Your Cybersecurity Skills &amp; Earn a Certificate
+                  </h1>
+                  <p className={`text-sm sm:text-base leading-relaxed ${
+                    isSaudiGreenMode ? 'text-gray-400' : 'text-gray-500'
+                  }`}>
+                    Challenge yourself with real-world cybersecurity questions and benchmark your knowledge in key security domains.
+                  </p>
+                </div>
+
+                {/* 3. Divided Highlight Metadata Row */}
+                <div className={`grid grid-cols-4 gap-4 py-6 border-t border-b ${
+                  isSaudiGreenMode ? 'border-white/10' : 'border-gray-100'
+                }`}>
+                  <div className="flex flex-col items-center text-center">
+                    <div className={`p-2.5 rounded-full ${
+                      isSaudiGreenMode ? 'bg-emerald-500/10 text-emerald-400' : 'bg-teal-50 text-[#0C6A63]'
+                    } mb-2`}>
+                      <HelpCircle className="w-5 h-5" />
+                    </div>
+                    <span className="text-sm font-black tracking-tight leading-none">10</span>
+                    <span className="text-[9px] text-gray-400 font-bold tracking-wider uppercase mt-1">Questions</span>
+                  </div>
+                  
+                  <div className={`flex flex-col items-center text-center border-l ${
+                    isSaudiGreenMode ? 'border-white/10' : 'border-gray-100'
+                  }`}>
+                    <div className={`p-2.5 rounded-full ${
+                      isSaudiGreenMode ? 'bg-emerald-500/10 text-emerald-400' : 'bg-teal-50 text-[#0C6A63]'
+                    } mb-2`}>
+                      <Clock className="w-5 h-5" />
+                    </div>
+                    <span className="text-sm font-black tracking-tight leading-none">5 MIN</span>
+                    <span className="text-[9px] text-gray-400 font-bold tracking-wider uppercase mt-1">Duration</span>
+                  </div>
+                  
+                  <div className={`flex flex-col items-center text-center border-l ${
+                    isSaudiGreenMode ? 'border-white/10' : 'border-gray-100'
+                  }`}>
+                    <div className={`p-2.5 rounded-full ${
+                      isSaudiGreenMode ? 'bg-emerald-500/10 text-emerald-400' : 'bg-teal-50 text-[#0C6A63]'
+                    } mb-2`}>
+                      <Award className="w-5 h-5" />
+                    </div>
+                    <span className="text-sm font-black tracking-tight leading-none">CERTIFICATE</span>
+                    <span className="text-[9px] text-gray-400 font-bold tracking-wider uppercase mt-1">Included</span>
+                  </div>
+                  
+                  <div className={`flex flex-col items-center text-center border-l ${
+                    isSaudiGreenMode ? 'border-white/10' : 'border-gray-100'
+                  }`}>
+                    <div className={`p-2.5 rounded-full ${
+                      isSaudiGreenMode ? 'bg-emerald-500/10 text-emerald-400' : 'bg-teal-50 text-[#0C6A63]'
+                    } mb-2`}>
+                      <Lock className="w-5 h-5" />
+                    </div>
+                    <span className="text-sm font-black tracking-tight leading-none">VERIFIED</span>
+                    <span className="text-[9px] text-gray-400 font-bold tracking-wider uppercase mt-1">&amp; SECURED</span>
+                  </div>
+                </div>
+
+                {/* 4. Form/Inputs Container */}
+                <form onSubmit={handleStartQuiz} noValidate className="space-y-5">
+                  <div className={`p-5 rounded-2xl border text-left space-y-2 ${
+                    isSaudiGreenMode ? 'bg-[#18161b] border-white/10' : 'bg-teal-500/[0.02] border-teal-500/10'
+                  }`}>
+                    <div className="flex justify-between items-center gap-2">
+                      <label htmlFor="user-name-input" className={`text-xs font-sans block ${
+                        isSaudiGreenMode ? 'text-gray-400' : 'text-gray-500'
+                      }`}>
+                        Enter your full name (as you want on the certificate)
+                      </label>
+                      <span className={`text-[10px] font-mono tracking-tight ${
+                        userName.length > 20 
+                          ? 'text-red-500 font-bold' 
+                          : userName.length >= 16 
+                            ? 'text-emerald-500 font-bold' 
+                            : 'text-gray-400'
+                      }`}>
+                        {userName.length}/20 chars
+                      </span>
+                    </div>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-600">
+                        <User className="w-4.5 h-4.5" />
+                      </span>
+                      <input
+                        id="user-name-input"
+                        type="text"
+                        placeholder="Enter your full name..."
+                        value={userName}
+                        maxLength={30}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setUserName(val);
+                          if (val.length > 20) {
+                            setNameError('Maximum 20 characters allowed.');
+                          } else if (val.trim()) {
+                            setNameError('');
+                          } else {
+                            setNameError('');
+                          }
+                        }}
+                        className={`w-full py-3.5 pl-12 pr-4 text-sm rounded-xl focus:outline-none focus:ring-2 transition-all font-sans font-medium ${
+                          nameError 
+                            ? 'border-red-500/60 bg-red-950/10 focus:ring-red-500/30'
+                            : isSaudiGreenMode 
+                              ? 'bg-[#121115] border border-white/10 focus:ring-emerald-500/30' 
+                              : 'bg-white border border-gray-200 focus:ring-teal-500/30'
+                        } ${
+                          userName.length === 0
+                            ? (isSaudiGreenMode ? 'text-white placeholder-gray-500' : 'text-gray-900 placeholder-gray-400')
+                            : (userName.length > 20
+                                ? 'text-red-500'
+                                : (userName.length >= 16
+                                    ? 'text-emerald-500 font-bold'
+                                    : 'text-[#0C6A63] font-bold'
+                                  )
+                              )
+                        }`}
+                      />
+                    </div>
+                    {nameError && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -4 }} 
+                        animate={{ opacity: 1, y: 0 }} 
+                        className={`p-3.5 rounded-xl border flex items-start gap-2.5 text-xs font-mono shadow-sm mt-3 ${
+                          isSaudiGreenMode 
+                            ? 'bg-[#121115] border-red-500/20 text-red-300' 
+                            : 'bg-red-50 border-red-200 text-red-800'
+                        }`}
+                      >
+                        <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                        <div className="space-y-0.5 text-left">
+                          <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
+                            [Validation Warning]
+                          </span>
+                          <p className="leading-relaxed font-sans font-medium text-xs">
+                            {nameError}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-4 pt-2">
+                    <button
+                      type="submit"
+                      className="px-6 py-4 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md hover:shadow-lg focus:outline-none flex items-center justify-center gap-2 bg-[#0C6A63] hover:bg-[#094d48] shrink-0 keep-text-cream"
+                    >
+                      <Rocket className="w-4 h-4 keep-text-cream" />
+                      <span className="keep-text-cream">Start Assessment</span>
+                      <ChevronRight className="w-4 h-4 keep-text-cream" />
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={onGoBack}
+                      className={`flex items-center gap-2 text-xs font-semibold py-2 px-3 hover:bg-teal-50/50 rounded-lg transition-colors ${
+                        isSaudiGreenMode ? 'text-gray-400 hover:text-white hover:bg-white/[0.04]' : 'text-teal-700 hover:text-[#0C6A63]'
                       }`}
                     >
-                      <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-                      <div className="space-y-0.5 text-left">
-                        <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
-                          [Validation Warning]
-                        </span>
-                        <p className="leading-relaxed font-sans font-medium text-xs">
-                          {nameError}
+                      <Info className="w-4 h-4" />
+                      <span>How it works?</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Right Column (Live Certificate Preview) */}
+              <div className="lg:col-span-5 space-y-4">
+                <div 
+                  className="relative w-full aspect-[1050/660] mx-auto overflow-hidden rounded-2xl shadow-xl border border-teal-500/20 select-none bg-[#FAF6EB]"
+                  style={{ containerType: 'inline-size' }}
+                >
+                  {/* Top and Bottom Pattern Borders */}
+                  <img 
+                    src="/cert_patterns.png" 
+                    alt="Top Border Pattern" 
+                    className="absolute top-0 left-0 w-full h-[3.3cqw] object-cover pointer-events-none" 
+                  />
+                  <img 
+                    src="/cert_patterns.png" 
+                    alt="Bottom Border Pattern" 
+                    className="absolute bottom-0 left-0 w-full h-[3.3cqw] object-cover pointer-events-none" 
+                  />
+
+                  {/* 1. Top-Left Logo and Subtitle */}
+                  <div className="absolute left-[7%] top-[7%] flex items-center gap-[1.5cqw]">
+                    <img src="/favicon.png" alt="Logo" className="w-[8cqw] h-[8cqw] object-contain" />
+                    <div className="text-left">
+                      <h4 className="font-poppins font-bold text-[#0C6A63] tracking-wider leading-tight" style={{ fontSize: '2.0cqw' }}>
+                        MUBIN ROSHAN ACADEMY
+                      </h4>
+                      <p className="font-mono text-gray-500 font-medium tracking-[0.15em] leading-none mt-0.5" style={{ fontSize: '1.0cqw' }}>
+                        INSPIRE. EMPOWER. EXCEL.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 2. Certificate Title */}
+                  <div className="absolute left-[7%] top-[25%] text-left">
+                    <h1 className="certificate-title-hollow font-bold tracking-[0.08em] leading-none" style={{ fontSize: '5.6cqw' }}>
+                      CERTIFICATE
+                    </h1>
+                    <p className="font-poppins font-extrabold tracking-[0.05em] text-[#0C6A63] leading-none mt-1" style={{ fontSize: '2.1cqw' }}>
+                      OF ACHIEVEMENT
+                    </p>
+                  </div>
+
+                  {/* 3. "This is to certify that" */}
+                  <div className="absolute left-[7%] top-[45%] text-left">
+                    <p className="font-serif italic text-gray-600 leading-none" style={{ fontSize: '1.6cqw' }}>
+                      This is to certify that
+                    </p>
+                  </div>
+
+                  {/* 4. Recipient Name - LIVE PREVIEW */}
+                  <div className="absolute top-[50%] left-[7%] w-[50%] text-left">
+                    <div className="inline-flex flex-col items-start relative max-w-full">
+                      <h2 
+                        className="font-poppins font-bold text-[#0C6A63] leading-none uppercase" 
+                        style={{ 
+                          fontSize: (userName && userName.length > 18) 
+                            ? '3.0cqw' 
+                            : (userName && userName.length > 13) 
+                              ? '3.5cqw' 
+                              : '4.2cqw', 
+                          letterSpacing: '0.02cqw' 
+                        }}
+                      >
+                        {userName || 'YOUR NAME'}
+                      </h2>
+                      {/* Underline only extends to the end of the name */}
+                      <div className="absolute left-0 right-0 bottom-[-1cqw] h-[1px] bg-gray-300 flex items-center justify-center">
+                        <div className="bg-[#FAF6EB] px-[0.5cqw]">
+                          <ShieldCheck className="text-[#0C6A63] fill-[#FAF6EB]" style={{ width: '2cqw', height: '2cqw' }} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 5. Course Complete and Details */}
+                  <div className="absolute left-[7%] top-[63%] w-[45%] text-left space-y-[0.8cqw]">
+                    <p className="font-sans text-gray-600 leading-tight" style={{ fontSize: '1.3cqw' }}>
+                      has successfully completed the
+                    </p>
+                    <h3 className="font-poppins font-bold text-[#0C6A63] leading-tight uppercase" style={{ fontSize: '1.8cqw' }}>
+                      CYBER SECURITY READINESS ASSESSMENT
+                    </h3>
+                    <p className="font-sans text-gray-500 leading-normal" style={{ fontSize: '1.1cqw' }}>
+                      demonstrating knowledge in cybersecurity, SQL database administration, and healthcare security practices.
+                    </p>
+                  </div>
+
+                  {/* 6. Scan To Verify QR code pointing to mubinroshan.com */}
+                  <div className="absolute left-[7%] bottom-[8%] flex items-center gap-[1.5cqw] bg-[#F5EFE1] border border-teal-900/15 p-[0.8cqw] px-[1.2cqw] rounded-xl shadow-sm">
+                    <img 
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://mubinroshan.com')}`}
+                      alt="Verification QR Code" 
+                      className="rounded object-contain mix-blend-multiply"
+                      style={{ width: '6.5cqw', height: '6.5cqw' }} 
+                    />
+                    <div className="text-left font-mono">
+                      <p className="font-bold text-[#0C6A63] uppercase tracking-wider leading-none" style={{ fontSize: '0.9cqw' }}>SCAN TO VERIFY</p>
+                      <p className="text-gray-500 mt-[0.3cqw] leading-none" style={{ fontSize: '0.8cqw' }}>mubinroshan.com</p>
+                    </div>
+                  </div>
+
+                  {/* 7. Metadata Column (Score, Date, Certificate ID) */}
+                  <div className="absolute right-[7%] top-[16%] text-left space-y-[1.8cqw] w-[20%] font-poppins">
+                    {/* Score */}
+                    <div className="flex items-center gap-[1.2cqw]">
+                      <ShieldCheck className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
+                      <div>
+                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>SCORE</p>
+                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none" style={{ fontSize: '1.4cqw' }}>__ / 10</p>
+                      </div>
+                    </div>
+                    {/* Date */}
+                    <div className="flex items-center gap-[1.2cqw]">
+                      <Clock className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
+                      <div>
+                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>DATE</p>
+                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none font-mono" style={{ fontSize: '1.2cqw' }}>
+                          __ / __ / ____
                         </p>
                       </div>
-                    </motion.div>
-                  )}
+                    </div>
+                    {/* Certificate ID */}
+                    <div className="flex items-center gap-[1.2cqw]">
+                      <Award className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
+                      <div>
+                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>CERTIFICATE ID</p>
+                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none truncate font-mono" style={{ fontSize: '1.2cqw' }}>MR-XXXX-XXXXX</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 8. Bottom Middle Slogan */}
+                  <div className="absolute left-[30%] right-[30%] bottom-[8%] text-center">
+                    <p className="font-sans text-gray-500 leading-normal" style={{ fontSize: '1.0cqw' }}>
+                      Recognizing your commitment to cybersecurity excellence and continuous learning.
+                    </p>
+                  </div>
+
+                  {/* 9. Signature Block (Right Column) */}
+                  <div className="absolute right-[7%] top-[53%] w-[20%] text-center flex flex-col items-center justify-center">
+                    <img 
+                      src="/mubin_signature.png" 
+                      alt="Mubin Roshan Signature" 
+                      className="w-[18cqw] h-[5cqw] object-contain select-none mb-[-0.2cqw] mt-[-1cqw]" 
+                    />
+                    <div className="w-full h-[1px] bg-gray-400 my-[1cqw]" />
+                    <p className="font-poppins font-bold text-[#0C6A63] uppercase tracking-wider leading-none" style={{ fontSize: '1.1cqw' }}>
+                      MUBIN ROSHAN
+                    </p>
+                    <p className="font-sans text-gray-500 leading-tight mt-[0.5cqw]" style={{ fontSize: '0.9cqw' }}>
+                      Cyber Security Analyst
+                    </p>
+                    <p className="font-sans text-gray-500 leading-tight" style={{ fontSize: '0.9cqw' }}>
+                      SQL Database Administrator
+                    </p>
+                  </div>
+
+                  {/* 10. Stamp Logo (Bottom Right) */}
+                  <div className="absolute right-[7%] bottom-[7%] flex items-center justify-end">
+                    <img src="/favicon.png" alt="Stamp Logo" className="w-[8cqw] h-[8cqw] object-contain opacity-50" />
+                  </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                  <button
-                    type="submit"
-                    className={`w-full py-3.5 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md hover:shadow-lg focus:outline-none flex items-center justify-center gap-2 keep-text-cream ${
-                      isSaudiGreenMode 
-                        ? 'bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400' 
-                        : 'bg-[#0d5c56] hover:bg-[#0b4d48]'
-                    }`}
-                  >
-                    <span className="keep-text-cream">Take the Quiz Now</span>
-                    <ChevronRight className="w-4 h-4 keep-text-cream" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={onGoBack}
-                    className={`w-full sm:w-1/3 py-3.5 rounded-xl text-sm font-semibold transition-all border focus:outline-none ${
-                      isSaudiGreenMode 
-                        ? 'bg-transparent border-white/10 hover:bg-white/[0.04] text-gray-400' 
-                        : 'bg-transparent border-gray-200 hover:bg-gray-50 text-gray-600'
-                    }`}
-                  >
-                    Maybe Later
-                  </button>
+                {/* 11. Lock notice */}
+                <div className="flex items-start gap-3 p-4 bg-teal-500/[0.04] rounded-xl border border-teal-500/10">
+                  <Lock className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
+                  <p className="text-xs text-gray-500 leading-relaxed text-left">
+                    Your certificate will be securely generated and available for download upon completion.
+                  </p>
                 </div>
-              </form>
+              </div>
             </div>
           </motion.div>
         )}
@@ -1461,7 +1815,17 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                       </div>
                     ) : (
                       <div className="inline-flex flex-col items-start relative max-w-full">
-                        <h2 className="font-poppins font-bold text-[#0C6A63] leading-none uppercase truncate max-w-[25cqw]" style={{ fontSize: '4.2cqw', letterSpacing: '0.02cqw' }}>
+                        <h2 
+                          className="font-poppins font-bold text-[#0C6A63] leading-none uppercase" 
+                          style={{ 
+                            fontSize: (userName && userName.length > 18) 
+                              ? '3.0cqw' 
+                              : (userName && userName.length > 13) 
+                                ? '3.5cqw' 
+                                : '4.2cqw', 
+                            letterSpacing: '0.02cqw' 
+                          }}
+                        >
                           {userName || 'PARTICIPANT'}
                         </h2>
                         {/* Underline only extends to the end of the name */}
@@ -1490,14 +1854,14 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                   {/* 6. QR Code Verification (Bottom Left) inside a small card style */}
                   <div className="absolute left-[7%] bottom-[8%] flex items-center gap-[1.5cqw] bg-[#F5EFE1] border border-teal-900/15 p-[0.8cqw] px-[1.2cqw] rounded-xl shadow-sm">
                     <img 
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`https://mubinroshan.com/verify/${certificateId}`)}`}
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://mubinroshan.com')}`}
                       alt="Verification QR Code"
-                      className="object-contain mix-blend-multiply"
+                      className="object-contain mix-blend-multiply rounded"
                       style={{ width: '6.5cqw', height: '6.5cqw' }}
                     />
                     <div className="text-left font-mono">
                       <p className="font-bold text-[#0C6A63] uppercase tracking-wider leading-none" style={{ fontSize: '0.9cqw' }}>SCAN TO VERIFY</p>
-                      <p className="text-gray-500 mt-[0.3cqw] leading-none" style={{ fontSize: '0.8cqw' }}>mubin.roshan/verify</p>
+                      <p className="text-gray-500 mt-[0.3cqw] leading-none" style={{ fontSize: '0.8cqw' }}>mubinroshan.com</p>
                     </div>
                   </div>
 
@@ -1716,6 +2080,52 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                     <span>Go to LinkedIn</span>
                     <ExternalLink className="w-4 h-4" />
                   </a>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {isBlurredActive && (
+          <div className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-black/95 backdrop-blur-2xl p-6 text-center select-none pointer-events-none">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.25 }}
+              className="max-w-md w-full space-y-6 bg-[#0e0c12]/80 border border-red-500/20 p-8 rounded-3xl shadow-2xl"
+            >
+              <div className="flex justify-center">
+                <div className="p-4 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 animate-pulse">
+                  <ShieldAlert className="w-16 h-16" />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-[11px] font-mono tracking-widest uppercase">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
+                  SYSTEM SCREEN SHIELD ACTIVE
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold font-mono text-white tracking-tight uppercase">
+                  SCREENSHOT PROTECTED
+                </h3>
+              </div>
+
+              <p className="text-sm font-sans text-gray-300 leading-relaxed">
+                This page contains protected assessment content. Screenshots, screen sharing, and screen recording are strictly prohibited on this device.
+              </p>
+
+              <div className="p-4 rounded-xl bg-black/40 border border-white/5 text-xs text-left font-mono space-y-2.5 text-gray-400">
+                <div className="flex justify-between border-b border-white/5 pb-1.5">
+                  <span>PROTECTION LEVEL:</span>
+                  <span className="text-red-400 font-bold">DRM SECURE SHIELD</span>
+                </div>
+                <div className="flex justify-between border-b border-white/5 pb-1.5">
+                  <span>STATUS:</span>
+                  <span className="text-amber-400 font-bold">CONTENT BLURRED</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>ACTION REQUIRED:</span>
+                  <span className="text-emerald-400 font-bold">RETURN TO APP TO UNBLUR</span>
                 </div>
               </div>
             </motion.div>
