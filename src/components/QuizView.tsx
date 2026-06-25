@@ -1099,130 +1099,159 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                   className="relative w-full aspect-[1050/660] mx-auto overflow-hidden rounded-2xl shadow-xl border border-teal-500/20 select-none bg-[#FAF6EB]"
                   style={{ containerType: 'inline-size' }}
                 >
-                  {/* Left Brand Ribbon matching Reference Image */}
-                  <div className="absolute left-0 top-0 bottom-0 w-[24cqw] bg-[#0C6A63] flex flex-col items-center justify-between py-[5cqw] px-[2cqw] border-r border-[#094d48] select-none">
-                    <div className="flex-1 flex flex-col items-center justify-center gap-[4cqw] my-auto">
-                      <div className="relative flex items-center justify-center">
-                        <Shield className="w-[11cqw] h-[11cqw] text-white/90 stroke-[1.5] filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)]" />
-                        <div className="absolute font-sans font-bold text-[2.8cqw] text-white tracking-widest">MR</div>
-                      </div>
-                      <div className="p-[1cqw] bg-white/10 rounded-full border border-white/20">
-                        <ShieldCheck className="w-[4.2cqw] h-[4.2cqw] text-[#00E5FF]" />
-                      </div>
+                  {/* Top and Bottom Pattern Borders */}
+                  <img 
+                    src="/cert_patterns.png" 
+                    alt="Top Border Pattern" 
+                    className="absolute top-0 left-0 w-full h-[3.3cqw] object-cover pointer-events-none" 
+                  />
+                  <img 
+                    src="/cert_patterns.png" 
+                    alt="Bottom Border Pattern" 
+                    className="absolute bottom-0 left-0 w-full h-[3.3cqw] object-cover pointer-events-none" 
+                  />
+
+                  {/* 1. Top-Left Logo and Subtitle */}
+                  <div className="absolute left-[7%] top-[7%] flex items-center gap-[1.5cqw]">
+                    <img src="/favicon.png" alt="Logo" className="w-[8cqw] h-[8cqw] object-contain" />
+                    <div className="text-left">
+                      <h4 className="font-poppins font-bold text-[#0C6A63] tracking-wider leading-tight" style={{ fontSize: '2.0cqw' }}>
+                        MUBIN ROSHAN ACADEMY
+                      </h4>
+                      <p className="font-mono text-gray-500 font-medium tracking-[0.15em] leading-none mt-0.5" style={{ fontSize: '1.0cqw' }}>
+                        INSPIRE. EMPOWER. EXCEL.
+                      </p>
                     </div>
                   </div>
 
-                  {/* Right Section containing the core certificate body */}
-                  <div className="absolute left-[24cqw] right-0 top-0 bottom-0 bg-[#FDFBF7] p-[3.5cqw] flex flex-col justify-between">
-                    {/* Thin inset double line borders for high-end feel */}
-                    <div className="absolute inset-[1.6cqw] border border-teal-800/10 rounded-lg pointer-events-none" />
-                    <div className="absolute inset-[1.9cqw] border border-teal-800/5 rounded-[6px] pointer-events-none" />
+                  {/* 2. Certificate Title */}
+                  <div className="absolute left-[7%] top-[25%] text-left">
+                    <h1 className="certificate-title-hollow font-bold tracking-[0.08em] leading-none" style={{ fontSize: '5.6cqw' }}>
+                      CERTIFICATE
+                    </h1>
+                    <p className="font-poppins font-extrabold tracking-[0.05em] text-[#0C6A63] leading-none mt-1" style={{ fontSize: '2.1cqw' }}>
+                      OF ACHIEVEMENT
+                    </p>
+                  </div>
 
-                    {/* Top Header */}
-                    <div className="flex flex-col items-center text-center space-y-[0.3cqw] mt-[0.5cqw]">
-                      <ShieldCheck className="w-[3.6cqw] h-[3.6cqw] text-[#0C6A63]" />
-                      <h4 className="font-poppins font-black text-[#0C6A63] tracking-[0.08em] uppercase leading-none" style={{ fontSize: '1.4cqw' }}>
-                        Certificate of Achievement
-                      </h4>
-                      <p className="font-serif italic text-gray-500 leading-none mt-[0.2cqw]" style={{ fontSize: '1.1cqw' }}>
-                        This is to certify that
-                      </p>
-                    </div>
+                  {/* 3. "This is to certify that" */}
+                  <div className="absolute left-[7%] top-[45%] text-left">
+                    <p className="font-serif italic text-gray-600 leading-none" style={{ fontSize: '1.6cqw' }}>
+                      This is to certify that
+                    </p>
+                  </div>
 
-                    {/* Recipient Name - LIVE PREVIEW */}
-                    <div className="flex flex-col items-center text-center relative w-full my-[0.5cqw]">
+                  {/* 4. Recipient Name - LIVE PREVIEW */}
+                  <div className="absolute top-[50%] left-[7%] w-[50%] text-left">
+                    <div className="inline-flex flex-col items-start relative max-w-full">
                       <h2 
-                        className="font-poppins font-black text-[#0C6A63] leading-none uppercase tracking-wide" 
+                        className="font-poppins font-bold text-[#0C6A63] leading-none uppercase" 
                         style={{ 
                           fontSize: (userName && userName.length > 18) 
-                            ? '2.2cqw' 
+                            ? '3.0cqw' 
                             : (userName && userName.length > 13) 
-                              ? '2.6cqw' 
-                              : '3.2cqw'
+                              ? '3.5cqw' 
+                              : '4.2cqw', 
+                          letterSpacing: '0.02cqw' 
                         }}
                       >
                         {userName || 'YOUR NAME'}
                       </h2>
-                      <div className="w-[60%] h-[1px] bg-gray-300 mt-[1cqw] relative flex items-center justify-center">
-                        <div className="bg-[#FDFBF7] px-[0.6cqw] absolute">
-                          <ShieldCheck className="text-[#0C6A63]" style={{ width: '1.6cqw', height: '1.6cqw' }} />
+                      {/* Underline only extends to the end of the name */}
+                      <div className="absolute left-0 right-0 bottom-[-1cqw] h-[1px] bg-gray-300 flex items-center justify-center">
+                        <div className="bg-[#FAF6EB] px-[0.5cqw]">
+                          <ShieldCheck className="text-[#0C6A63] fill-[#FAF6EB]" style={{ width: '2cqw', height: '2cqw' }} />
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Course Complete and Details */}
-                    <div className="flex flex-col items-center text-center space-y-[0.4cqw]">
-                      <p className="font-sans text-gray-600 leading-none" style={{ fontSize: '1.0cqw' }}>
-                        has successfully completed the
-                      </p>
-                      <h3 className="font-poppins font-extrabold text-[#0C6A63] leading-none uppercase tracking-wider" style={{ fontSize: '1.4cqw' }}>
-                        Cyber Security Readiness Quiz
-                      </h3>
-                      <p className="font-sans text-gray-400 font-medium leading-normal w-[85%] mx-auto" style={{ fontSize: '0.85cqw' }}>
-                        demonstrating knowledge in cybersecurity, security principles, and best practices.
-                      </p>
+                  {/* 5. Course Complete and Details */}
+                  <div className="absolute left-[7%] top-[63%] w-[45%] text-left space-y-[0.8cqw]">
+                    <p className="font-sans text-gray-600 leading-tight" style={{ fontSize: '1.3cqw' }}>
+                      has successfully completed the
+                    </p>
+                    <h3 className="font-poppins font-bold text-[#0C6A63] leading-tight uppercase" style={{ fontSize: '1.8cqw' }}>
+                      CYBER SECURITY READINESS ASSESSMENT
+                    </h3>
+                    <p className="font-sans text-gray-500 leading-normal" style={{ fontSize: '1.1cqw' }}>
+                      demonstrating knowledge in cybersecurity, SQL database administration, and healthcare security practices.
+                    </p>
+                  </div>
+
+                  {/* 6. Scan To Verify QR code pointing to mubinroshan.com */}
+                  <div className="absolute left-[7%] bottom-[8%] flex items-center gap-[1.5cqw] bg-[#F5EFE1] border border-teal-900/15 p-[0.8cqw] px-[1.2cqw] rounded-xl shadow-sm">
+                    <img 
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://mubinroshan.com')}`}
+                      alt="Verification QR Code" 
+                      className="rounded object-contain mix-blend-multiply"
+                      style={{ width: '6.5cqw', height: '6.5cqw' }} 
+                    />
+                    <div className="text-left font-mono">
+                      <p className="font-bold text-[#0C6A63] uppercase tracking-wider leading-none" style={{ fontSize: '0.9cqw' }}>SCAN TO VERIFY</p>
+                      <p className="text-gray-500 mt-[0.3cqw] leading-none" style={{ fontSize: '0.8cqw' }}>mubinroshan.com</p>
                     </div>
+                  </div>
 
-                    {/* Metadata Row (Score, Date, Certificate ID) */}
-                    <div className="grid grid-cols-3 gap-[1cqw] px-[1cqw] py-[0.8cqw] border-t border-b border-teal-900/5 my-[0.5cqw] text-center bg-teal-500/[0.01]">
-                      {/* Score */}
-                      <div className="flex items-center justify-center gap-[0.8cqw]">
-                        <ShieldCheck className="text-[#0C6A63] shrink-0" style={{ width: '1.8cqw', height: '1.8cqw' }} />
-                        <div className="text-left leading-none">
-                          <span className="block font-bold text-gray-400 uppercase tracking-widest text-[0.65cqw]">SCORE</span>
-                          <span className="font-extrabold text-[#0C6A63] text-[1.1cqw]">__/10</span>
-                        </div>
-                      </div>
-                      {/* Date */}
-                      <div className="flex items-center justify-center gap-[0.8cqw] border-l border-r border-teal-900/5">
-                        <Clock className="text-[#0C6A63] shrink-0" style={{ width: '1.8cqw', height: '1.8cqw' }} />
-                        <div className="text-left leading-none">
-                          <span className="block font-bold text-gray-400 uppercase tracking-widest text-[0.65cqw]">DATE</span>
-                          <span className="font-extrabold text-[#0C6A63] text-[1.0cqw] font-mono">--/--/--</span>
-                        </div>
-                      </div>
-                      {/* Cert ID */}
-                      <div className="flex items-center justify-center gap-[0.8cqw]">
-                        <Award className="text-[#0C6A63] shrink-0" style={{ width: '1.8cqw', height: '1.8cqw' }} />
-                        <div className="text-left leading-none">
-                          <span className="block font-bold text-gray-400 uppercase tracking-widest text-[0.65cqw]">CERTIFICATE ID</span>
-                          <span className="font-extrabold text-[#0C6A63] text-[0.9cqw] font-mono">MR-XXXX-XXXXX</span>
-                        </div>
+                  {/* 7. Metadata Column (Score, Date, Certificate ID) */}
+                  <div className="absolute right-[7%] top-[16%] text-left space-y-[1.8cqw] w-[20%] font-poppins">
+                    {/* Score */}
+                    <div className="flex items-center gap-[1.2cqw]">
+                      <ShieldCheck className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
+                      <div>
+                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>SCORE</p>
+                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none" style={{ fontSize: '1.4cqw' }}>__ / 10</p>
                       </div>
                     </div>
-
-                    {/* Bottom Footer block containing verification and signatures */}
-                    <div className="flex items-end justify-between px-[1cqw] mb-[0.2cqw]">
-                      {/* Verification QR */}
-                      <div className="flex items-center gap-[1cqw]">
-                        <img 
-                          src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://mubinroshan.com')}`}
-                          alt="Verification QR" 
-                          className="rounded object-contain mix-blend-multiply border border-teal-800/10 p-[0.3cqw]"
-                          style={{ width: '5.2cqw', height: '5.2cqw' }} 
-                        />
-                        <div className="text-left font-mono leading-none">
-                          <span className="block font-bold text-[#0C6A63] uppercase tracking-wider text-[0.7cqw]">SCAN TO VERIFY</span>
-                          <span className="text-gray-400 text-[0.65cqw] mt-[0.2cqw] block">mubinroshan.com</span>
-                        </div>
-                      </div>
-
-                      {/* Signature Block */}
-                      <div className="flex flex-col items-center text-center">
-                        <img 
-                          src="/mubin_signature.png" 
-                          alt="Mubin Signature" 
-                          className="w-[14cqw] h-[4cqw] object-contain select-none mb-[-0.3cqw]" 
-                        />
-                        <div className="w-[16cqw] h-[1px] bg-gray-400" />
-                        <span className="font-poppins font-extrabold text-[#0C6A63] uppercase tracking-wider text-[0.8cqw] mt-[0.3cqw] block leading-none">
-                          Mubin Roshan
-                        </span>
-                        <span className="text-gray-400 text-[0.65cqw] block mt-[0.1cqw] leading-none">
-                          Cyber Security Analyst
-                        </span>
+                    {/* Date */}
+                    <div className="flex items-center gap-[1.2cqw]">
+                      <Clock className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
+                      <div>
+                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>DATE</p>
+                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none font-mono" style={{ fontSize: '1.2cqw' }}>
+                          __ / __ / ____
+                        </p>
                       </div>
                     </div>
+                    {/* Certificate ID */}
+                    <div className="flex items-center gap-[1.2cqw]">
+                      <Award className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
+                      <div>
+                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>CERTIFICATE ID</p>
+                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none truncate font-mono" style={{ fontSize: '1.2cqw' }}>MR-XXXX-XXXXX</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 8. Bottom Middle Slogan */}
+                  <div className="absolute left-[30%] right-[30%] bottom-[8%] text-center">
+                    <p className="font-sans text-gray-500 leading-normal" style={{ fontSize: '1.0cqw' }}>
+                      Recognizing your commitment to cybersecurity excellence and continuous learning.
+                    </p>
+                  </div>
+
+                  {/* 9. Signature Block (Right Column) */}
+                  <div className="absolute right-[7%] top-[53%] w-[20%] text-center flex flex-col items-center justify-center">
+                    <img 
+                      src="/mubin_signature.png" 
+                      alt="Mubin Roshan Signature" 
+                      className="w-[18cqw] h-[5cqw] object-contain select-none mb-[-0.2cqw] mt-[-1cqw]" 
+                    />
+                    <div className="w-full h-[1px] bg-gray-400 my-[1cqw]" />
+                    <p className="font-poppins font-bold text-[#0C6A63] uppercase tracking-wider leading-none" style={{ fontSize: '1.1cqw' }}>
+                      MUBIN ROSHAN
+                    </p>
+                    <p className="font-sans text-gray-500 leading-tight mt-[0.5cqw]" style={{ fontSize: '0.9cqw' }}>
+                      Cyber Security Analyst
+                    </p>
+                    <p className="font-sans text-gray-500 leading-tight" style={{ fontSize: '0.9cqw' }}>
+                      SQL Database Administrator
+                    </p>
+                  </div>
+
+                  {/* 10. Stamp Logo (Bottom Right) */}
+                  <div className="absolute right-[7%] bottom-[7%] flex items-center justify-end">
+                    <img src="/favicon.png" alt="Stamp Logo" className="w-[8cqw] h-[8cqw] object-contain opacity-50" />
                   </div>
                 </div>
  
