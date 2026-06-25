@@ -32,7 +32,11 @@ import {
   AlertTriangle,
   Rocket,
   Info,
-  HelpCircle
+  HelpCircle,
+  Cpu,
+  Database,
+  Globe,
+  Fingerprint
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -865,13 +869,43 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
-            className={`p-6 sm:p-10 rounded-3xl border shadow-xl ${
+            className={`p-6 sm:p-10 rounded-3xl border shadow-xl relative overflow-hidden ${
               isSaudiGreenMode 
                 ? 'bg-[#121115] border-emerald-500/20 shadow-emerald-950/20 text-white' 
                 : 'bg-white border-teal-100 shadow-teal-900/5 text-gray-900'
             }`}
           >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            {/* Elegant decorative background waves/curves and watermark developer icons */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-3xl z-0 select-none">
+              {/* Wave 1 */}
+              <svg className="absolute top-0 right-0 w-[50%] h-full opacity-[0.12] text-[#0C6A63]" viewBox="0 0 400 600" fill="none" preserveAspectRatio="none">
+                <path d="M400,0 C300,100 250,250 200,350 C150,450 50,500 0,600" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M400,30 C310,120 265,265 215,365 C165,465 65,515 15,600" stroke="currentColor" strokeWidth="1" />
+                <path d="M400,60 C320,140 280,280 230,380 C180,480 80,530 30,600" stroke="currentColor" strokeWidth="0.5" />
+              </svg>
+              
+              {/* Wave 2 */}
+              <svg className="absolute bottom-0 left-0 w-full h-[40%] opacity-[0.08] text-[#0C6A63]" viewBox="0 0 1000 300" fill="none" preserveAspectRatio="none">
+                <path d="M0,300 C200,280 350,220 500,240 C650,260 800,150 1000,100" stroke="currentColor" strokeWidth="1" />
+                <path d="M0,270 C180,255 330,195 480,215 C630,235 780,125 1000,75" stroke="currentColor" strokeWidth="0.5" />
+              </svg>
+              
+              {/* Dotted Grid at Top-Right */}
+              <div className="absolute top-8 right-8 w-32 h-32 opacity-15" style={{
+                backgroundImage: 'radial-gradient(#0C6A63 1.5px, transparent 1.5px)',
+                backgroundSize: '12px 12px'
+              }} />
+              
+              {/* Scattering watermarked Lucide icons with extremely low opacity */}
+              <Terminal className="absolute top-[12%] right-[15%] w-16 h-16 text-[#0C6A63] opacity-[0.03] rotate-12" />
+              <Cpu className="absolute bottom-[20%] left-[45%] w-20 h-20 text-[#0C6A63] opacity-[0.02] -rotate-12" />
+              <Database className="absolute top-[45%] right-[40%] w-14 h-14 text-[#0C6A63] opacity-[0.02] rotate-45" />
+              <Globe className="absolute bottom-[40%] right-[15%] w-16 h-16 text-[#0C6A63] opacity-[0.03] -rotate-6" />
+              <Lock className="absolute top-[25%] left-[30%] w-12 h-12 text-[#0C6A63] opacity-[0.02] rotate-12" />
+              <Fingerprint className="absolute bottom-[10%] left-[10%] w-24 h-24 text-[#0C6A63] opacity-[0.02]" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
               {/* Left Column (Inputs, badges, buttons) */}
               <div className="lg:col-span-7 space-y-6 text-left">
                 {/* 1. Shield icon */}
@@ -882,7 +916,7 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                     <ShieldCheck className="w-10 h-10 animate-pulse" />
                   </div>
                 </div>
-
+ 
                 {/* 2. Headline Details */}
                 <div className="space-y-4">
                   <p className="text-xs font-mono font-bold tracking-widest text-[#0C6A63] uppercase leading-none">
@@ -899,9 +933,9 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                     Challenge yourself with real-world cybersecurity questions and benchmark your knowledge in key security domains.
                   </p>
                 </div>
-
+ 
                 {/* 3. Divided Highlight Metadata Row */}
-                <div className={`grid grid-cols-4 gap-4 py-6 border-t border-b ${
+                <div className={`grid grid-cols-2 sm:grid-cols-4 gap-y-6 gap-x-2 sm:gap-4 py-6 border-t border-b ${
                   isSaudiGreenMode ? 'border-white/10' : 'border-gray-100'
                 }`}>
                   <div className="flex flex-col items-center text-center">
@@ -910,7 +944,7 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                     } mb-2`}>
                       <HelpCircle className="w-5 h-5" />
                     </div>
-                    <span className="text-sm font-black tracking-tight leading-none">10</span>
+                    <span className="text-xs sm:text-sm font-black tracking-tight leading-none">10</span>
                     <span className="text-[9px] text-gray-400 font-bold tracking-wider uppercase mt-1">Questions</span>
                   </div>
                   
@@ -922,11 +956,11 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                     } mb-2`}>
                       <Clock className="w-5 h-5" />
                     </div>
-                    <span className="text-sm font-black tracking-tight leading-none">5 MIN</span>
+                    <span className="text-xs sm:text-sm font-black tracking-tight leading-none">5 MIN</span>
                     <span className="text-[9px] text-gray-400 font-bold tracking-wider uppercase mt-1">Duration</span>
                   </div>
                   
-                  <div className={`flex flex-col items-center text-center border-l ${
+                  <div className={`flex flex-col items-center text-center sm:border-l ${
                     isSaudiGreenMode ? 'border-white/10' : 'border-gray-100'
                   }`}>
                     <div className={`p-2.5 rounded-full ${
@@ -934,7 +968,7 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                     } mb-2`}>
                       <Award className="w-5 h-5" />
                     </div>
-                    <span className="text-sm font-black tracking-tight leading-none">CERTIFICATE</span>
+                    <span className="text-xs sm:text-sm font-black tracking-tight leading-none">CERTIFICATE</span>
                     <span className="text-[9px] text-gray-400 font-bold tracking-wider uppercase mt-1">Included</span>
                   </div>
                   
@@ -946,12 +980,12 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                     } mb-2`}>
                       <Lock className="w-5 h-5" />
                     </div>
-                    <span className="text-sm font-black tracking-tight leading-none">VERIFIED</span>
+                    <span className="text-xs sm:text-sm font-black tracking-tight leading-none">VERIFIED</span>
                     <span className="text-[9px] text-gray-400 font-bold tracking-wider uppercase mt-1">&amp; SECURED</span>
                   </div>
                 </div>
-
-                {/* 4. Form/Inputs Container */}
+ 
+                {/* 4. Name input card style */}
                 <form onSubmit={handleStartQuiz} noValidate className="space-y-5">
                   <div className={`p-5 rounded-2xl border text-left space-y-2 ${
                     isSaudiGreenMode ? 'bg-[#18161b] border-white/10' : 'bg-teal-500/[0.02] border-teal-500/10'
@@ -1034,7 +1068,7 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                       </motion.div>
                     )}
                   </div>
-
+ 
                   <div className="flex flex-wrap items-center gap-4 pt-2">
                     <button
                       type="submit"
@@ -1058,169 +1092,140 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                   </div>
                 </form>
               </div>
-
+ 
               {/* Right Column (Live Certificate Preview) */}
-              <div className="lg:col-span-5 space-y-4">
+              <div className="lg:col-span-5 space-y-4 relative z-10">
                 <div 
                   className="relative w-full aspect-[1050/660] mx-auto overflow-hidden rounded-2xl shadow-xl border border-teal-500/20 select-none bg-[#FAF6EB]"
                   style={{ containerType: 'inline-size' }}
                 >
-                  {/* Top and Bottom Pattern Borders */}
-                  <img 
-                    src="/cert_patterns.png" 
-                    alt="Top Border Pattern" 
-                    className="absolute top-0 left-0 w-full h-[3.3cqw] object-cover pointer-events-none" 
-                  />
-                  <img 
-                    src="/cert_patterns.png" 
-                    alt="Bottom Border Pattern" 
-                    className="absolute bottom-0 left-0 w-full h-[3.3cqw] object-cover pointer-events-none" 
-                  />
-
-                  {/* 1. Top-Left Logo and Subtitle */}
-                  <div className="absolute left-[7%] top-[7%] flex items-center gap-[1.5cqw]">
-                    <img src="/favicon.png" alt="Logo" className="w-[8cqw] h-[8cqw] object-contain" />
-                    <div className="text-left">
-                      <h4 className="font-poppins font-bold text-[#0C6A63] tracking-wider leading-tight" style={{ fontSize: '2.0cqw' }}>
-                        MUBIN ROSHAN ACADEMY
-                      </h4>
-                      <p className="font-mono text-gray-500 font-medium tracking-[0.15em] leading-none mt-0.5" style={{ fontSize: '1.0cqw' }}>
-                        INSPIRE. EMPOWER. EXCEL.
-                      </p>
+                  {/* Left Brand Ribbon matching Reference Image */}
+                  <div className="absolute left-0 top-0 bottom-0 w-[24cqw] bg-[#0C6A63] flex flex-col items-center justify-between py-[5cqw] px-[2cqw] border-r border-[#094d48] select-none">
+                    <div className="flex-1 flex flex-col items-center justify-center gap-[4cqw] my-auto">
+                      <div className="relative flex items-center justify-center">
+                        <Shield className="w-[11cqw] h-[11cqw] text-white/90 stroke-[1.5] filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)]" />
+                        <div className="absolute font-sans font-bold text-[2.8cqw] text-white tracking-widest">MR</div>
+                      </div>
+                      <div className="p-[1cqw] bg-white/10 rounded-full border border-white/20">
+                        <ShieldCheck className="w-[4.2cqw] h-[4.2cqw] text-[#00E5FF]" />
+                      </div>
                     </div>
                   </div>
 
-                  {/* 2. Certificate Title */}
-                  <div className="absolute left-[7%] top-[25%] text-left">
-                    <h1 className="certificate-title-hollow font-bold tracking-[0.08em] leading-none" style={{ fontSize: '5.6cqw' }}>
-                      CERTIFICATE
-                    </h1>
-                    <p className="font-poppins font-extrabold tracking-[0.05em] text-[#0C6A63] leading-none mt-1" style={{ fontSize: '2.1cqw' }}>
-                      OF ACHIEVEMENT
-                    </p>
-                  </div>
+                  {/* Right Section containing the core certificate body */}
+                  <div className="absolute left-[24cqw] right-0 top-0 bottom-0 bg-[#FDFBF7] p-[3.5cqw] flex flex-col justify-between">
+                    {/* Thin inset double line borders for high-end feel */}
+                    <div className="absolute inset-[1.6cqw] border border-teal-800/10 rounded-lg pointer-events-none" />
+                    <div className="absolute inset-[1.9cqw] border border-teal-800/5 rounded-[6px] pointer-events-none" />
 
-                  {/* 3. "This is to certify that" */}
-                  <div className="absolute left-[7%] top-[45%] text-left">
-                    <p className="font-serif italic text-gray-600 leading-none" style={{ fontSize: '1.6cqw' }}>
-                      This is to certify that
-                    </p>
-                  </div>
+                    {/* Top Header */}
+                    <div className="flex flex-col items-center text-center space-y-[0.3cqw] mt-[0.5cqw]">
+                      <ShieldCheck className="w-[3.6cqw] h-[3.6cqw] text-[#0C6A63]" />
+                      <h4 className="font-poppins font-black text-[#0C6A63] tracking-[0.08em] uppercase leading-none" style={{ fontSize: '1.4cqw' }}>
+                        Certificate of Achievement
+                      </h4>
+                      <p className="font-serif italic text-gray-500 leading-none mt-[0.2cqw]" style={{ fontSize: '1.1cqw' }}>
+                        This is to certify that
+                      </p>
+                    </div>
 
-                  {/* 4. Recipient Name - LIVE PREVIEW */}
-                  <div className="absolute top-[50%] left-[7%] w-[50%] text-left">
-                    <div className="inline-flex flex-col items-start relative max-w-full">
+                    {/* Recipient Name - LIVE PREVIEW */}
+                    <div className="flex flex-col items-center text-center relative w-full my-[0.5cqw]">
                       <h2 
-                        className="font-poppins font-bold text-[#0C6A63] leading-none uppercase" 
+                        className="font-poppins font-black text-[#0C6A63] leading-none uppercase tracking-wide" 
                         style={{ 
                           fontSize: (userName && userName.length > 18) 
-                            ? '3.0cqw' 
+                            ? '2.2cqw' 
                             : (userName && userName.length > 13) 
-                              ? '3.5cqw' 
-                              : '4.2cqw', 
-                          letterSpacing: '0.02cqw' 
+                              ? '2.6cqw' 
+                              : '3.2cqw'
                         }}
                       >
                         {userName || 'YOUR NAME'}
                       </h2>
-                      {/* Underline only extends to the end of the name */}
-                      <div className="absolute left-0 right-0 bottom-[-1cqw] h-[1px] bg-gray-300 flex items-center justify-center">
-                        <div className="bg-[#FAF6EB] px-[0.5cqw]">
-                          <ShieldCheck className="text-[#0C6A63] fill-[#FAF6EB]" style={{ width: '2cqw', height: '2cqw' }} />
+                      <div className="w-[60%] h-[1px] bg-gray-300 mt-[1cqw] relative flex items-center justify-center">
+                        <div className="bg-[#FDFBF7] px-[0.6cqw] absolute">
+                          <ShieldCheck className="text-[#0C6A63]" style={{ width: '1.6cqw', height: '1.6cqw' }} />
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* 5. Course Complete and Details */}
-                  <div className="absolute left-[7%] top-[63%] w-[45%] text-left space-y-[0.8cqw]">
-                    <p className="font-sans text-gray-600 leading-tight" style={{ fontSize: '1.3cqw' }}>
-                      has successfully completed the
-                    </p>
-                    <h3 className="font-poppins font-bold text-[#0C6A63] leading-tight uppercase" style={{ fontSize: '1.8cqw' }}>
-                      CYBER SECURITY READINESS ASSESSMENT
-                    </h3>
-                    <p className="font-sans text-gray-500 leading-normal" style={{ fontSize: '1.1cqw' }}>
-                      demonstrating knowledge in cybersecurity, SQL database administration, and healthcare security practices.
-                    </p>
-                  </div>
-
-                  {/* 6. Scan To Verify QR code pointing to mubinroshan.com */}
-                  <div className="absolute left-[7%] bottom-[8%] flex items-center gap-[1.5cqw] bg-[#F5EFE1] border border-teal-900/15 p-[0.8cqw] px-[1.2cqw] rounded-xl shadow-sm">
-                    <img 
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://mubinroshan.com')}`}
-                      alt="Verification QR Code" 
-                      className="rounded object-contain mix-blend-multiply"
-                      style={{ width: '6.5cqw', height: '6.5cqw' }} 
-                    />
-                    <div className="text-left font-mono">
-                      <p className="font-bold text-[#0C6A63] uppercase tracking-wider leading-none" style={{ fontSize: '0.9cqw' }}>SCAN TO VERIFY</p>
-                      <p className="text-gray-500 mt-[0.3cqw] leading-none" style={{ fontSize: '0.8cqw' }}>mubinroshan.com</p>
+                    {/* Course Complete and Details */}
+                    <div className="flex flex-col items-center text-center space-y-[0.4cqw]">
+                      <p className="font-sans text-gray-600 leading-none" style={{ fontSize: '1.0cqw' }}>
+                        has successfully completed the
+                      </p>
+                      <h3 className="font-poppins font-extrabold text-[#0C6A63] leading-none uppercase tracking-wider" style={{ fontSize: '1.4cqw' }}>
+                        Cyber Security Readiness Quiz
+                      </h3>
+                      <p className="font-sans text-gray-400 font-medium leading-normal w-[85%] mx-auto" style={{ fontSize: '0.85cqw' }}>
+                        demonstrating knowledge in cybersecurity, security principles, and best practices.
+                      </p>
                     </div>
-                  </div>
 
-                  {/* 7. Metadata Column (Score, Date, Certificate ID) */}
-                  <div className="absolute right-[7%] top-[16%] text-left space-y-[1.8cqw] w-[20%] font-poppins">
-                    {/* Score */}
-                    <div className="flex items-center gap-[1.2cqw]">
-                      <ShieldCheck className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
-                      <div>
-                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>SCORE</p>
-                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none" style={{ fontSize: '1.4cqw' }}>__ / 10</p>
+                    {/* Metadata Row (Score, Date, Certificate ID) */}
+                    <div className="grid grid-cols-3 gap-[1cqw] px-[1cqw] py-[0.8cqw] border-t border-b border-teal-900/5 my-[0.5cqw] text-center bg-teal-500/[0.01]">
+                      {/* Score */}
+                      <div className="flex items-center justify-center gap-[0.8cqw]">
+                        <ShieldCheck className="text-[#0C6A63] shrink-0" style={{ width: '1.8cqw', height: '1.8cqw' }} />
+                        <div className="text-left leading-none">
+                          <span className="block font-bold text-gray-400 uppercase tracking-widest text-[0.65cqw]">SCORE</span>
+                          <span className="font-extrabold text-[#0C6A63] text-[1.1cqw]">__/10</span>
+                        </div>
+                      </div>
+                      {/* Date */}
+                      <div className="flex items-center justify-center gap-[0.8cqw] border-l border-r border-teal-900/5">
+                        <Clock className="text-[#0C6A63] shrink-0" style={{ width: '1.8cqw', height: '1.8cqw' }} />
+                        <div className="text-left leading-none">
+                          <span className="block font-bold text-gray-400 uppercase tracking-widest text-[0.65cqw]">DATE</span>
+                          <span className="font-extrabold text-[#0C6A63] text-[1.0cqw] font-mono">--/--/--</span>
+                        </div>
+                      </div>
+                      {/* Cert ID */}
+                      <div className="flex items-center justify-center gap-[0.8cqw]">
+                        <Award className="text-[#0C6A63] shrink-0" style={{ width: '1.8cqw', height: '1.8cqw' }} />
+                        <div className="text-left leading-none">
+                          <span className="block font-bold text-gray-400 uppercase tracking-widest text-[0.65cqw]">CERTIFICATE ID</span>
+                          <span className="font-extrabold text-[#0C6A63] text-[0.9cqw] font-mono">MR-XXXX-XXXXX</span>
+                        </div>
                       </div>
                     </div>
-                    {/* Date */}
-                    <div className="flex items-center gap-[1.2cqw]">
-                      <Clock className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
-                      <div>
-                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>DATE</p>
-                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none font-mono" style={{ fontSize: '1.2cqw' }}>
-                          __ / __ / ____
-                        </p>
+
+                    {/* Bottom Footer block containing verification and signatures */}
+                    <div className="flex items-end justify-between px-[1cqw] mb-[0.2cqw]">
+                      {/* Verification QR */}
+                      <div className="flex items-center gap-[1cqw]">
+                        <img 
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://mubinroshan.com')}`}
+                          alt="Verification QR" 
+                          className="rounded object-contain mix-blend-multiply border border-teal-800/10 p-[0.3cqw]"
+                          style={{ width: '5.2cqw', height: '5.2cqw' }} 
+                        />
+                        <div className="text-left font-mono leading-none">
+                          <span className="block font-bold text-[#0C6A63] uppercase tracking-wider text-[0.7cqw]">SCAN TO VERIFY</span>
+                          <span className="text-gray-400 text-[0.65cqw] mt-[0.2cqw] block">mubinroshan.com</span>
+                        </div>
+                      </div>
+
+                      {/* Signature Block */}
+                      <div className="flex flex-col items-center text-center">
+                        <img 
+                          src="/mubin_signature.png" 
+                          alt="Mubin Signature" 
+                          className="w-[14cqw] h-[4cqw] object-contain select-none mb-[-0.3cqw]" 
+                        />
+                        <div className="w-[16cqw] h-[1px] bg-gray-400" />
+                        <span className="font-poppins font-extrabold text-[#0C6A63] uppercase tracking-wider text-[0.8cqw] mt-[0.3cqw] block leading-none">
+                          Mubin Roshan
+                        </span>
+                        <span className="text-gray-400 text-[0.65cqw] block mt-[0.1cqw] leading-none">
+                          Cyber Security Analyst
+                        </span>
                       </div>
                     </div>
-                    {/* Certificate ID */}
-                    <div className="flex items-center gap-[1.2cqw]">
-                      <Award className="text-[#0C6A63] shrink-0" style={{ width: '2.5cqw', height: '2.5cqw' }} />
-                      <div>
-                        <p className="font-bold text-gray-400 uppercase tracking-wider leading-none" style={{ fontSize: '0.8cqw' }}>CERTIFICATE ID</p>
-                        <p className="font-bold text-[#0C6A63] mt-[0.3cqw] leading-none truncate font-mono" style={{ fontSize: '1.2cqw' }}>MR-XXXX-XXXXX</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 8. Bottom Middle Slogan */}
-                  <div className="absolute left-[30%] right-[30%] bottom-[8%] text-center">
-                    <p className="font-sans text-gray-500 leading-normal" style={{ fontSize: '1.0cqw' }}>
-                      Recognizing your commitment to cybersecurity excellence and continuous learning.
-                    </p>
-                  </div>
-
-                  {/* 9. Signature Block (Right Column) */}
-                  <div className="absolute right-[7%] top-[53%] w-[20%] text-center flex flex-col items-center justify-center">
-                    <img 
-                      src="/mubin_signature.png" 
-                      alt="Mubin Roshan Signature" 
-                      className="w-[18cqw] h-[5cqw] object-contain select-none mb-[-0.2cqw] mt-[-1cqw]" 
-                    />
-                    <div className="w-full h-[1px] bg-gray-400 my-[1cqw]" />
-                    <p className="font-poppins font-bold text-[#0C6A63] uppercase tracking-wider leading-none" style={{ fontSize: '1.1cqw' }}>
-                      MUBIN ROSHAN
-                    </p>
-                    <p className="font-sans text-gray-500 leading-tight mt-[0.5cqw]" style={{ fontSize: '0.9cqw' }}>
-                      Cyber Security Analyst
-                    </p>
-                    <p className="font-sans text-gray-500 leading-tight" style={{ fontSize: '0.9cqw' }}>
-                      SQL Database Administrator
-                    </p>
-                  </div>
-
-                  {/* 10. Stamp Logo (Bottom Right) */}
-                  <div className="absolute right-[7%] bottom-[7%] flex items-center justify-end">
-                    <img src="/favicon.png" alt="Stamp Logo" className="w-[8cqw] h-[8cqw] object-contain opacity-50" />
                   </div>
                 </div>
-
+ 
                 {/* 11. Lock notice */}
                 <div className="flex items-start gap-3 p-4 bg-teal-500/[0.04] rounded-xl border border-teal-500/10">
                   <Lock className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
@@ -2087,45 +2092,45 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
         )}
 
         {isBlurredActive && (
-          <div className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-black/95 backdrop-blur-2xl p-6 text-center select-none pointer-events-none">
+          <div className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-[#FAF6EB]/95 backdrop-blur-2xl p-6 text-center select-none pointer-events-none">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.25 }}
-              className="max-w-md w-full space-y-6 bg-[#0e0c12]/80 border border-red-500/20 p-8 rounded-3xl shadow-2xl"
+              className="max-w-md w-full space-y-6 bg-[#F5EFE1] border border-red-500/30 p-8 rounded-3xl shadow-2xl shadow-red-900/5"
             >
               <div className="flex justify-center">
-                <div className="p-4 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 animate-pulse">
+                <div className="p-4 rounded-full bg-red-500/10 border border-red-500/20 text-red-600 animate-pulse">
                   <ShieldAlert className="w-16 h-16" />
                 </div>
               </div>
               
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-[11px] font-mono tracking-widest uppercase">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-600 text-[11px] font-mono tracking-widest uppercase font-semibold">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
                   SYSTEM SCREEN SHIELD ACTIVE
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold font-mono text-white tracking-tight uppercase">
+                <h3 className="text-xl sm:text-2xl font-bold font-mono text-[#0C6A63] tracking-tight uppercase">
                   SCREENSHOT PROTECTED
                 </h3>
               </div>
 
-              <p className="text-sm font-sans text-gray-300 leading-relaxed">
+              <p className="text-sm font-sans text-gray-700 leading-relaxed">
                 This page contains protected assessment content. Screenshots, screen sharing, and screen recording are strictly prohibited on this device.
               </p>
 
-              <div className="p-4 rounded-xl bg-black/40 border border-white/5 text-xs text-left font-mono space-y-2.5 text-gray-400">
-                <div className="flex justify-between border-b border-white/5 pb-1.5">
+              <div className="p-4 rounded-xl bg-[#FAF6EB]/90 border border-teal-900/10 text-xs text-left font-mono space-y-2.5 text-gray-600">
+                <div className="flex justify-between border-b border-teal-900/5 pb-1.5">
                   <span>PROTECTION LEVEL:</span>
-                  <span className="text-red-400 font-bold">DRM SECURE SHIELD</span>
+                  <span className="text-red-600 font-bold">DRM SECURE SHIELD</span>
                 </div>
-                <div className="flex justify-between border-b border-white/5 pb-1.5">
+                <div className="flex justify-between border-b border-teal-900/5 pb-1.5">
                   <span>STATUS:</span>
-                  <span className="text-amber-400 font-bold">CONTENT BLURRED</span>
+                  <span className="text-amber-700 font-bold">CONTENT BLURRED</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between font-medium">
                   <span>ACTION REQUIRED:</span>
-                  <span className="text-emerald-400 font-bold">RETURN TO APP TO UNBLUR</span>
+                  <span className="text-[#0C6A63] font-bold">RETURN TO APP TO UNBLUR</span>
                 </div>
               </div>
             </motion.div>
