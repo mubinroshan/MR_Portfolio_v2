@@ -90,6 +90,24 @@ export const PROJECTS_DATA: Project[] = [
 
 export const TIMELINE_DATA: TimelineItem[] = [
   {
+    id: 'time-palo_alto_xsiam',
+    date: 'Jun 25, 2026',
+    category: 'certification',
+    tags: [
+      'paloaltonetworks',
+      'xsiam',
+      'cortex',
+      'securityoperations',
+      'soc',
+      'threatdetection',
+      'incidentresponse',
+      'cybersecurity'
+    ],
+    title: 'Palo Alto Networks Certified XSIAM Analyst',
+    description: 'Earned the Palo Alto Networks Certified XSIAM Analyst credential, validating the practical skills and core knowledge required to centralize, automate, and scale security operations. This certification recognizes proficiency in leveraging Cortex XSIAM to engineer modern threat detection, accelerate incident response, and manage comprehensive security data analytics within an enterprise Security Operations Center (SOC).',
+    imageUrl: '/Palo_Alto_Certificate.png'
+  },
+  {
     id: 'time-tryhackme_pt1',
     date: 'June 20, 2026',
     category: 'certification',
