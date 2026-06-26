@@ -162,6 +162,23 @@ export const TIMELINE_DATA: TimelineItem[] = [
     ]
   },
   {
+    id: 'time-ecc_ceh',
+    date: 'Aug 13, 2024',
+    category: 'certification',
+    tags: [
+      'eccouncil',
+      'ceh',
+      'ethicalhacking',
+      'penetrationtesting',
+      'cybersecurity',
+      'vulnerabilityassessment',
+      'networksecurity'
+    ],
+    title: 'EC-Council Certified Ethical Hacker (CEH)',
+    description: 'Attained the Certified Ethical Hacker (CEH) credential from EC-Council, demonstrating mastery in advanced infrastructure hacking methodologies. This certification validates practical expertise in deploying tools and techniques to identify vulnerabilities, counter malicious system penetrations, and reinforce enterprise network architecture against sophisticated cyber threats using a vendor-neutral approach.',
+    imageUrl: '/ECC_CEH_Certificate.jpg'
+  },
+  {
     id: 'time-4',
     date: 'May 2024',
     category: 'certification',
