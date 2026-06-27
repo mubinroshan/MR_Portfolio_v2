@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { User, Mail, MapPin, MessageSquare, Send, ShieldCheck, RefreshCw, CheckCircle2, Linkedin, ExternalLink, ThumbsUp, Heart, Share2, Users, Plus, Check, AlertTriangle, Sparkle, Briefcase } from 'lucide-react';
 import NotificationToast from './NotificationToast';
 import { Component as ShatterButton } from '@/components/ui/shatter-button';
+import { WarningGraphic } from '@/components/ui/warning-graphic';
 import mubinAvatar from '../assets/images/mubin_avatar_1780675936140.png';
 import mrLogoTeal from '../assets/images/mr_logo_teal_removebg.png';
 
@@ -1434,27 +1435,36 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                       : 'bg-white/50 border-[#0d5c56]/20 hover:border-[#0d5c56]/40 focus:border-[#0d5c56] text-teal-900 placeholder-teal-600/35'
                 }`}
               />
-              {errors.email && (
-                <motion.div 
-                  initial={{ opacity: 0, y: -4 }} 
-                  animate={{ opacity: 1, y: 0 }} 
-                  className={`p-3.5 rounded-xl border flex items-start gap-2.5 text-xs font-mono shadow-sm ${
-                    isSaudiGreenMode 
-                      ? 'bg-red-950/30 border-red-500/25 text-red-200' 
-                      : 'bg-red-50 border-red-200 text-red-900'
-                  }`}
-                >
-                  <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                  <div className="space-y-0.5 text-left">
-                    <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
-                      [Validation Warning]
-                    </span>
-                    <p className="leading-relaxed font-sans font-medium text-xs">
-                      {errors.email}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
+              <AnimatePresence>
+                {errors.email && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0, y: -8, marginTop: 0 }} 
+                    animate={{ opacity: 1, height: "auto", y: 0, marginTop: 12 }} 
+                    exit={{ opacity: 0, height: 0, y: -8, marginTop: 0 }}
+                    transition={{ 
+                      height: { type: "spring", stiffness: 140, damping: 20 },
+                      opacity: { duration: 0.15 },
+                      y: { type: "spring", stiffness: 140, damping: 20 },
+                      marginTop: { type: "spring", stiffness: 140, damping: 20 }
+                    }}
+                    className={`overflow-hidden p-3.5 rounded-xl border flex items-center gap-3.5 text-xs font-mono shadow-sm ${
+                      isSaudiGreenMode 
+                        ? 'bg-red-950/30 border-red-500/25 text-red-200' 
+                        : 'bg-red-50 border-red-200 text-red-900'
+                    }`}
+                  >
+                    <WarningGraphic width={90} height={30} color="#ef4444" className="shrink-0" />
+                    <div className="space-y-0.5 text-left">
+                      <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
+                        [Validation Warning]
+                      </span>
+                      <p className="leading-relaxed font-sans font-medium text-xs">
+                        {errors.email}
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Message Field */}
@@ -1486,7 +1496,7 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                 }}
                 onFocus={() => setIsMessageFocused(true)}
                 onBlur={() => setIsMessageFocused(false)}
-                placeholder="Write clear operational requirements or inquiry text here..."
+                placeholder="Write your message here..."
                 rows={4}
                 className={`w-full px-4 py-3 rounded-2xl text-sm font-mono border outline-none transition-all resize-none ${
                   errors.message || (isMessageFocused && message.length < 10)
@@ -1502,27 +1512,36 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
                     : ''
                 }`}
               />
-              {errors.message && (
-                <motion.div 
-                  initial={{ opacity: 0, y: -4 }} 
-                  animate={{ opacity: 1, y: 0 }} 
-                  className={`p-3.5 rounded-xl border flex items-start gap-2.5 text-xs font-mono shadow-sm ${
-                    isSaudiGreenMode 
-                      ? 'bg-red-950/30 border-red-500/25 text-red-200' 
-                      : 'bg-red-50 border-red-200 text-red-900'
-                  }`}
-                >
-                  <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                  <div className="space-y-0.5 text-left">
-                    <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
-                      [Validation Warning]
-                    </span>
-                    <p className="leading-relaxed font-sans font-medium text-xs">
-                      {errors.message}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
+              <AnimatePresence>
+                {errors.message && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0, y: -8, marginTop: 0 }} 
+                    animate={{ opacity: 1, height: "auto", y: 0, marginTop: 12 }} 
+                    exit={{ opacity: 0, height: 0, y: -8, marginTop: 0 }}
+                    transition={{ 
+                      height: { type: "spring", stiffness: 140, damping: 20 },
+                      opacity: { duration: 0.15 },
+                      y: { type: "spring", stiffness: 140, damping: 20 },
+                      marginTop: { type: "spring", stiffness: 140, damping: 20 }
+                    }}
+                    className={`overflow-hidden p-3.5 rounded-xl border flex items-center gap-3.5 text-xs font-mono shadow-sm ${
+                      isSaudiGreenMode 
+                        ? 'bg-red-950/30 border-red-500/25 text-red-200' 
+                        : 'bg-red-50 border-red-200 text-red-900'
+                    }`}
+                  >
+                    <WarningGraphic width={90} height={30} color="#ef4444" className="shrink-0" />
+                    <div className="space-y-0.5 text-left">
+                      <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
+                        [Validation Warning]
+                      </span>
+                      <p className="leading-relaxed font-sans font-medium text-xs">
+                        {errors.message}
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Inputs required for submitting to Google Forms successfully */}
@@ -1571,7 +1590,7 @@ export default function ContactView({ isSaudiGreenMode = true }: ContactViewProp
       {/* 5. SUCCESS CONFIRMATION POPUP MODAL */}
       <AnimatePresence>
         {hasSubmittedSuccessfully && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
             {/* Background Dim Backdrop */}
             <motion.div 
               initial={{ opacity: 0 }}

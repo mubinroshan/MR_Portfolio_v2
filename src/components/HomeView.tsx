@@ -147,28 +147,14 @@ export default function HomeView({
         animate="visible"
         className="space-y-6 pt-4 md:pt-8"
       >
-        {/* Social Row Handles */}
-        <motion.div variants={staggerItem} className="flex flex-wrap gap-x-4 gap-y-2 text-xs font-mono text-gray-400">
-          <a href="https://x.com/mubinroshan" target="_blank" rel="noreferrer" className="hover:text-[#00a36c] flex items-center gap-1 transition-colors">
-            <span className="text-[#00a36c]/60">//</span> X (formerly Twitter)
-          </a>
-          <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-[#00a36c] flex items-center gap-1 transition-colors">
-            <span className="text-[#00a36c]/60">//</span> LinkedIn
-          </a>
-          <a href="https://behance.net" target="_blank" rel="noreferrer" className="hover:text-[#00a36c] flex items-center gap-1 transition-colors">
-            <span className="text-[#00a36c]/60">//</span> GitHub
-          </a>
-          <a href="mailto:mubinroshanksa@gmail.com" className="hover:text-[#00a36c] flex items-center gap-1 transition-colors">
-            <span className="text-[#00a36c]/60">//</span> Email
-          </a>
-        </motion.div>
-
         {/* Big clean bold typography matching Artistic Flair exactly, split into responsive cols */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
           {/* Left Side: Headline & Bio Info & Search Bar */}
           <div id="home-greeting-container" className="lg:col-span-7 flex flex-col gap-1.5 pb-5">
+
+
             <motion.span variants={staggerItem} className="font-sans font-bold tracking-tighter text-2xl sm:text-3xl text-teal-400">
-              Hey {greeting}!
+              Hello World !
             </motion.span>
 
             <motion.span variants={staggerItem} className="text-[#00a36c] font-mono text-[13px] tracking-widest uppercase font-bold">

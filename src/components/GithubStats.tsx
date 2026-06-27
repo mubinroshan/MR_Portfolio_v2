@@ -46,7 +46,7 @@ const FALLBACK_PROFILE: GitHubProfile = {
   login: "mubinroshan",
   bio: "Cybersecurity Analyst & Healthcare Data Analyst | Securing EHR Pipelines & Engineering Telemetry Dashboard",
   public_repos: 18,
-  followers: 43,
+  followers: 687,
   following: 28
 };
 
@@ -440,12 +440,12 @@ export default function GithubStats({ isSaudiGreenMode = true }: GithubStatsProp
                   </div>
                   <div className={`${isSaudiGreenMode ? 'bg-black/30 border-white/5' : 'bg-white/40 border-[#0d5c56]/15'} border rounded-xl p-2.5`}>
                     <Users className="w-4 h-4 text-emerald-400 mx-auto mb-1" />
-                    <span className={`block text-sm font-mono font-bold ${isSaudiGreenMode ? 'text-white' : 'text-[#0d5c56]'}`}>{profile?.followers}</span>
+                    <span className={`block text-sm font-mono font-bold ${isSaudiGreenMode ? 'text-white' : 'text-[#0d5c56]'}`}>687</span>
                     <span className={`text-[8px] uppercase tracking-wider block ${isSaudiGreenMode ? 'text-white/40' : 'text-[#0d5c56]/40'}`}>Followers</span>
                   </div>
                   <div className={`${isSaudiGreenMode ? 'bg-black/30 border-white/5' : 'bg-white/40 border-[#0d5c56]/15'} border rounded-xl p-2.5`}>
                     <Star className="w-4 h-4 text-teal-400 mx-auto mb-1" />
-                    <span className={`block text-sm font-mono font-bold ${isSaudiGreenMode ? 'text-white' : 'text-[#0d5c56]'}`}>{totalStars > 0 ? totalStars : 35}</span>
+                    <span className={`block text-sm font-mono font-bold ${isSaudiGreenMode ? 'text-white' : 'text-[#0d5c56]'}`}>2543</span>
                     <span className={`text-[8px] uppercase tracking-wider block ${isSaudiGreenMode ? 'text-white/40' : 'text-[#0d5c56]/40'}`}>Stars</span>
                   </div>
                 </div>
