@@ -39,6 +39,7 @@ import {
   Fingerprint
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { WarningGraphic } from '@/components/ui/warning-graphic';
 
 interface Question {
   id: number;
@@ -224,27 +225,8 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
   // Anti-screenshot, anti-tampering listeners for intro and quiz steps
   useEffect(() => {
     if (step !== 'intro' && step !== 'quiz') {
-      setIsBlurredActive(false);
       return;
     }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // macOS Screen Capture shortcut keys (Cmd + Shift + 3, 4, 5)
-      const isMacScreenshot = e.metaKey && e.shiftKey && ['3', '4', '5'].includes(e.key);
-      // Windows / generic Screen Capture shortcut keys (PrtScn, Win + Shift + S)
-      const isWinScreenshot = e.key === 'PrintScreen' || (e.metaKey && e.shiftKey && (e.key === 's' || e.key === 'S'));
-      const isGenericScreenshot = e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S');
-      
-      if (isMacScreenshot || isWinScreenshot || isGenericScreenshot) {
-        e.preventDefault();
-        setIsBlurredActive(true);
-        // auto-restore after 3 seconds of showing the block
-        const timer = setTimeout(() => {
-          setIsBlurredActive(false);
-        }, 3000);
-        return () => clearTimeout(timer);
-      }
-    };
 
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -254,36 +236,12 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
       e.preventDefault();
     };
 
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setIsBlurredActive(true);
-      } else {
-        setIsBlurredActive(false);
-      }
-    };
-
-    const handleBlur = () => {
-      setIsBlurredActive(true);
-    };
-
-    const handleFocus = () => {
-      setIsBlurredActive(false);
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('contextmenu', handleContextMenu);
     window.addEventListener('copy', handleCopy);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('blur', handleBlur);
-    window.addEventListener('focus', handleFocus);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('contextmenu', handleContextMenu);
       window.removeEventListener('copy', handleCopy);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('blur', handleBlur);
-      window.removeEventListener('focus', handleFocus);
     };
   }, [step]);
 
@@ -1050,13 +1008,13 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                       <motion.div 
                         initial={{ opacity: 0, y: -4 }} 
                         animate={{ opacity: 1, y: 0 }} 
-                        className={`p-3.5 rounded-xl border flex items-start gap-2.5 text-xs font-mono shadow-sm mt-3 ${
+                        className={`p-3.5 rounded-xl border flex items-center gap-3.5 text-xs font-mono shadow-sm mt-3 ${
                           isSaudiGreenMode 
                             ? 'bg-[#121115] border-red-500/20 text-red-300' 
                             : 'bg-red-50 border-red-200 text-red-800'
                         }`}
                       >
-                        <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                        <WarningGraphic width={90} height={30} color="#ef4444" className="shrink-0" />
                         <div className="space-y-0.5 text-left">
                           <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
                             [Validation Warning]
@@ -2120,51 +2078,6 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
           </div>
         )}
 
-        {isBlurredActive && (
-          <div className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-[#FAF6EB]/95 backdrop-blur-2xl p-6 text-center select-none pointer-events-none">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.25 }}
-              className="max-w-md w-full space-y-6 bg-[#F5EFE1] border border-red-500/30 p-8 rounded-3xl shadow-2xl shadow-red-900/5"
-            >
-              <div className="flex justify-center">
-                <div className="p-4 rounded-full bg-red-500/10 border border-red-500/20 text-red-600 animate-pulse">
-                  <ShieldAlert className="w-16 h-16" />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-600 text-[11px] font-mono tracking-widest uppercase font-semibold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
-                  SYSTEM SCREEN SHIELD ACTIVE
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold font-mono text-[#0C6A63] tracking-tight uppercase">
-                  SCREENSHOT PROTECTED
-                </h3>
-              </div>
-
-              <p className="text-sm font-sans text-gray-700 leading-relaxed">
-                This page contains protected assessment content. Screenshots, screen sharing, and screen recording are strictly prohibited on this device.
-              </p>
-
-              <div className="p-4 rounded-xl bg-[#FAF6EB]/90 border border-teal-900/10 text-xs text-left font-mono space-y-2.5 text-gray-600">
-                <div className="flex justify-between border-b border-teal-900/5 pb-1.5">
-                  <span>PROTECTION LEVEL:</span>
-                  <span className="text-red-600 font-bold">DRM SECURE SHIELD</span>
-                </div>
-                <div className="flex justify-between border-b border-teal-900/5 pb-1.5">
-                  <span>STATUS:</span>
-                  <span className="text-amber-700 font-bold">CONTENT BLURRED</span>
-                </div>
-                <div className="flex justify-between font-medium">
-                  <span>ACTION REQUIRED:</span>
-                  <span className="text-[#0C6A63] font-bold">RETURN TO APP TO UNBLUR</span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
       </AnimatePresence>
 
     </div>
