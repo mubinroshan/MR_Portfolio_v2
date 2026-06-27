@@ -1004,27 +1004,36 @@ export default function QuizView({ isSaudiGreenMode, onGoBack }: QuizViewProps) 
                         }`}
                       />
                     </div>
-                    {nameError && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: -4 }} 
-                        animate={{ opacity: 1, y: 0 }} 
-                        className={`p-3.5 rounded-xl border flex items-center gap-3.5 text-xs font-mono shadow-sm mt-3 ${
-                          isSaudiGreenMode 
-                            ? 'bg-[#121115] border-red-500/20 text-red-300' 
-                            : 'bg-red-50 border-red-200 text-red-800'
-                        }`}
-                      >
-                        <WarningGraphic width={90} height={30} color="#ef4444" className="shrink-0" />
-                        <div className="space-y-0.5 text-left">
-                          <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
-                            [Validation Warning]
-                          </span>
-                          <p className="leading-relaxed font-sans font-medium text-xs">
-                            {nameError}
-                          </p>
-                        </div>
-                      </motion.div>
-                    )}
+                    <AnimatePresence>
+                      {nameError && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0, y: -8, marginTop: 0 }} 
+                          animate={{ opacity: 1, height: "auto", y: 0, marginTop: 12 }} 
+                          exit={{ opacity: 0, height: 0, y: -8, marginTop: 0 }}
+                          transition={{ 
+                            height: { type: "spring", stiffness: 140, damping: 20 },
+                            opacity: { duration: 0.15 },
+                            y: { type: "spring", stiffness: 140, damping: 20 },
+                            marginTop: { type: "spring", stiffness: 140, damping: 20 }
+                          }}
+                          className={`overflow-hidden p-3.5 rounded-xl border flex items-center gap-3.5 text-xs font-mono shadow-sm ${
+                            isSaudiGreenMode 
+                              ? 'bg-[#121115] border-red-500/20 text-red-300' 
+                              : 'bg-red-50 border-red-200 text-red-800'
+                          }`}
+                        >
+                          <WarningGraphic width={90} height={30} color="#ef4444" className="shrink-0" />
+                          <div className="space-y-0.5 text-left">
+                            <span className="text-[9px] uppercase font-bold tracking-wider text-red-400 block font-mono">
+                              [Validation Warning]
+                            </span>
+                            <p className="leading-relaxed font-sans font-medium text-xs">
+                              {nameError}
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
  
                   <div className="flex flex-wrap items-center gap-4 pt-2">

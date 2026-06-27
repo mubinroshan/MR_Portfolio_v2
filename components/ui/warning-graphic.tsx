@@ -35,8 +35,8 @@ export function WarningGraphic({
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: shouldAnimate ? 0.15 * speedMultiplier : 0,
-        delayChildren: shouldAnimate ? 0.1 * speedMultiplier : 0,
+        staggerChildren: shouldAnimate ? 0.05 * speedMultiplier : 0,
+        delayChildren: 0,
       },
     },
   };
@@ -51,8 +51,8 @@ export function WarningGraphic({
       pathLength: 1,
       opacity: 0.3,
       transition: {
-        pathLength: { duration: 1.2 * speedMultiplier, ease: "easeOut" },
-        delay: shouldAnimate ? 0.0 : 0,
+        pathLength: { duration: 0.4 * speedMultiplier, ease: "easeOut" },
+        delay: 0,
       },
     },
   };
@@ -67,9 +67,9 @@ export function WarningGraphic({
       opacity: 1,
       pathLength: 1,
       transition: {
-        pathLength: { duration: 0.8 * speedMultiplier, ease: "easeOut" },
-        opacity: { duration: 0.3 * speedMultiplier },
-        delay: shouldAnimate ? 0.6 * speedMultiplier : 0,
+        pathLength: { duration: 0.3 * speedMultiplier, ease: "easeOut" },
+        opacity: { duration: 0.15 * speedMultiplier },
+        delay: shouldAnimate ? 0.05 * speedMultiplier : 0,
       },
     },
   };
@@ -87,9 +87,9 @@ export function WarningGraphic({
       y: 0,
       transition: {
         type: "spring",
-        stiffness: 400,
-        damping: 25,
-        delay: shouldAnimate ? 2.5 * speedMultiplier : 0, // Fade in last
+        stiffness: 500,
+        damping: 20,
+        delay: shouldAnimate ? 0.2 * speedMultiplier : 0, // Fade in last
       },
     },
   };
@@ -106,9 +106,9 @@ export function WarningGraphic({
       scaleX: 1,
       transition: {
         type: "spring",
-        stiffness: 400,
-        damping: 30,
-        delay: shouldAnimate ? 1.4 * speedMultiplier : 0,
+        stiffness: 500,
+        damping: 25,
+        delay: shouldAnimate ? 0.1 * speedMultiplier : 0,
       },
     },
   };
@@ -124,9 +124,9 @@ export function WarningGraphic({
       scaleX: 1,
       transition: {
         type: "spring",
-        stiffness: 400,
-        damping: 30,
-        delay: shouldAnimate ? 1.4 * speedMultiplier : 0,
+        stiffness: 500,
+        damping: 25,
+        delay: shouldAnimate ? 0.1 * speedMultiplier : 0,
       },
     },
   };
@@ -135,8 +135,8 @@ export function WarningGraphic({
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: shouldAnimate ? 0.08 * speedMultiplier : 0,
-        delayChildren: shouldAnimate ? 1.4 * speedMultiplier : 0,
+        staggerChildren: shouldAnimate ? 0.03 * speedMultiplier : 0,
+        delayChildren: shouldAnimate ? 0.1 * speedMultiplier : 0,
       },
     },
   };
@@ -149,16 +149,16 @@ export function WarningGraphic({
     },
     visible: {
       opacity: 1,
-      scale: [0, 1.3, 1], // Overshoot: 0 -> 1.3 -> 1
+      scale: [0, 1.2, 1], // Overshoot: 0 -> 1.2 -> 1
       transition: {
         type: "spring",
-        stiffness: 500,
-        damping: 20,
+        stiffness: 600,
+        damping: 18,
         scale: {
           times: [0, 0.6, 1],
-          duration: 0.6 * speedMultiplier,
+          duration: 0.3 * speedMultiplier,
         },
-        delay: shouldAnimate ? 2.0 * speedMultiplier : 0,
+        delay: shouldAnimate ? 0.15 * speedMultiplier : 0,
       },
     },
   };
