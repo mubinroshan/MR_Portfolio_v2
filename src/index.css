@@ -516,3 +516,26 @@ a, a:focus, a:focus-visible {
   }
 }
 
+/* Hide Spline watermark logo badge and attribution elements completely */
+a[href*="spline.design"],
+#spline-logo,
+[class*="spline"] a,
+[class*="Spline"] a,
+a[href*="spline"],
+div[style*="logo"],
+div[style*="watermark"],
+#spline-watermark,
+.spline-watermark,
+a[target="_blank"] img[src*="spline"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+
+

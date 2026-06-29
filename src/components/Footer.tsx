@@ -3,6 +3,7 @@ import { TabID } from '../types';
 import { Heart, ShieldCheck, Mail, Copy, ArrowUpRight, Linkedin, Github, Instagram } from 'lucide-react';
 import NotificationToast from './NotificationToast';
 import { handleDownloadResume } from '../utils';
+import { InteractiveRobotSpline } from './ui/interactive-3d-robot';
 
 interface FooterProps {
   setActiveTab: (tab: TabID) => void;
@@ -175,7 +176,25 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start align-top relative z-10 pt-8 sm:pt-12">
             
-            {/* Left Column: Connect and Social links inside a same-size premium beige card */}
+            {/* Column 1: Interactive Spline 3D Robot card next to left side of Connect */}
+            <div className="flex flex-col text-left items-start lg:col-span-3 lg:justify-self-start w-full">
+              <div className="w-full lg:w-[285px] lg:mr-auto bg-[#FAF6EB] text-[#051616] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 lg:h-[420px] flex flex-col justify-between overflow-hidden relative group">
+                {/* 3D Robot Spline Frame */}
+                <div className="w-full h-full relative overflow-hidden flex-1 rounded-t-2xl">
+                  <InteractiveRobotSpline 
+                    scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
+                    className="absolute inset-0 w-full h-full z-10"
+                  />
+                </div>
+                {/* Low-profile caption section */}
+                <div className="p-4 bg-[#FAF6EB] border-t border-[#051616]/5 flex flex-col relative z-20 pointer-events-none">
+                  <span className="text-[10px] font-mono uppercase text-[#051616]/60 font-bold tracking-wider mb-0.5">Interactive Assistant</span>
+                  <span className="text-sm font-sans font-bold text-[#051616]">MURO ROBO</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Column 2: Connect and Social links inside a same-size premium beige card */}
             <div className="flex flex-col text-left items-start lg:col-span-3 lg:justify-self-start w-full">
               <div className="w-full lg:w-[285px] lg:mr-auto bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 lg:h-[420px] flex flex-col justify-start">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#051616] tracking-tight text-left">
@@ -307,9 +326,9 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
               </div>
             </div>
 
-            {/* Middle Column: Dynamic Site Navigation Index inside a same-size premium beige card */}
-            <div className="flex flex-col text-left items-start w-full lg:col-span-3">
-              <div className="w-full lg:w-[285px] lg:mr-auto bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 lg:h-[420px] flex flex-col justify-start">
+            {/* Column 3: Dynamic Site Navigation Index inside a same-size premium beige card */}
+            <div className="flex flex-col text-left items-start w-full lg:col-span-2">
+              <div className="w-full lg:max-w-[200px] lg:mr-auto bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 lg:h-[420px] flex flex-col justify-start">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#051616] tracking-tight text-left">
                   Explore
                 </h3>
@@ -331,8 +350,8 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
               </div>
             </div>
 
-            {/* Right Column: Big name branding & capsule actions in matching system beige */}
-            <div className="lg:col-span-6 flex flex-col items-center lg:items-end text-center lg:text-right space-y-7 pt-4 lg:pt-2 lg:justify-self-end w-full">
+            {/* Column 4: Big name branding & capsule actions in matching system beige */}
+            <div className="lg:col-span-4 flex flex-col items-center lg:items-end text-center lg:text-right space-y-7 pt-4 lg:pt-2 lg:justify-self-end w-full">
               <div className="space-y-2 max-w-lg">
                 <h2 className="footer-branding-title text-4xl sm:text-5xl md:text-6xl font-black text-[#FAF6EB] tracking-tight leading-none uppercase whitespace-nowrap">
                   Mubin Roshan
