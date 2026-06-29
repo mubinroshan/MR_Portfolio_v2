@@ -174,16 +174,18 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
         {/* Main Footer Inner Container */}
         <div className="max-w-[1360px] mx-auto px-6 sm:px-8 lg:px-12 relative overflow-visible">
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start align-top relative z-10 pt-8 sm:pt-12">
+          <div className="flex flex-col xl:flex-row gap-12 items-start justify-between relative z-10 pt-8 sm:pt-12 w-full">
             
-            {/* Column 1: Interactive Spline 3D Robot card next to left side of Connect */}
-            <div className="flex flex-col text-left items-start lg:col-span-3 lg:justify-self-start w-full">
-              <div className="w-full lg:w-[285px] lg:mr-auto bg-[#FAF6EB] text-[#051616] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 lg:h-[420px] flex flex-col justify-between overflow-hidden relative group">
+            {/* Left/Middle area: Responsive 3-Card Group */}
+            <div className="flex flex-col md:flex-row items-stretch justify-start gap-6 lg:gap-8 w-full xl:flex-1">
+              
+              {/* Card 1: MURO ROBO */}
+              <div className="flex-1 min-w-[240px] md:max-w-[320px] bg-[#FAF6EB] text-[#051616] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 h-[420px] flex flex-col justify-between overflow-hidden relative group w-full">
                 {/* 3D Robot Spline Frame */}
-                <div className="w-full h-full relative overflow-hidden flex-1 rounded-t-2xl">
+                <div className="w-full h-[330px] relative overflow-hidden rounded-t-2xl">
                   <InteractiveRobotSpline 
                     scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
-                    className="absolute inset-0 w-full h-full z-10"
+                    className="absolute inset-0 w-full h-full transform translate-y-7 scale-[0.93] z-10"
                   />
                 </div>
                 {/* Low-profile caption section */}
@@ -192,11 +194,9 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
                   <span className="text-sm font-sans font-bold text-[#051616]">MURO ROBO</span>
                 </div>
               </div>
-            </div>
 
-            {/* Column 2: Connect and Social links inside a same-size premium beige card */}
-            <div className="flex flex-col text-left items-start lg:col-span-3 lg:justify-self-start w-full">
-              <div className="w-full lg:w-[285px] lg:mr-auto bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 lg:h-[420px] flex flex-col justify-start">
+              {/* Card 2: Connect */}
+              <div className="flex-1 min-w-[240px] md:max-w-[320px] bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 h-[420px] flex flex-col justify-start w-full">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#051616] tracking-tight text-left">
                   Connect
                 </h3>
@@ -324,11 +324,9 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
                   </a>
                 </div>
               </div>
-            </div>
 
-            {/* Column 3: Dynamic Site Navigation Index inside a same-size premium beige card */}
-            <div className="flex flex-col text-left items-start w-full lg:col-span-2">
-              <div className="w-full lg:max-w-[200px] lg:mr-auto bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 lg:h-[420px] flex flex-col justify-start">
+              {/* Card 3: Explore */}
+              <div className="flex-1 min-w-[180px] md:max-w-[240px] bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 h-[420px] flex flex-col justify-start w-full">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#051616] tracking-tight text-left">
                   Explore
                 </h3>
@@ -348,12 +346,13 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
                   ))}
                 </div>
               </div>
+
             </div>
 
-            {/* Column 4: Big name branding & capsule actions in matching system beige */}
-            <div className="lg:col-span-4 flex flex-col items-center lg:items-end text-center lg:text-right space-y-7 pt-4 lg:pt-2 lg:justify-self-end w-full">
+            {/* Right side: Big name branding & capsule actions */}
+            <div className="xl:w-[380px] shrink-0 flex flex-col items-center xl:items-end text-center xl:text-right space-y-7 pt-4 xl:pt-2 w-full">
               <div className="space-y-2 max-w-lg">
-                <h2 className="footer-branding-title text-4xl sm:text-5xl md:text-6xl font-black text-[#FAF6EB] tracking-tight leading-none uppercase whitespace-nowrap">
+                <h2 className="footer-branding-title text-4xl sm:text-5xl md:text-6xl font-black text-[#FAF6EB] tracking-tight leading-none uppercase">
                   Mubin Roshan
                 </h2>
                 <p className="footer-branding-subtext font-serif italic text-base sm:text-lg text-[#FAF6EB]/75">
@@ -362,7 +361,7 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
               </div>
 
               {/* Styled Pill Actions matching the golf reference buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-3.5 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-center xl:justify-end gap-3.5 w-full sm:w-auto">
                 {/* Active Bright green Pill with download loading animation */}
                 <button
                   onClick={onDownloadResumeClick}
