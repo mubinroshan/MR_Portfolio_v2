@@ -10,7 +10,6 @@ import ContactView from './components/ContactView';
 import Footer from './components/Footer';
 import ProjectDetailsModal from './components/ProjectDetailsModal';
 import QuizView from './components/QuizView';
-import { ShieldCheck, Award, X } from 'lucide-react';
 import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
 
 export default function App() {
@@ -19,7 +18,6 @@ export default function App() {
   const [selectedStory, setSelectedStory] = useState<StoryItem | null>(null);
   const [isSaudiGreenMode, setSaudiGreenMode] = useState<boolean>(false);
   const [isScrollingFromNav, setIsScrollingFromNav] = useState<boolean>(false);
-  const [showQuizOnboarding, setShowQuizOnboarding] = useState<boolean>(false);
 
   // Scroll tracking for long-form views
   const { scrollYProgress } = useScroll();
@@ -28,17 +26,6 @@ export default function App() {
     damping: 30,
     restDelta: 0.001
   });
-
-  // Show cybersecurity onboarding assessment popup on website load
-  useEffect(() => {
-    const hasSeen = sessionStorage.getItem('hasSeenCybersecurityQuizOnboarding');
-    if (!hasSeen) {
-      const timer = setTimeout(() => {
-        setShowQuizOnboarding(true);
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   // Helper method to scroll to section smoothly on nav click
   const handleTabChange = (tab: TabID) => {
@@ -202,97 +189,6 @@ export default function App() {
             project={selectedProject} 
             onClose={() => setSelectedProject(null)} 
           />
-        )}
-      </AnimatePresence>
-
-      {/* 6. SYSTEM ON-LOAD CYBERSECURITY READINESS POPUP */}
-      <AnimatePresence>
-        {showQuizOnboarding && (
-          <div className="fixed inset-0 bg-black/80 z-[110] flex items-center justify-center p-4 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className={`max-w-lg w-full p-6 sm:p-8 rounded-3xl border shadow-2xl relative ${
-                isSaudiGreenMode 
-                  ? 'bg-[#121115] border-emerald-500/20 text-white' 
-                  : 'bg-white border-teal-100 text-[#0d5c56]'
-              }`}
-            >
-              <button
-                onClick={() => {
-                  sessionStorage.setItem('hasSeenCybersecurityQuizOnboarding', 'true');
-                  setShowQuizOnboarding(false);
-                }}
-                className={`absolute top-4 right-4 p-1.5 rounded-lg transition-colors focus:outline-none ${
-                  isSaudiGreenMode ? 'text-gray-400 hover:text-white hover:bg-white/[0.05]' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'
-                }`}
-                aria-label="Close message"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              <div className="space-y-6">
-                <div className="flex items-center gap-3.5">
-                  <div className={`p-2.5 rounded-xl ${
-                    isSaudiGreenMode ? 'bg-[#005639]/30 text-emerald-400' : 'bg-teal-50 text-teal-700'
-                  }`}>
-                    <ShieldCheck className="w-7 h-7" />
-                  </div>
-                  <h3 className="font-bold text-lg sm:text-xl font-sans tracking-tight">
-                    Ready to Test Your Cybersecurity Skills?
-                  </h3>
-                </div>
-
-                <p className={`text-sm leading-relaxed ${
-                  isSaudiGreenMode ? 'text-gray-300' : 'text-gray-600'
-                }`}>
-                  Take the Cyber Security Readiness Assessment and evaluate your knowledge across ethical hacking, network security, threat detection, and cybersecurity fundamentals.
-                </p>
-
-                <div className={`flex items-start gap-3 p-4 rounded-xl border ${
-                  isSaudiGreenMode 
-                    ? 'bg-[#005639]/10 border-emerald-500/20 text-emerald-300' 
-                    : 'bg-amber-50/50 border-amber-200 text-amber-800'
-                }`}>
-                  <Award className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                  <span className="text-xs font-semibold leading-normal">
-                    Receive a personalized certificate upon successful completion.
-                  </span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                  <button
-                    onClick={() => {
-                      sessionStorage.setItem('hasSeenCybersecurityQuizOnboarding', 'true');
-                      setShowQuizOnboarding(false);
-                      handleTabChange('quiz');
-                    }}
-                    className={`w-full py-3 rounded-xl text-sm font-bold tracking-wide transition-all shadow-md flex items-center justify-center gap-1.5 keep-text-cream ${
-                      isSaudiGreenMode 
-                        ? 'bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400' 
-                        : 'bg-teal-600 hover:bg-teal-700'
-                    }`}
-                  >
-                    <span className="keep-text-cream">Take the Quiz Now</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      sessionStorage.setItem('hasSeenCybersecurityQuizOnboarding', 'true');
-                      setShowQuizOnboarding(false);
-                    }}
-                    className={`w-full sm:w-1/3 py-3 rounded-xl text-sm font-semibold transition-all border focus:outline-none ${
-                      isSaudiGreenMode 
-                        ? 'bg-transparent border-white/10 hover:bg-white/[0.04] text-gray-400' 
-                        : 'bg-transparent border-gray-200 hover:bg-gray-50 text-gray-600'
-                    }`}
-                  >
-                    Maybe Later
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
         )}
       </AnimatePresence>
 
