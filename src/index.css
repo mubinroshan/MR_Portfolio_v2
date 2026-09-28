@@ -345,6 +345,7 @@ body {
   footer .footer-button-text,
   footer .footer-button-arrow {
     color: #FAF6EB !important;
+    white-space: nowrap !important;
   }
   footer .text-white\/40 span {
     color: rgba(255, 255, 255, 0.4) !important;

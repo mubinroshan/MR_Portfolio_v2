@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { TabID } from '../types';
-import { Heart, ShieldCheck, Mail, Copy, ArrowUpRight, Linkedin, Github, Instagram } from 'lucide-react';
+import { ShieldCheck, Copy, ArrowUpRight, Linkedin, Github, Instagram } from 'lucide-react';
 import NotificationToast from './NotificationToast';
 import { handleDownloadResume } from '../utils';
-import { InteractiveRobotSpline } from './ui/interactive-3d-robot';
 
 interface FooterProps {
   setActiveTab: (tab: TabID) => void;
@@ -174,29 +173,13 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
         {/* Main Footer Inner Container */}
         <div className="max-w-[1360px] mx-auto px-6 sm:px-8 lg:px-12 relative overflow-visible">
           
-          <div className="flex flex-col xl:flex-row gap-12 items-start justify-between relative z-10 pt-8 sm:pt-12 w-full">
+          <div className="flex flex-col xl:flex-row gap-10 xl:gap-12 items-center xl:items-start justify-between relative z-10 pt-8 sm:pt-12 w-full">
             
-            {/* Left/Middle area: Responsive 3-Card Group */}
-            <div className="flex flex-col md:flex-row items-stretch justify-start gap-6 lg:gap-8 w-full xl:flex-1">
+            {/* Left/Middle area: Responsive 2-Card Group (Connect & Explore) */}
+            <div className="flex flex-col sm:flex-row items-stretch justify-start gap-5 lg:gap-6 w-full xl:w-auto shrink-0">
               
-              {/* Card 1: MURO ROBO */}
-              <div className="flex-1 min-w-[240px] md:max-w-[320px] bg-[#FAF6EB] text-[#051616] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 h-[420px] flex flex-col justify-between overflow-hidden relative group w-full">
-                {/* 3D Robot Spline Frame */}
-                <div className="w-full h-[330px] relative overflow-hidden rounded-t-2xl">
-                  <InteractiveRobotSpline 
-                    scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
-                    className="absolute inset-0 w-full h-full transform translate-y-7 scale-[0.93] z-10"
-                  />
-                </div>
-                {/* Low-profile caption section */}
-                <div className="p-4 bg-[#FAF6EB] border-t border-[#051616]/5 flex flex-col relative z-20 pointer-events-none">
-                  <span className="text-[10px] font-mono uppercase text-[#051616]/60 font-bold tracking-wider mb-0.5">Interactive Assistant</span>
-                  <span className="text-sm font-sans font-bold text-[#051616]">MURO ROBO</span>
-                </div>
-              </div>
-
-              {/* Card 2: Connect */}
-              <div className="flex-1 min-w-[240px] md:max-w-[320px] bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 h-[420px] flex flex-col justify-start w-full">
+              {/* Card 1: Connect */}
+              <div className="w-full sm:w-[300px] lg:w-[330px] bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 h-[420px] flex flex-col justify-start shrink-0">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#051616] tracking-tight text-left">
                   Connect
                 </h3>
@@ -233,7 +216,7 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
                           transition: 'all 0.3s ease',
                         }}
                       >
-                        <span className="text-[#051616] hover:text-[#00a36c] transition-colors font-semibold whitespace-nowrap text-[12px] sm:text-[13px] md:text-[14px] lg:text-[12px] xl:text-[12px] mr-1">{email}</span>
+                        <span className="text-[#051616] hover:text-[#00a36c] transition-colors font-semibold whitespace-nowrap text-[12px] sm:text-[13px] md:text-[14px] mr-1">{email}</span>
                         <Copy className="w-3.5 h-3.5 text-[#051616]/40 group-hover:text-[#00a36c] shrink-0 ml-1" />
                       </div>
                       {/* Saved Content */}
@@ -325,8 +308,8 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
                 </div>
               </div>
 
-              {/* Card 3: Explore */}
-              <div className="flex-1 min-w-[180px] md:max-w-[240px] bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 h-[420px] flex flex-col justify-start w-full">
+              {/* Card 2: Explore */}
+              <div className="w-full sm:w-[210px] lg:w-[230px] bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 h-[420px] flex flex-col justify-start shrink-0">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#051616] tracking-tight text-left">
                   Explore
                 </h3>
@@ -334,12 +317,12 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
                 {/* Clean partial/half divider line */}
                 <div className="w-1/2 h-[1.5px] bg-[#051616]/15 my-3.5 mr-auto" />
                 
-                <div className="grid grid-cols-2 lg:grid-cols-1 gap-x-4 gap-y-3 font-sans text-sm text-[#051616]/85">
+                <div className="flex flex-col space-y-2.5 font-sans text-sm text-[#051616]/85">
                   {footerLinks.map((link, idx) => (
                     <button
                       key={idx}
                       onClick={link.action}
-                      className="hover:text-[#00a36c] transition-colors cursor-pointer text-left capitalize font-medium transition-all hover:translate-x-1 duration-200"
+                      className="hover:text-[#00a36c] transition-colors cursor-pointer text-left capitalize font-medium transition-all hover:translate-x-1 duration-200 py-0.5"
                     >
                       {link.label}
                     </button>
@@ -349,8 +332,8 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
 
             </div>
 
-            {/* Right side: Big name branding & capsule actions */}
-            <div className="xl:w-[380px] shrink-0 flex flex-col items-center xl:items-end text-center xl:text-right space-y-7 pt-4 xl:pt-2 w-full">
+            {/* Right side: Big name branding & capsule actions - firmly anchored to the right */}
+            <div className="shrink-0 flex flex-col items-center xl:items-end text-center xl:text-right space-y-6 pt-4 xl:pt-2 w-full xl:w-auto xl:ml-auto">
               <div className="space-y-2 max-w-lg">
                 <h2 className="footer-branding-title text-4xl sm:text-5xl md:text-6xl font-black text-[#FAF6EB] tracking-tight leading-none uppercase">
                   Mubin Roshan
@@ -361,12 +344,12 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
               </div>
 
               {/* Styled Pill Actions matching the golf reference buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center xl:justify-end gap-3.5 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-center xl:justify-end gap-3 w-full sm:w-auto">
                 {/* Active Bright green Pill with download loading animation */}
                 <button
                   onClick={onDownloadResumeClick}
                   disabled={downloading}
-                  className="w-full sm:w-auto px-7 py-3.5 bg-[#00a36c] text-[#FAF6EB] hover:bg-[#008d5c] font-bold text-[11px] sm:text-xs md:text-sm tracking-wider uppercase rounded-full flex items-center justify-center gap-2 shadow-lg shadow-[#00a36c]/10 hover:shadow-[#00a36c]/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer h-[48px] sm:h-[50px] relative overflow-hidden"
+                  className="w-full sm:w-auto px-5 sm:px-6 py-3 bg-[#00a36c] text-[#FAF6EB] hover:bg-[#008d5c] font-bold text-xs sm:text-sm tracking-wider uppercase rounded-full flex items-center justify-center gap-2 shadow-lg shadow-[#00a36c]/10 hover:shadow-[#00a36c]/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer h-[46px] sm:h-[48px] relative overflow-hidden whitespace-nowrap shrink-0"
                 >
                   {/* Progress background */}
                   <div 
@@ -380,19 +363,19 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
                   
                   {/* Normal Content */}
                   <div 
-                    className="flex items-center justify-center gap-2 transition-all duration-300 h-full w-full"
+                    className="flex items-center justify-center gap-2 transition-all duration-300 h-full w-full whitespace-nowrap"
                     style={{
                       opacity: downloading ? 0 : 1,
                       transform: downloading ? 'scale(0.95)' : 'scale(1)',
                     }}
                   >
-                    <span className="footer-button-text text-[#FAF6EB] hover:text-[#FAF6EB]">Download Resume</span>
-                    <span className="footer-button-arrow text-sm font-bold text-[#FAF6EB]">→</span>
+                    <span className="footer-button-text text-[#FAF6EB] hover:text-[#FAF6EB] whitespace-nowrap inline-block">Download Resume</span>
+                    <span className="footer-button-arrow text-sm font-bold text-[#FAF6EB] shrink-0 inline-block">→</span>
                   </div>
 
                   {/* Downloaded Confirmation Content */}
                   <div 
-                    className="absolute inset-0 flex items-center justify-center gap-2"
+                    className="absolute inset-0 flex items-center justify-center gap-2 whitespace-nowrap"
                     style={{
                       opacity: showDownloadConf ? 1 : 0,
                       transform: showDownloadConf ? 'scale(1)' : 'scale(1.05)',
@@ -404,17 +387,17 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <span className="footer-button-text text-[11px] sm:text-xs md:text-sm font-bold text-[#FAF6EB]">Downloaded!</span>
+                    <span className="footer-button-text text-xs sm:text-sm font-bold text-[#FAF6EB] whitespace-nowrap">Downloaded!</span>
                   </div>
                 </button>
 
                 {/* Second Dark Green Outlined Pill with system-matching beige text color */}
                 <button
                   onClick={() => handleNavClick('contact')}
-                  className="w-full sm:w-auto px-7 py-3.5 bg-[#071f1e]/60 text-[#FAF6EB] hover:text-[#FAF6EB] border border-teal-500/20 hover:border-teal-400/40 hover:bg-[#0c2f2d]/80 font-bold text-[11px] sm:text-xs md:text-sm tracking-wider uppercase rounded-full flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer h-[48px] sm:h-[50px]"
+                  className="w-full sm:w-auto px-5 sm:px-6 py-3 bg-[#071f1e]/60 text-[#FAF6EB] hover:text-[#FAF6EB] border border-teal-500/20 hover:border-teal-400/40 hover:bg-[#0c2f2d]/80 font-bold text-xs sm:text-sm tracking-wider uppercase rounded-full flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer h-[46px] sm:h-[48px] whitespace-nowrap shrink-0"
                 >
-                  <span className="footer-button-text text-[#FAF6EB] hover:text-[#FAF6EB]">Let's connect</span>
-                  <span className="footer-button-arrow text-sm font-bold text-[#FAF6EB]">→</span>
+                  <span className="footer-button-text text-[#FAF6EB] hover:text-[#FAF6EB] whitespace-nowrap inline-block">Let's connect</span>
+                  <span className="footer-button-arrow text-sm font-bold text-[#FAF6EB] shrink-0 inline-block">→</span>
                 </button>
               </div>
             </div>

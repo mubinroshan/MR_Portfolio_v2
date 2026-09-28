@@ -3,8 +3,8 @@
  */
 export function handleDownloadResume() {
   const link = document.createElement('a');
-  link.href = '/mubin_resume.pdf';
-  link.download = 'mubin_resume.pdf';
+  link.href = '/Mubin_Roshan_Resume.pdf';
+  link.download = 'Mubin_Roshan_Resume.pdf';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
