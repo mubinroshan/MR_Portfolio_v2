@@ -112,15 +112,15 @@ export default function HomeView({
     proj.title.toLowerCase().includes(normalizedQuery) ||
     proj.description.toLowerCase().includes(normalizedQuery) ||
     proj.category.toLowerCase().includes(normalizedQuery) ||
-    proj.tags.some(tag => tag.toLowerCase().includes(normalizedQuery)) ||
-    proj.technologies.some(tech => tech.toLowerCase().includes(normalizedQuery))
+    proj.tags?.some(tag => tag.toLowerCase().includes(normalizedQuery)) ||
+    proj.technologies?.some(tech => tech.toLowerCase().includes(normalizedQuery))
   );
 
   const filteredTimeline = TIMELINE_DATA.filter(item => 
     item.title.toLowerCase().includes(normalizedQuery) ||
     item.description.toLowerCase().includes(normalizedQuery) ||
-    item.tags.some(tag => tag.toLowerCase().includes(normalizedQuery)) ||
-    item.details.some(detail => detail.toLowerCase().includes(normalizedQuery))
+    item.tags?.some(tag => tag.toLowerCase().includes(normalizedQuery)) ||
+    item.details?.some(detail => detail.toLowerCase().includes(normalizedQuery))
   );
 
   const filteredStories = STORIES_DATA.filter(story => 

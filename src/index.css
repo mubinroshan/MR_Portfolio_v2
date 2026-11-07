@@ -215,7 +215,6 @@ body {
   .text-\[\#00a36c\],
   .text-emerald-400,
   .text-teal-400,
-  .text-[#00a36c],
   .text-emerald-300,
   .text-brand-green-light {
     color: #008080 !important;
@@ -235,8 +234,8 @@ body {
   .bg-emerald-900,
   .bg-amber-900\/80,
   .bg-emerald-900\/80,
-  .bg-[#005639]/30,
-  .bg-[#005639]/15,
+  .bg-\[\#005639\]\/30,
+  .bg-\[\#005639\]\/15,
   .bg-brand-green {
     background-color: #D4AF37 !important; /* Gold background */
     color: #000000 !important;

@@ -201,38 +201,37 @@ function ChartContainer({
   );
 }
 
+const SAFE_CSS_TOKEN = /^[a-zA-Z0-9_-]+$/;
+const SAFE_CSS_COLOR = /^[#a-zA-Z0-9(),.%-\s]+$/;
+
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
-    ([, config]) => config.theme ?? config.color
+    ([, itemConfig]) => itemConfig.theme ?? itemConfig.color
   );
 
-  if (!colorConfig.length) {
+  if (!colorConfig.length || !SAFE_CSS_TOKEN.test(id)) {
     return null;
   }
 
-  return (
-    <style
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: scoped chart color variables from trusted ChartConfig
-      dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
-${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ??
-      itemConfig.color;
-    return color ? `  --color-${key}: ${color};` : null;
-  })
-  .join("\n")}
-}
-`
-          )
-          .join("\n"),
-      }}
-    />
-  );
+  const cssRules = Object.entries(THEMES)
+    .map(([theme, prefix]) => {
+      const declarations = colorConfig
+        .map(([key, itemConfig]) => {
+          if (!SAFE_CSS_TOKEN.test(key)) return null;
+          const color =
+            itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ??
+            itemConfig.color;
+          if (!color || !SAFE_CSS_COLOR.test(color)) return null;
+          return `  --color-${key}: ${color};`;
+        })
+        .filter(Boolean)
+        .join("\n");
+
+      return `${prefix} [data-chart=${id}] {\n${declarations}\n}`;
+    })
+    .join("\n");
+
+  return <style>{cssRules}</style>;
 };
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
