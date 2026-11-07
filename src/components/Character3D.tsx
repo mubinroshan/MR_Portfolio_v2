@@ -1,10 +1,13 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
-import { SplineScene } from '@/components/ui/splite'
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react'
 import { Spotlight } from '@/components/ui/spotlight'
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react'
-import { Shield, ShieldAlert, Cpu, Orbit, Sparkles } from 'lucide-react'
+import { Shield } from 'lucide-react'
+
+const SplineScene = lazy(() =>
+  import('@/components/ui/splite').then((mod) => ({ default: mod.SplineScene }))
+)
 
 // Simple check for WebGL context and software drivers
 const checkWebGLSupport = (): { supported: boolean; reason?: string } => {
@@ -107,6 +110,7 @@ interface Character3DProps {
 export default function Character3D({ isSaudiGreenMode = false }: Character3DProps) {
   const [webglStatus, setWebglStatus] = useState<{ supported: boolean; reason?: string }>({ supported: true })
   const [forceFallback, setForceFallback] = useState(false)
+  const [shouldLoadSpline, setShouldLoadSpline] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Fluid mouse tracking for interactive 2D fallback effects
@@ -142,6 +146,30 @@ export default function Character3D({ isSaudiGreenMode = false }: Character3DPro
       window.removeEventListener('webglcontextcreationerror', handleWebGLCreationError)
     }
   }, [])
+
+  // Observe when user scrolls near the hero 3D container before loading the heavy 3D Spline runtime
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el || shouldLoadSpline) return
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setShouldLoadSpline(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShouldLoadSpline(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '200px 0px', threshold: 0.05 }
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [shouldLoadSpline])
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return
@@ -307,12 +335,26 @@ export default function Character3D({ isSaudiGreenMode = false }: Character3DPro
       ) : (
         /* RENDER 3D: Actual Spline 3D Scene safely run inside custom WebGL error managers */
         <div className="absolute inset-0 z-10 w-full h-full bg-transparent">
-          <SplineErrorBoundary onError={() => setForceFallback(true)}>
-            <SplineScene
-              scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-              className="w-full h-full bg-transparent"
-            />
-          </SplineErrorBoundary>
+          {shouldLoadSpline ? (
+            <SplineErrorBoundary onError={() => setForceFallback(true)}>
+              <Suspense
+                fallback={
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="animate-pulse text-sm text-[#00a36c]">Loading 3D Workspace...</span>
+                  </div>
+                }
+              >
+                <SplineScene
+                  scene="/scene.splinecode"
+                  className="w-full h-full bg-transparent"
+                />
+              </Suspense>
+            </SplineErrorBoundary>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <span className="animate-pulse text-sm text-[#00a36c]">Loading 3D Workspace...</span>
+            </div>
+          )}
         </div>
       )}
 

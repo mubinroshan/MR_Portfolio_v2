@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { Project, StoryItem, TabID } from '../types';
 import { PROJECTS_DATA, STORIES_DATA, TIMELINE_DATA } from '../data';
 import { getReadingTime } from '../utils';
@@ -20,8 +20,9 @@ import {
 import { motion } from 'motion/react';
 import ProjectInsights from './ProjectInsights';
 import { DisplayCardsDemo } from '@/components/ui/demo';
-import Character3D from './Character3D';
 import ThreatBulletins from './ThreatBulletins';
+
+const Character3D = lazy(() => import('./Character3D'));
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -74,6 +75,8 @@ export default function HomeView({
 }: HomeViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [greeting, setGreeting] = useState('Good Evening');
+  const [isNearHero3D, setIsNearHero3D] = useState(false);
+  const hero3DRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const currentHour = new Date().getHours();
@@ -85,6 +88,29 @@ export default function HomeView({
       setGreeting('Good Evening');
     }
   }, []);
+
+  useEffect(() => {
+    const el = hero3DRef.current;
+    if (!el || isNearHero3D) return;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsNearHero3D(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setIsNearHero3D(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px 0px', threshold: 0.01 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isNearHero3D]);
 
   // Custom Certifications / Tech Badges list mimicking the logos row in the reference UI
   const credentials = [
@@ -216,12 +242,27 @@ export default function HomeView({
             </motion.div>
           </div>
 
-          {/* Right Side: Interactive 3D Spline Character */}
+          {/* Right Side: Interactive 3D Spline Character (Lazy-loaded via Suspense when near hero section) */}
           <motion.div 
+            ref={hero3DRef}
             variants={characterItem}
             className="lg:col-span-5 w-full lg:-mt-12 xl:-mt-16"
           >
-            <Character3D isSaudiGreenMode={isSaudiGreenMode} />
+            {isNearHero3D ? (
+              <Suspense
+                fallback={
+                  <div className="w-full h-[400px] sm:h-[480px] lg:h-[500px] xl:h-[550px] rounded-3xl flex items-center justify-center">
+                    <span className="animate-pulse text-sm text-[#00a36c]">Loading 3D Workspace...</span>
+                  </div>
+                }
+              >
+                <Character3D isSaudiGreenMode={isSaudiGreenMode} />
+              </Suspense>
+            ) : (
+              <div className="w-full h-[400px] sm:h-[480px] lg:h-[500px] xl:h-[550px] rounded-3xl flex items-center justify-center">
+                <span className="animate-pulse text-sm text-[#00a36c]">Loading 3D Workspace...</span>
+              </div>
+            )}
           </motion.div>
         </div>
 
