@@ -56,12 +56,12 @@ const WorkSkeleton = () => {
 };
 
 interface WorkViewProps {
-  setSelectedProject: (proj: Project | null) => void;
+  onSelectProject: (proj: Project) => void;
   isSaudiGreenMode?: boolean;
 }
 
-export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }: WorkViewProps) {
-  const [activeTab, setActiveTab] = useState<'all' | 'cyber' | 'analytics'>('all');
+export default function WorkView({ onSelectProject, isSaudiGreenMode = true }: WorkViewProps) {
+  const [activeTab, setActiveTab] = useState<'all' | 'cyber' | 'analytics' | 'healthcare-it'>('all');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -84,8 +84,10 @@ export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }
 
   const filteredProjects = PROJECTS_DATA.filter(proj => {
     if (activeTab === 'all') return true;
+    if (proj.filterCategories && proj.filterCategories.includes(activeTab)) return true;
     if (activeTab === 'cyber') return proj.tags.includes('Cybersecurity');
     if (activeTab === 'analytics') return proj.tags.includes('Data Analysis');
+    if (activeTab === 'healthcare-it') return proj.tags.includes('Healthcare IT');
     return true;
   });
 
@@ -142,11 +144,11 @@ export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }
       </div>
 
       {/* FILTER TABS */}
-      <div className="flex justify-center gap-3.5 pb-4">
+      <div className="flex flex-wrap justify-center gap-3.5 pb-4">
         <button 
           id="work-filter-all"
           onClick={() => setActiveTab('all')} 
-          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold font-mono border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none ${
+          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold font-mono border transition-all duration-300 cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
             activeTab === 'all' 
               ? 'bg-teal-600 border-teal-600 text-white shadow-md shadow-teal-500/10 keep-teal-active' 
               : 'bg-transparent border-transparent text-gray-300 hover:bg-teal-600/10 hover:border-teal-500/10 hover:text-white'
@@ -157,7 +159,7 @@ export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }
         <button 
           id="work-filter-cyber"
           onClick={() => setActiveTab('cyber')} 
-          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold font-mono border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none ${
+          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold font-mono border transition-all duration-300 cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
             activeTab === 'cyber' 
               ? 'bg-teal-600 border-teal-600 text-white shadow-md shadow-teal-500/10 keep-teal-active' 
               : 'bg-transparent border-transparent text-gray-300 hover:bg-teal-600/10 hover:border-teal-500/10 hover:text-white'
@@ -168,13 +170,24 @@ export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }
         <button 
           id="work-filter-analytics"
           onClick={() => setActiveTab('analytics')} 
-          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold font-mono border transition-all duration-300 cursor-pointer select-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none ${
+          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold font-mono border transition-all duration-300 cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
             activeTab === 'analytics' 
               ? 'bg-teal-600 border-teal-600 text-white shadow-md shadow-teal-500/10 keep-teal-active' 
               : 'bg-transparent border-transparent text-gray-300 hover:bg-teal-600/10 hover:border-teal-500/10 hover:text-white'
           }`}
         >
           Data Intelligence
+        </button>
+        <button 
+          id="work-filter-healthcare"
+          onClick={() => setActiveTab('healthcare-it')} 
+          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold font-mono border transition-all duration-300 cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${
+            activeTab === 'healthcare-it' 
+              ? 'bg-teal-600 border-teal-600 text-white shadow-md shadow-teal-500/10 keep-teal-active' 
+              : 'bg-transparent border-transparent text-gray-300 hover:bg-teal-600/10 hover:border-teal-500/10 hover:text-white'
+          }`}
+        >
+          Healthcare IT
         </button>
       </div>
 
@@ -200,16 +213,23 @@ export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }
                 }
               }}
               tabIndex={0}
-              onClick={() => setSelectedProject(proj)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedProject(proj); } }}
+              role="link"
+              aria-label={`Open ${proj.title} case study`}
+              onClick={() => onSelectProject(proj)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectProject(proj); } }}
               className="group cursor-pointer bg-white/[0.03] border border-white/10 rounded-3xl p-6 transition-all duration-300 flex flex-col justify-between h-[400px] relative overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest font-semibold group-hover:text-teal-400 transition-colors">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest font-semibold group-hover:text-teal-400 transition-colors truncate">
                     {proj.category}
                   </span>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {proj.featured && (
+                      <span className="text-[9px] font-mono font-semibold px-2 py-0.5 bg-[#005639]/30 border border-[#00a36c]/35 rounded-full text-[#00a36c]">
+                        Featured
+                      </span>
+                    )}
                     <span className="text-[9px] font-mono px-2 py-0.5 bg-white/[0.02] border border-white/10 rounded-full text-white/40 group-hover:border-[#00a36c]/35 group-hover:text-white transition-all">
                       {proj.year}
                     </span>
@@ -225,18 +245,35 @@ export default function WorkView({ setSelectedProject, isSaudiGreenMode = true }
                   </div>
                 </div>
 
-                {/* Large beautifully styled icon tile */}
-                <div className="w-full h-36 rounded-2xl overflow-hidden bg-black p-1.5 border border-white/10 group-hover:border-[#00a36c]/25 transition-colors flex items-center justify-center relative">
-                  <img 
-                    src={proj.image} 
-                    alt={proj.title} 
-                    className="w-full h-full object-cover rounded-xl group-hover:scale-[1.04] transition-transform duration-500 will-change-transform"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                {/* Large styled icon tile or clean blank image slot */}
+                <div
+                  data-slot={`card-image-${proj.slug}`}
+                  className="w-full h-36 rounded-2xl overflow-hidden bg-black p-1.5 border border-white/10 group-hover:border-[#00a36c]/25 transition-colors flex items-center justify-center relative"
+                >
+                  {proj.image && proj.image.trim().length > 0 ? (
+                    <>
+                      <img 
+                        src={proj.image} 
+                        alt={proj.title}
+                        width={400}
+                        height={225}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover rounded-xl group-hover:scale-[1.04] transition-transform duration-500 will-change-transform"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    </>
+                  ) : (
+                    /* TODO: Set proj.image in src/data.ts with a redacted WEBP thumbnail (< 150 KB) */
+                    <div
+                      aria-hidden="true"
+                      className="w-full h-full rounded-xl bg-gradient-to-br from-[#005639]/15 via-transparent to-[#00a36c]/10 flex items-center justify-center"
+                    />
+                  )}
                 </div>
 
-                <h2 className="text-lg font-serif text-white group-hover:text-[#00a36c] transition-colors mt-2">
+                <h2 className="text-lg font-serif text-white group-hover:text-[#00a36c] transition-colors mt-2 line-clamp-1">
                   {proj.title}
                 </h2>
 

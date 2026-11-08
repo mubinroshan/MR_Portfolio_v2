@@ -62,14 +62,14 @@ const characterItem = {
 
 interface HomeViewProps {
   setActiveTab: (tab: TabID) => void;
-  setSelectedProject: (proj: Project | null) => void;
+  onSelectProject: (proj: Project) => void;
   setSelectedStory: (story: StoryItem | null) => void;
   isSaudiGreenMode?: boolean;
 }
 
 export default function HomeView({ 
   setActiveTab, 
-  setSelectedProject, 
+  onSelectProject, 
   setSelectedStory,
   isSaudiGreenMode = false
 }: HomeViewProps) {
@@ -369,8 +369,10 @@ export default function HomeView({
                         key={proj.id}
                         whileHover={{ scale: 1.02 }}
                         tabIndex={0}
-                        onClick={() => setSelectedProject(proj)}
-                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedProject(proj); } }}
+                        role="link"
+                        aria-label={`Open ${proj.title} case study`}
+                        onClick={() => onSelectProject(proj)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectProject(proj); } }}
                         className="group cursor-pointer bg-white/[0.03] border border-white/10 hover:border-[#00a36c]/40 rounded-3xl p-6 transition-all hover:bg-white/[0.05] flex flex-col justify-between min-h-[340px] relative overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
                       >
                         <div className="absolute top-0 right-0 w-24 h-24 bg-brand-green/10 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
@@ -515,8 +517,10 @@ export default function HomeView({
                   transition={{ duration: 0.4, delay: idx * 0.1 }}
                   whileHover={{ scale: 1.02 }}
                   tabIndex={0}
-                  onClick={() => setSelectedProject(proj)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedProject(proj); } }}
+                  role="link"
+                  aria-label={`Open ${proj.title} case study`}
+                  onClick={() => onSelectProject(proj)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectProject(proj); } }}
                   className="group cursor-pointer bg-white/[0.03] border border-white/10 hover:border-brand-green/40 rounded-3xl p-6 transition-all hover:bg-white/[0.05] flex flex-col justify-between min-h-[380px] relative overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                 >
                   {/* Corner Glow Leak */}
@@ -529,7 +533,7 @@ export default function HomeView({
                     </span>
                     {proj.badge && (
                       <span className={`text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full border ${
-                        proj.badge === 'RELEASE' ? 'bg-[#005639]/30 text-[#00a36c] border-[#005639]/50' :
+                        proj.badge === 'FEATURED' || proj.badge === 'RELEASE' ? 'bg-[#005639]/30 text-[#00a36c] border-[#005639]/50' :
                         proj.badge === 'PRODUCTION' ? 'bg-indigo-950/40 text-indigo-300 border-indigo-500/20' :
                         'bg-amber-950/40 text-amber-300 border-amber-500/20'
                       }`}>
@@ -538,24 +542,39 @@ export default function HomeView({
                     )}
                   </div>
 
-                  {/* Visual Avatar of App/Project */}
+                  {/* Visual Avatar of App/Project or Blank Image Slot */}
                   <div className="my-6 flex justify-center">
-                    <div className="relative w-36 h-36 rounded-[2rem] bg-black p-1.5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 shadow-xl border border-white/10">
+                    <div
+                      data-slot={`home-card-image-${proj.slug}`}
+                      className="relative w-36 h-36 rounded-[2rem] bg-black p-1.5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 shadow-xl border border-white/10 overflow-hidden"
+                    >
                       <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-white/[0.02] to-transparent"></div>
-                      <img 
-                        src={proj.image} 
-                        alt={proj.title} 
-                        className="w-full h-full rounded-[1.8rem] object-cover"
-                        referrerPolicy="no-referrer"
-                      />
+                      {proj.image && proj.image.trim().length > 0 ? (
+                        <img 
+                          src={proj.image} 
+                          alt={proj.title}
+                          width={144}
+                          height={144}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full rounded-[1.8rem] object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                      ) : (
+                        /* TODO: Set proj.image in src/data.ts with a redacted WEBP thumbnail (< 150 KB) */
+                        <div
+                          aria-hidden="true"
+                          className="w-full h-full rounded-[1.8rem] bg-gradient-to-br from-[#005639]/15 via-transparent to-[#00a36c]/10"
+                        />
+                      )}
                     </div>
                   </div>
 
                   {/* Title & Metadata */}
                   <div className="space-y-1">
-                    <h3 className="font-sans font-semibold text-white group-hover:text-[#00a36c] transition-colors leading-snug flex items-center justify-between">
-                      {proj.title}
-                      <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[#00a36c]" />
+                    <h3 className="font-sans font-semibold text-white group-hover:text-[#00a36c] transition-colors leading-snug flex items-center justify-between gap-2">
+                      <span className="line-clamp-1">{proj.title}</span>
+                      <ArrowUpRight className="w-4 h-4 shrink-0 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-[#00a36c]" />
                     </h3>
                     <div className="flex items-center justify-between text-xs font-mono text-white/40">
                       <span>Mubin Roshan</span>
