@@ -3,11 +3,9 @@
 import { Project, TimelineItem, StoryItem } from './types';
 import mubinAvatar from './assets/images/mubin_avatar_1780675936140.png';
 import ynhItsmCard from './assets/images/ynh_itsm_card_1794207344897.jpg';
-import yamsAssetCard from './assets/images/yams_asset_card_1794207345338.jpg';
-
 export const AVATAR_URL = mubinAvatar;
 export const YNH_ITSM_URL = ynhItsmCard;
-export const YAMS_ASSET_URL = yamsAssetCard;
+export const YAMS_ASSET_URL = '/Disconnected Office Network Illustration.png';
 
 export const PROJECTS_DATA: Project[] = [
   {

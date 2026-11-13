@@ -146,7 +146,7 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
     }`}>
       
       {/* Curved Container Wrapper */}
-      <footer className="w-full bg-[#051616] pt-12 lg:pt-24 pb-10 relative overflow-visible rounded-t-[36px] sm:rounded-t-[48px] md:rounded-t-[64px] shadow-[0_-12px_44px_rgba(0,0,0,0.15)] border-t border-teal-500/10">
+      <footer className="w-full bg-[#051616] pt-12 lg:pt-24 pb-0 relative overflow-visible rounded-t-[36px] sm:rounded-t-[48px] md:rounded-t-[64px] shadow-[0_-12px_44px_rgba(0,0,0,0.15)] border-t border-teal-500/10">
         
         {/* Dynamic Contour Lines Overlay (Topographical Contour aesthetics) */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.03] sm:opacity-[0.05] stroke-teal-500" viewBox="0 0 1000 400" preserveAspectRatio="none">
@@ -309,7 +309,7 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
               </div>
 
               {/* Card 2: Explore */}
-              <div className="w-full sm:w-[210px] lg:w-[230px] bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 h-[420px] flex flex-col justify-start shrink-0">
+              <div className="w-full sm:w-[210px] lg:w-[230px] bg-[#FAF6EB] text-[#051616] p-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#0d5c56]/15 hover:border-[#0d5c56]/30 transition-all duration-300 h-auto sm:h-[420px] flex flex-col justify-start shrink-0">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#051616] tracking-tight text-left">
                   Explore
                 </h3>
@@ -405,22 +405,22 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
           </div>
 
           {/* Bottom Footer Row */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-10 border-t border-white/5 mt-16 relative z-10 w-full">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 pt-6 sm:pt-8 border-t border-white/10 mt-10 sm:mt-14 relative z-20 w-full">
             {/* Left: Security and framework tags */}
-            <div className="flex items-center gap-2 text-[11px] font-mono text-white/40">
-              <ShieldCheck className="w-4 h-4 text-[#00a36c]" />
+            <div className="flex items-center gap-2 text-[11px] font-mono text-white/50 text-center">
+              <ShieldCheck className="w-4 h-4 text-[#00a36c] shrink-0" />
               <span>Developed with React, Tailwind & motion</span>
             </div>
 
             {/* Right: The Cream legal info capsule pill from the reference design */}
-            <div className="bg-[#FAF6EB] text-[#0d5c56] px-5 py-2 rounded-full text-[11px] sm:text-xs md:text-sm lg:text-[15px] font-bold tracking-wide shadow-md flex flex-wrap items-center justify-center gap-x-4 gap-y-1 border border-[#0d5c56]/10 shrink-0">
+            <div className="bg-[#FAF6EB] text-[#0d5c56] px-4 sm:px-5 py-2 rounded-full text-[11px] sm:text-xs md:text-sm lg:text-[15px] font-bold tracking-wide shadow-md flex flex-wrap items-center justify-center gap-x-2.5 sm:gap-x-4 gap-y-1 border border-[#0d5c56]/10 shrink-0 max-w-full">
               <button 
                 onClick={() => { 
                   setToastMessage("Cookies are managed secure and offline."); 
                   setShowToast(true); 
                   setTimeout(() => setShowToast(false), 2500); 
                 }} 
-                className="hover:underline transition-all cursor-pointer"
+                className="hover:underline transition-all cursor-pointer whitespace-nowrap"
               >
                 Cookies policy
               </button>
@@ -431,15 +431,26 @@ export default function Footer({ setActiveTab, isSaudiGreenMode = true }: Footer
                   setShowToast(true); 
                   setTimeout(() => setShowToast(false), 2500); 
                 }} 
-                className="hover:underline transition-all cursor-pointer"
+                className="hover:underline transition-all cursor-pointer whitespace-nowrap"
               >
                 Privacy policy
               </button>
               <span className="text-[#0d5c56]/20 select-none">|</span>
-              <span className="select-none">© {new Date().getFullYear()}</span>
+              <span className="select-none whitespace-nowrap">© {new Date().getFullYear()}</span>
             </div>
           </div>
 
+        </div>
+
+        {/* Full-Width Bottom Desert Caravan & Cyber Fortress Illustration */}
+        <div className="relative w-full overflow-hidden mt-3 sm:-mt-4 md:-mt-8 lg:-mt-12 z-10 select-none pointer-events-none">
+          {/* Seamless top gradient blend into #051616 footer background */}
+          <div className="absolute inset-x-0 top-0 h-8 sm:h-16 md:h-24 bg-gradient-to-b from-[#051616] via-[#051616]/50 to-transparent z-10" />
+          <img
+            src="/footer.jpeg"
+            alt="Desert caravan and cybersecurity fortress illustration"
+            className="w-full h-[135px] sm:h-auto sm:max-h-[420px] object-cover sm:object-contain object-[47%_bottom] sm:object-bottom block"
+          />
         </div>
 
         {/* Floating toast notification wrapper */}
